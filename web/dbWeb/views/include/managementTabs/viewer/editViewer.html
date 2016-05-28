@@ -1,0 +1,71 @@
+<h2 style="text-align: center;">Edit Viewer</h2>
+<div class="well">
+    <form id="login" role="form" >
+        <div class="row">
+            <div class="form-group">
+                <label for="nameEditViewer">Viewer Name:</label>
+                <input name="nameEditViewer" type="text" class="form-control" id="nameEditViewer" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label for="descriptionEditViewer">Description</label>
+                <input name="descriptionEditViewer"  type="text" class="form-control " id="descriptionEditViewer" placeholder="Please enter a description" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group">
+                <label id="filesEditViewer" for="filesEditViewer">Files:</label>
+                <input type="file" name="thefiles[]" id="editViewerFileInput" multiple/>
+            </div>
+        </div>
+        <div class="form-group col-sm-offset-5">
+            <button id="submitButtonEditViewer" class="btn btn-primary">Edit Viewer</button>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $('[id^=editViewerOpe]').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "controllers/Viewer.php",
+            data: {
+                action: 'editInfo',
+                userId: userId,
+                viewerId: viewerId
+            },
+            success: function (data)
+            {
+                data = JSON.parse(data);
+                $('#nameEditViewer').val(data.name);
+                $('#descriptionEditViewer').val(data.description);
+            }
+        });
+    });
+
+    $('#submitButtonEditViewer').click(function () {
+        $.ajax({
+            type: "POST",
+            url: "controllers/Viewer.php",
+            data: {
+                action: 'editViewer',
+                userId: userId,
+                viewerId: viewerId,
+                name: $("#nameEditViewer").val(),
+                description: $("#descriptionEditViewer").val()
+            },
+            success: function ()
+            {
+                console.log("sadas");
+                uploadViewer();
+                window.location = window.location.href;
+                $('#editViewer').modal('hide');
+            }
+        });
+    });
+    $('#editViewer').on('hidden.bs.modal', function () {
+        $('#editViewerFileInput').val("");
+        $('[id^=fileNameViewer_]').remove();
+    });
+</script>
