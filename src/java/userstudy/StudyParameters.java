@@ -35,8 +35,11 @@ public class StudyParameters {
     public ArrayList<String> postStudyQuestions = new ArrayList<String>();  
     public ArrayList<TaskDetails> postStudyTaskDetails = new ArrayList<TaskDetails>();
     
-    
-    
+    // list of introduction files
+    private ArrayList<IntroductionFile> introFiles = new ArrayList<IntroductionFile>();
+    //list of standized tests
+    private ArrayList<StandardizedTest> standardizedTests = new ArrayList<StandardizedTest>();
+      
     public ArrayList<String> viewerConditionUrls = new ArrayList<String>();
     public ArrayList<String> viewerConditionShortnames = new ArrayList<String>();
     public ArrayList<String> tutorialViewerShortnames = new ArrayList<String>();
@@ -167,5 +170,73 @@ public class StudyParameters {
     public void incrementQuestionsWithTraining() {
         questionsWithTraining++;
     }
+    
+    /**
+     * get the introduction Files
+     * @return 
+     */
+    public ArrayList<IntroductionFile> getIntroFiles(){
+        
+        return introFiles;
+    }
+    /**
+     * set the introduction files arraylist
+     * @param infiles the arrayList of introduction files
+     */
+    public void setIntroFiles(ArrayList<IntroductionFile> infiles){
+        introFiles = infiles;
+    }
+    
+    public void addAnIntroFile(IntroductionFile infile){
+        introFiles.add(infile);
+    }
+    
+    public void resetIntroFileList(){
+        introFiles = new ArrayList<IntroductionFile>();
+    }
+    
+    public void setStandardizedTests(ArrayList<StandardizedTest> stndTests){
+        standardizedTests = stndTests;
+    }
+    
+    public void addAStandardizedTest(StandardizedTest sttest){
+        standardizedTests.add(sttest);
+    }
 
+    public void resetStandardizedTests(){
+        standardizedTests = new ArrayList<StandardizedTest>();
+    }
+    
+    public ArrayList<StandardizedTest> getStandardizedTests(){
+        return standardizedTests;
+    }
+    
+    /**
+     * Find the the introduction file that corresponds to the first viewer condition 
+     * @return 
+     */
+    public String getIntroductionFileURL(){        
+        String url = "";
+        String allURL = "";
+        
+        
+        for(int i=0; i<introFiles.size(); i++){            
+            String cond = introFiles.get(i).getFileCondition();            
+            if(cond.trim().equalsIgnoreCase("all")){
+                //i.e. if this intro is for all the conditions
+                allURL = introFiles.get(i).getFileURL();       
+            }
+            else if(cond.trim().equalsIgnoreCase(firstConditionShortName.trim())){
+                url = introFiles.get(i).getFileURL();                
+                break;
+            }
+        }       
+        
+        if(!url.isEmpty()){
+            return url;
+        }
+        else{
+           return allURL;
+        }
+    }
 }

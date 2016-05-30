@@ -447,23 +447,10 @@ and open the template in the editor.
 
                     <br><br>
                     <div class="divCenter4">
-
                         <img src="images/plus-icon.jpg" onclick="addAnotherDataset();" 
                              class="plusIcon" alt="add new dataset"  title="Add Another Dataset"/>                         
                         <!--<input type="button" value="Refresh Datasets" onclick="loadDatasets()"/>  -->
                     </div>
-
-
-
-
-
-
-
-
-
-
-
-
                 </div>
 
 
@@ -494,23 +481,31 @@ and open the template in the editor.
                 </div>
 
                 <hr>
-                <h4> Pre-Study Activities</h4>
+                <h4> Introductions</h4>
                 <div class="innerBox">
-                    
+
                     <div class="errorNotices" id="introductionError">
                         <p>
                             Some fields are empty.
                         </p>
                     </div>
-                    
-                    
+
+
                     <div id="introductionFilesDiv">
 
                         <table class="center" id="introductionFilesTable">
                             <tr>
                                 <th></th>
-                                <th>Introduction URL
+                                <th>
+                                    Intro Directory 
+                                    <img src="images/refresh-icon.png" title="Refresh Viewer Directories" 
+                                         alt="Refresh Viewer Directories" 
+                                         onclick="getExistingDirectNamesAndFilenamesForIntros();" 
+                                         class="refreshIconSmall"/>
 
+                                </th>
+                                <th>
+                                    Introduction URL
                                 </th>
                                 <th>For which condition?
                                     <img src="images/refresh-icon.png" title="Refresh Condition Names" 
@@ -519,9 +514,18 @@ and open the template in the editor.
                             </tr>
                             <tr class="questionNumberEven" id="introductionFileRow1">
                                 <td id="introductionFilePosition1">1. </td>
+                                <td>
+
+                                    <select id="introDirName1" onchange="introDirNameChanged(this, '1')">
+                                    </select>
+                                </td>
                                 <td id="introductionFileURL1TD">
-                                    <p>                                   
-                                        <input type="text" value="" style="min-width:100%;" id="introductionFileURL1">
+                                    <p>
+                                        <select id="introductionFileURL1" name="conditions" 
+                                                style="min-width:100%;">
+                                            <option value="">Select An Uploaded Web-page</option>
+                                        </select>                           
+                                        <br/>
                                     </p>
                                 </td>
                                 <td id="introductionFileCondition1TD">
@@ -550,21 +554,28 @@ and open the template in the editor.
                                  class="plusIcon center" alt="add new introduction File"  title="Add New Introduction File"/> 
 
                         </p>
-                        
+
                         <input type="hidden" id="introFileCounter" value="1"/>
                     </div>
 
-
-                    <br /><br/>
-
-                    <input type="button" value="Include a Standard Test" onclick="showStandardTestDiv();" class="buttonCenter2" id="inclStandardTestBtn"/>
-                    <br/><br/>
-                    <div id="standardTestsDiv" style="display:none;"> 
-
+                </div>
+                
+                <hr>
+                <h4> Standardized Tests</h4>
+                <!-- <input type="button" value="Include a Standard Test" onclick="showStandardTestDiv();" class="buttonCenter2" id="inclStandardTestBtn"/>-->
+                <div class="innerBox">
+                    <div id="standardTestsDiv"> 
                         <table class="center" id="standardTestsTable">
                             <tr>
                                 <th></th>
-                                <th>Standard Test URL
+                                <th>Standardized Test Directory
+                                 <img src="images/refresh-icon.png" title="Refresh Viewer Directories" 
+                                         alt="Refresh Viewer Directories" 
+                                         onclick="getExistingDirectNamesAndFilenamesForStandTests();" 
+                                         class="refreshIconSmall"/>
+                                </th>
+                                
+                                <th>Standardized Test URL
 
                                 </th>
                                 <th>
@@ -577,10 +588,27 @@ and open the template in the editor.
                             </tr>
                             <tr class="questionNumberEven" id="standardTestRow1">
                                 <td id="standardTestPosition1">1. </td>
+                                
+                                <td>
+                                    <select id="standardTestDirName1" onchange="standardTestNameChanged(this, '1')">
+                                    </select>
+                                </td>
+                                
                                 <td id="standardTestURL1TD">
+                                   
+                                     <p>
+                                        <select id="standardTestURL1" 
+                                                style="min-width:100%;">
+                                            <option value="">Select An Uploaded Web-page</option>
+                                        </select>                           
+                                        <br/>
+                                    </p>
+                                    <!--
+                                    
                                     <p>                                   
                                         <input type="text" value="" style="min-width:100%;" id="standardTestURL1">
                                     </p>
+                                    -->
                                 </td>
                                 <td id="standardTestUserResponseInterface1TD">
                                     <p>
@@ -598,7 +626,6 @@ and open the template in the editor.
                                          alt="delete standard test" title="Delete Dataset"
                                          id="deleteStandardTestIcon1" onclick ="deleteStandardTestIconClicked('1')" 
                                          />
-
                                 </td>
                             </tr>
                         </table> 
@@ -610,10 +637,10 @@ and open the template in the editor.
                                  class="plusIcon center" alt="add new introduction File"  title="Add New Introduction File"/> 
 
                         </p>
-                        
+
                         <input type="hidden" id="standardTestCounter" value="1">
-                        
-                        
+
+
                     </div>
                 </div>
 
@@ -664,7 +691,7 @@ and open the template in the editor.
                         <input type="hidden" value="1" id="numberOfPreStudyTasks" />
                         <br>
                     </div>
-                     <p class="center">
+                    <p class="center">
                         <img src="images/plus-icon.jpg" onclick="addAnotherPreStudyTask();" 
                              class="plusIcon center" alt="add new Pre-Study task"  title="Add New Pre-Study Task"/> 
                     </p>
@@ -747,10 +774,10 @@ and open the template in the editor.
                    <input type="button" value="Add Another Quantitative Task Type" class="center" onclick="newQuantitativeTaskDetails()"/> <br>
                     -->
                     <br>                 
-                   
+
                 </div>
-                
-                 <h4>Number of Training Samples</h4>
+
+                <h4>Number of Training Samples</h4>
                 <div class="innerBox">
                     <div class="errorNotices" id="trainingSizeError">
                         <p>
@@ -771,77 +798,76 @@ and open the template in the editor.
                         </tr>
                     </table>
                 </div>
-                    
-                
-                
-                
-                
-                
+
+
+
+
+
+
                 <hr>
                 <h4> Post-Study Tasks</h4>
                 <div class="innerBox">
                     <div id="postStudyTasksDiv">
-                        
-                            <table >
-                                <tbody id="postStudyTasksTable">
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th>Task Type</th>
-                                        <th></th>
-                                    </tr> 
 
-                                    <tr class ="questionNumberOdd" id="postStudyTask1">
-                                        <td class="sortingArrowsTD">
+                        <table >
+                            <tbody id="postStudyTasksTable">
+                                <tr>
+                                    <th></th>
+                                    <th></th>
+                                    <th>Task Type</th>
+                                    <th></th>
+                                </tr> 
 
-                                            <img src="images/up-arrow-icon.png" class="sortingArrows" onclick="moveTaskUp('1');"
-                                                 alt="move task up" title="Move Task Up"/>
-                                            <br />
-                                            <img src="images/down-arrow-icon.png" class="sortingArrows" onclick="moveTaskDown('1');"
-                                                 alt="move task down" title="Move Task Down"/>
-                                        </td>
-                                        <td id="postStudyTaskPosition1"> 1.</td>
-                                        <td id="postStudyQnDiv1TD">                                        
-                                            <div id="postStudyQnDiv1">
-                                            </div>
-                                        </td>
-                                        <td class="deleteIconTD">
+                                <tr class ="questionNumberOdd" id="postStudyTask1">
+                                    <td class="sortingArrowsTD">
 
-                                            <img src="images/delete-icon.jpg" class="deleteIcon"
-                                                 alt="delete post-study task" title="Delete Post-Study Task"
-                                                 id="deletePostStudyTaskIcon1" onclick ="deletePostStudyTaskIconClicked('1')" 
+                                        <img src="images/up-arrow-icon.png" class="sortingArrows" onclick="moveTaskUp('1');"
+                                             alt="move task up" title="Move Task Up"/>
+                                        <br />
+                                        <img src="images/down-arrow-icon.png" class="sortingArrows" onclick="moveTaskDown('1');"
+                                             alt="move task down" title="Move Task Down"/>
+                                    </td>
+                                    <td id="postStudyTaskPosition1"> 1.</td>
+                                    <td id="postStudyQnDiv1TD">                                        
+                                        <div id="postStudyQnDiv1">
+                                        </div>
+                                    </td>
+                                    <td class="deleteIconTD">
+
+                                        <img src="images/delete-icon.jpg" class="deleteIcon"
+                                             alt="delete post-study task" title="Delete Post-Study Task"
+                                             id="deletePostStudyTaskIcon1" onclick ="deletePostStudyTaskIconClicked('1')" 
                                              />
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!--
+                        <input class="divCenter2" type="button" value="Create a new Task" 
+                               onclick="createUpdateTask();"/>   -->
 
-                                </tbody>
-                            </table>
-                            <!--
-                            <input class="divCenter2" type="button" value="Create a new Task" 
-                                   onclick="createUpdateTask();"/>   -->
 
-
-                            <input type="hidden" value="1" id="numberOfPostStudyTasks" />
-                            <br>
+                        <input type="hidden" value="1" id="numberOfPostStudyTasks" />
+                        <br>
                     </div>
-                     <p class="center">
+                    <p class="center">
                         <img src="images/plus-icon.jpg" onclick="addAnotherPostStudyTask();" 
                              class="plusIcon center" alt="add new post study task"  title="Add New Post Study Task"/> 
 
                     </p>
 
                 </div>
-                
-                
-                
-                
-                
-                
-                
-                
-                
-               
-                
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -881,9 +907,9 @@ and open the template in the editor.
                 
                 -->
 
-                
-                
-                
+
+
+
                 <hr>
 
                 <h4> Mechanical Turk Details </h4>
@@ -911,16 +937,16 @@ and open the template in the editor.
                 </div>
                 <div id="hiddenElements">
                     <input type="hidden" value="" id="command" name="command" />                    
-                    
-                    
-                     <input type="hidden" id="userid" value="user2" />
-    
-    <!--<input type="hidden" id="userid" value="user2" />
-    <input type="hidden" id="userid" value="user4" />
-    <input type="hidden" id="userid" value="user5" />
-    <input type="hidden" id="userid" value="user1" />  -->
-                    
-                    
+
+
+                    <input type="hidden" id="userid" value="user2" />
+
+                    <!--<input type="hidden" id="userid" value="user2" />
+                    <input type="hidden" id="userid" value="user4" />
+                    <input type="hidden" id="userid" value="user5" />
+                    <input type="hidden" id="userid" value="user1" />  -->
+
+
                     <input type="hidden" id="managementCommand" value=""/>
                 </div>
 

@@ -211,56 +211,89 @@ and open the template in the editor.
 
 
 
-            /*If you want to change the default introduction, you need to have a method set introduction in your viewers*/
+            /*
+             * We will be getting the introduction file specified during the 
+             * user study design
+             * */
             function getIntroduction() {
-                //alert("I'm getting the introduction");
 
-                var iframe = document.getElementById("viewerFrame");
+                var command = "getIntroduction";
+                var studyid = document.getElementById("studyid").value;
 
-                var introductionPageName = "";
-                var iframeurl = iframe.src;
-                //alert(iframeurl);
-                var ind = iframeurl.lastIndexOf("/");
-                var pageLocation = iframeurl.substring(0, ind);
-                iframe.onload = function() {
+                var url = "StudyManager?command=" + command + "&studyid=" + studyid;
 
-                    if (typeof iframe.contentWindow.setIntroduction == "function") {
+                var xmlHttpRequest = getXMLHttpRequest();
 
-                        introductionPageName = iframe.contentWindow.setIntroduction();
+                xmlHttpRequest.onreadystatechange = function()
+                {
+                    if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
+                    {                        //alert(xmlHttpRequest.responseText);
+                        //  alert(xmlHttpRequest.responseText); 
 
-                        if (introductionPageName && introductionPageName !== "") {
-                            var introPageUrl = pageLocation + "/" + introductionPageName;
-                            //alert(introPageUrl);
+                        if (xmlHttpRequest.responseText.trim() !== "") {
 
                             var gi = document.getElementById("introductionframe");
-                            gi.setAttribute("src", introPageUrl);
-
-
+                            gi.setAttribute("src", xmlHttpRequest.responseText);
 
                             document.getElementById("defaultIntroduction").style.display = "none";
                             document.getElementById("givenIntroduction").style.display = "block";
-
-                            $('.myIframe').css('height', $(window).height() + 'px'); //the height of that window
-
                         }
+                        else {
+                            alert("no introduction file has been specified");
+                        }
+
+
+                        //   $('.myIframe').css('height', $(window).height() + 'px'); //the height of that window
+
+
                     }
                 };
 
-                if (typeof iframe.contentWindow.setIntroduction == "function") {
-                    introductionPageName = iframe.contentWindow.setIntroduction();
+                xmlHttpRequest.open("GET", url, true);
+                xmlHttpRequest.send();
 
-                    if (introductionPageName && introductionPageName !== "") {
-                        var introPageUrl = pageLocation + "/" + introductionPageName;
-                        //alert(introPageUrl);
 
-                        var gi = document.getElementById("introductionframe");
-                        gi.setAttribute("src", introPageUrl);
 
-                        document.getElementById("defaultIntroduction").style.display = "none";
-                        document.getElementById("givenIntroduction").style.display = "block";
 
-                    }
-                }
+
+                /*   var iframe = document.getElementById("viewerFrame");
+                 
+                 var introductionPageName = "";
+                 var iframeurl = iframe.src;
+                 //alert(iframeurl);
+                 var ind = iframeurl.lastIndexOf("/");
+                 var pageLocation = iframeurl.substring(0, ind);
+                 iframe.onload = function() {
+                 
+                 if (typeof iframe.contentWindow.setIntroduction == "function") {
+                 
+                 introductionPageName = iframe.contentWindow.setIntroduction();
+                 
+                 if (introductionPageName && introductionPageName !== "") {
+                 document.getElementById("defaultIntroduction").style.display = "none";
+                 document.getElementById("givenIntroduction").style.display = "block";
+                 
+                 $('.myIframe').css('height', $(window).height() + 'px'); //the height of that window
+                 
+                 }
+                 }
+                 };
+                 
+                 if (typeof iframe.contentWindow.setIntroduction == "function") {
+                 introductionPageName = iframe.contentWindow.setIntroduction();
+                 
+                 if (introductionPageName && introductionPageName !== "") {
+                 var introPageUrl = pageLocation + "/" + introductionPageName;
+                 //alert(introPageUrl);
+                 
+                 var gi = document.getElementById("introductionframe");
+                 gi.setAttribute("src", introPageUrl);
+                 
+                 document.getElementById("defaultIntroduction").style.display = "none";
+                 document.getElementById("givenIntroduction").style.display = "block";
+                 
+                 }
+                 }*/
 
 
             }
@@ -524,14 +557,14 @@ and open the template in the editor.
 
                             viewerFrame.setAttribute("src", newViewerUrl);
                             getAndSetNodePositions();
-                            
+
                             //NB: get and set datasets is currently also called in 
                             //in the getAndSetNodePositions() function. Ideally, we will change
                             //the get and setnode-positions file
-                            
+
                             getAndSetDataset();
-                            
-                            
+
+
                             setTimeout(getQuestion, 1000);
                         }
                         else if (split[0] === "EndOfQuantitative") {
@@ -875,7 +908,7 @@ and open the template in the editor.
 
                     if (inputMutatorMethodsArr) {
                         for (var i = 0; i < inputMutatorMethodsArr.length; i++) {
-                            
+
                             var params = findInputParametersInQuestion(question);
                             var currParam = i + 1;
                             var paramExists = false;

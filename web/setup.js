@@ -28,6 +28,8 @@ function prepareNewSetupForm() {
     loadTasks(actualStudyDiv, "label", "1", "taskType");
     loadDatasets("1");
     getExistingDirectoryNamesAndHTMLFilenames();
+    getExistingDirectNamesAndFilenamesForIntros();
+    getExistingDirectNamesAndFilenamesForStandTests();
     getExistingStudyNames();
     var userid = document.getElementById("userid").value;
     var command = "getStudyName";
@@ -307,6 +309,12 @@ function submitFormDetails() {
     for (var i = 1; i <= introCounter; i++) {
         //var url = document.getElementById("introductionFileURL" + i);
         var intro_url = document.getElementById("introductionFileURL" + i).value;
+        var intro_dir = document.getElementById("introDirName" + i).value;
+
+        intro_url = intro_dir + "/" + intro_url;
+
+        //alert(intro_url);
+
         var intro_cond = document.getElementById("introductionFileCondition" + i).value;
         if (i === 1) {
             intros = "introURLs=" + intro_url + "&introConds=" + intro_cond;
@@ -321,10 +329,17 @@ function submitFormDetails() {
     var stCounter = document.getElementById("standardTestCounter").value;
     for (var i = 1; i <= stCounter; i++) {
         var st_url = document.getElementById("standardTestURL" + i).value;
+        
+        var st_dir = document.getElementById("standardTestDirName" + i).value;
+        
+        st_url = st_dir + "/" + st_url;
+        
+        
         var respInterface = document.getElementById("standardTestUserResponseInterface" + i).value;
         var perfInterface = document.getElementById("standardTestUserPerformanceInterface" + i).value;
 
         if (i === 1) {
+            
             standardTests = "standardTestURLs=" + st_url
                     + "&standardTestUserRespInterface=" + respInterface
                     + "&standardTestUserPerfInterface=" + perfInterface;
@@ -825,6 +840,92 @@ function getExistingDirectoryNamesAndHTMLFilenames() {
     xmlHttpRequest.send();
 }
 
+
+function getExistingDirectNamesAndFilenamesForIntros() {
+    //send the command to the server to get the names of the existing directories.
+    var userid = document.getElementById("userid").value;
+    var url = "ViewerManager?command=getExistingDirectoryNamesAndHTMLFilenames" + "&userid=" + userid;
+    var xmlHttpRequest = getXMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function()
+    {
+        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
+        {
+            var introCounter = document.getElementById("introFileCounter").value;
+
+            for (var i = 1; i <= introCounter; i++) {
+
+                var select = document.getElementById("introDirName" + i);
+
+                if (select) {
+                    //viewer directory
+                    removeDivChildren(select);
+                    var dirNamesStr = xmlHttpRequest.responseText.split("::::::")[0];
+                    var htmlFilesStr = xmlHttpRequest.responseText.split("::::::")[1];
+                    populateViewerDirectoryOptions(dirNamesStr, select);
+                    setDirNamesAndHTHMLFiles(dirNamesStr, htmlFilesStr);
+                    //intro-url
+                    var urlSelect = document.getElementById("introductionFileURL" + i);
+
+                    removeDivChildren(urlSelect);
+                    var option = document.createElement("option");
+                    option.setAttribute("value", "");
+                    option.innerHTML = "Select An Uploaded Web-page";
+                    urlSelect.appendChild(option);
+                }
+            }
+        }
+    };
+    xmlHttpRequest.open("POST", url, false);
+    xmlHttpRequest.send();
+
+
+
+}
+
+
+function getExistingDirectNamesAndFilenamesForStandTests() {
+    //send the command to the server to get the names of the existing directories.
+    var userid = document.getElementById("userid").value;
+    var url = "ViewerManager?command=getExistingDirectoryNamesAndHTMLFilenames" + "&userid=" + userid;
+    var xmlHttpRequest = getXMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function()
+    {
+        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
+        {
+            var introCounter = document.getElementById("introFileCounter").value;
+
+            for (var i = 1; i <= introCounter; i++) {
+
+                var select = document.getElementById("standardTestDirName" + i);
+
+                if (select) {
+                    //viewer directory
+                    removeDivChildren(select);
+                    var dirNamesStr = xmlHttpRequest.responseText.split("::::::")[0];
+                    var htmlFilesStr = xmlHttpRequest.responseText.split("::::::")[1];
+                    populateViewerDirectoryOptions(dirNamesStr, select);
+                    setDirNamesAndHTHMLFiles(dirNamesStr, htmlFilesStr);
+                    //intro-url
+                    var urlSelect = document.getElementById("standardTestURL" + i);
+
+                    removeDivChildren(urlSelect);
+                    var option = document.createElement("option");
+                    option.setAttribute("value", "");
+                    option.innerHTML = "Select An Uploaded Web-page";
+                    urlSelect.appendChild(option);
+                }
+            }
+        }
+    };
+    xmlHttpRequest.open("POST", url, false);
+    xmlHttpRequest.send();
+
+
+
+}
+
+
+
 function setDirNamesAndHTHMLFiles(dirNamesStr, htmlFilesStr) {
 //alert("over here");
     viewerDirectories = [];
@@ -895,13 +996,120 @@ function viewerDirectoryChanged(element, rowindex) {
             select.appendChild(option);
         }
     }
-
-
-
-
-
-
 }
+
+
+function introDirNameChanged(element, rowindex) {
+    //first let's get the index of the viewer name.
+
+    var vindex = -1;
+    for (var i = 0; i < viewerDirectories.length; i++) {
+        if (viewerDirectories[i].trim() === element.value) {
+            vindex = i;
+        }
+    }
+
+    var htmlFilesSplit = [];
+    var select = document.getElementById("introductionFileURL" + rowindex);
+    removeDivChildren(select);
+    if (vindex >= 0) {
+        htmlFilesSplit = directoryFiles[vindex].split(",");
+    }
+    else {
+        htmlFilesSplit.push("Select An Uploaded Web-page");
+    }
+
+    if (htmlFilesSplit.length === 1) {
+        var option = document.createElement("option");
+        var value = htmlFilesSplit[0];
+        if (value.trim() === "no html files in director") {
+            value = "";
+        }
+
+        option.setAttribute("value", value);
+        option.innerHTML = htmlFilesSplit[0];
+        //append option to select.
+        select.appendChild(option);
+    }
+    else {
+//first create a select one option before the other options follow
+        var option0 = document.createElement("option");
+        option0.setAttribute("value", "");
+        option0.innerHTML = "Select An Uploaded Web-page";
+        select.appendChild(option0);
+        for (var i = 0; i < htmlFilesSplit.length; i++) {
+//now create an option and add it to it.
+            var option = document.createElement("option");
+            var value = htmlFilesSplit[i];
+            if (value.trim() === "no html files in director") {
+                value = "";
+            }
+
+            option.setAttribute("value", value);
+            option.innerHTML = htmlFilesSplit[i];
+            //append option to select.
+            select.appendChild(option);
+        }
+    }
+}
+
+
+function standardTestNameChanged(element, rowindex) {
+    //first let's get the index of the viewer name.
+
+    var vindex = -1;
+    for (var i = 0; i < viewerDirectories.length; i++) {
+        if (viewerDirectories[i].trim() === element.value) {
+            vindex = i;
+        }
+    }
+
+
+
+    var htmlFilesSplit = [];
+    var select = document.getElementById("standardTestURL" + rowindex);
+    removeDivChildren(select);
+    if (vindex >= 0) {
+        htmlFilesSplit = directoryFiles[vindex].split(",");
+    }
+    else {
+        htmlFilesSplit.push("Select An Uploaded Web-page");
+    }
+
+    if (htmlFilesSplit.length === 1) {
+        var option = document.createElement("option");
+        var value = htmlFilesSplit[0];
+        if (value.trim() === "no html files in director") {
+            value = "";
+        }
+
+        option.setAttribute("value", value);
+        option.innerHTML = htmlFilesSplit[0];
+        //append option to select.
+        select.appendChild(option);
+    }
+    else {
+//first create a select one option before the other options follow
+        var option0 = document.createElement("option");
+        option0.setAttribute("value", "");
+        option0.innerHTML = "Select An Uploaded Web-page";
+        select.appendChild(option0);
+        for (var i = 0; i < htmlFilesSplit.length; i++) {
+//now create an option and add it to it.
+            var option = document.createElement("option");
+            var value = htmlFilesSplit[i];
+            if (value.trim() === "no html files in director") {
+                value = "";
+            }
+
+            option.setAttribute("value", value);
+            option.innerHTML = htmlFilesSplit[i];
+            //append option to select.
+            select.appendChild(option);
+        }
+    }
+}
+
 
 
 /*
@@ -1018,10 +1226,20 @@ function deleteStandardTestIconClicked(val) {
             var img = document.getElementById("deleteStandardTestIcon" + (i));
             img.setAttribute("id", "deleteStandardTestIcon" + (i - 1));
             img.setAttribute("onclick", "deleteStandardTestIconClicked('" + (i - 1) + "')");
+            
+            //change the standardtest directory ids too.
+            
+            
+           
+            var input_dir = document.getElementById("standardTestDirName" + i);
+            input_dir.setAttribute("id", "standardTestDirName" + (i - 1));
+            input_dir.setAttribute("onchange", "standardTestNameChanged(this,'"+(i-1)+"')");
+            
+            
+            
             //change the ID of the url, and the two interface names too.
-
-            var td_url = document.getElementById("standardTestURL" + i + "TD");
-            td_url.setAttribute("id", "standardTestURL" + (i - 1) + "TD");
+            /**<!--var td_url = document.getElementById("standardTestURL" + i + "TD");
+            td_url.setAttribute("id", "standardTestURL" + (i - 1) + "TD"); **/
             var input_url = document.getElementById("standardTestURL" + i);
             input_url.setAttribute("id", "standardTestURL" + (i - 1));
             //userResponse
@@ -1061,18 +1279,52 @@ function AddAnotherStandardTest() {
     td0.setAttribute("id", "standardTestPosition" + standardTestCounter);
     td0.innerHTML = standardTestCounter + ". ";
     tr.appendChild(td0);
-    //create the combobox td
-    var td1 = document.createElement("td");
-    td1.setAttribute("id", "standardTestURL" + standardTestCounter + "TD");
-    var parag1 = document.createElement("p");
-    var input1 = document.createElement("input");
-    input1.setAttribute("type", "text");
-    input1.setAttribute("value", "");
-    input1.setAttribute("style", "min-width:100%;");
-    input1.setAttribute("id", "standardTestURL" + standardTestCounter);
-    parag1.appendChild(input1);
-    td1.appendChild(parag1);
-    tr.appendChild(td1);
+
+    var td_dir = document.createElement("td");
+    var select_dir = document.createElement("select");
+    select_dir.setAttribute("id", "standardTestDirName" + standardTestCounter);
+    select_dir.setAttribute("onchange", "standardTestNameChanged(this, '" + standardTestCounter + "')");
+    //now populate the select_dir with the dir names
+    populateViewerDirectoryOptions2(select_dir);
+
+    //add the select to the td and tr
+    td_dir.appendChild(select_dir);
+    tr.appendChild(td_dir);
+
+
+    var td_url = document.createElement("td");
+    var parag_url = document.createElement("p");
+    var select_url = document.createElement("select");
+
+    select_url.setAttribute("id", "standardTestURL" + standardTestCounter);
+    select_url.setAttribute("style", "min-width:100%;");
+
+    var option_url = document.createElement("option");
+    option_url.setAttribute("value", "");
+    option_url.innerHTML = "Select An Uploaded Web-page";
+
+    select_url.appendChild(option_url);
+    parag_url.appendChild(select_url);
+    td_url.appendChild(parag_url);
+    tr.appendChild(td_url);
+
+
+
+    /*    
+     var td1 = document.createElement("td");
+     td1.setAttribute("id", "standardTestURL" + standardTestCounter + "TD");
+     var parag1 = document.createElement("p");
+     var input1 = document.createElement("input");
+     input1.setAttribute("type", "text");
+     input1.setAttribute("value", "");
+     input1.setAttribute("style", "min-width:100%;");
+     input1.setAttribute("id", "standardTestURL" + standardTestCounter);
+     parag1.appendChild(input1);
+     td1.appendChild(parag1);
+     tr.appendChild(td1);
+     
+     */
+
     var td2 = document.createElement("td");
     td2.setAttribute("id", "standardTestUserResponseInterface" + standardTestCounter + "TD");
     var parag2 = document.createElement("p");
@@ -1084,6 +1336,8 @@ function AddAnotherStandardTest() {
     parag2.appendChild(input2);
     td2.appendChild(parag2);
     tr.appendChild(td2);
+
+
     var td3 = document.createElement("td");
     td3.setAttribute("id", "standardTestUserPerformanceInterface" + standardTestCounter + "TD");
     var parag3 = document.createElement("p");
@@ -1095,6 +1349,8 @@ function AddAnotherStandardTest() {
     parag3.appendChild(input3);
     td3.appendChild(parag3);
     tr.appendChild(td3);
+
+
     var td4 = document.createElement("td");
     td4.setAttribute("class", "deleteIconTD");
     var del_img = document.createElement("img");
@@ -1111,9 +1367,6 @@ function AddAnotherStandardTest() {
 
 
 function addAnotherIntroductionFile() {
-
-
-
 
     var introFileCounter = document.getElementById("introFileCounter").value;
     introFileCounter = Number(introFileCounter) + 1;
@@ -1135,18 +1388,62 @@ function addAnotherIntroductionFile() {
     td0.setAttribute("id", "introductionFilePosition" + introFileCounter);
     td0.innerHTML = introFileCounter + ". ";
     tr.appendChild(td0);
-    //create the combobox td
-    var td1 = document.createElement("td");
-    td1.setAttribute("id", "introductionFileURL" + introFileCounter + "TD");
-    var parag1 = document.createElement("p");
-    var input1 = document.createElement("input");
-    input1.setAttribute("type", "text");
-    input1.setAttribute("value", "");
-    input1.setAttribute("style", "min-width:100%;");
-    input1.setAttribute("id", "introductionFileURL" + introFileCounter);
-    parag1.appendChild(input1);
-    td1.appendChild(parag1);
-    tr.appendChild(td1);
+
+
+    var td_dir = document.createElement("td");
+    var select_dir = document.createElement("select");
+    select_dir.setAttribute("id", "introDirName" + introFileCounter);
+    select_dir.setAttribute("onchange", "introDirNameChanged(this, '" + introFileCounter + "')");
+
+    //populate the select box with the viewer directors
+    populateViewerDirectoryOptions2(select_dir);
+
+
+    td_dir.appendChild(select_dir);
+    tr.appendChild(td_dir);
+
+
+
+    var td_url = document.createElement("td");
+    td_url.setAttribute("id", "introductionFileURL" + introFileCounter + "TD");
+
+    var parag_url = document.createElement("p");
+    var select_url = document.createElement("select");
+    select_url.setAttribute("id", "introductionFileURL" + introFileCounter);
+    select_url.setAttribute("style", "min-width:100%;");
+
+    var option_url = document.createElement("option");
+    option_url.setAttribute("value", "");
+    option_url.innerHTML = "Select An Uploaded Web-page";
+    select_url.appendChild(option_url);
+
+    parag_url.appendChild(select_url);
+    td_url.appendChild(parag_url);
+
+    tr.appendChild(td_url);
+
+
+
+
+
+
+    /*
+     //create the combobox td
+     var td1 = document.createElement("td");
+     td1.setAttribute("id", "introductionFileURL" + introFileCounter + "TD");
+     var parag1 = document.createElement("p");
+     var input1 = document.createElement("input");
+     input1.setAttribute("type", "text");
+     input1.setAttribute("value", "");
+     input1.setAttribute("style", "min-width:100%;");
+     input1.setAttribute("id", "introductionFileURL" + introFileCounter);
+     parag1.appendChild(input1);
+     td1.appendChild(parag1);
+     tr.appendChild(td1);
+     */
+
+
+
     //create the introductionFileCondition url
     var td2 = document.createElement("td");
     td2.setAttribute("id", "introductionFileCondition" + introFileCounter + "TD");
@@ -1170,11 +1467,6 @@ function addAnotherIntroductionFile() {
         option.innerHTML = sn;
         select.appendChild(option);
     }
-
-
-
-
-
 
 
     parag2.appendChild(select);
@@ -1212,8 +1504,18 @@ function deleteIntroductionFileIconClicked(val) {
         var img = document.getElementById("deleteIntroductionFileIcon" + (i));
         img.setAttribute("id", "deleteIntroductionFileIcon" + (i - 1));
         img.setAttribute("onclick", "deleteIntroductionFileIconClicked('" + (i - 1) + "')");
-        //change the ID of the url, and the two interface names too.
 
+        //change the id of the dir name too
+        var input_dir = document.getElementById("introDirName"+ i);
+        input_dir.setAttribute("id", "introDirName"+ (i-1));        
+        input_dir.setAttribute("onchange", "introDirNameChanged(this, '"+(i-1)+"')");
+        
+        
+        
+        
+        
+                
+        //change the ID of the url, and the two interface names too.
         var td_url = document.getElementById("introductionFileURL" + i + "TD");
         td_url.setAttribute("id", "introductionFileURL" + (i - 1) + "TD");
         var input_url = document.getElementById("introductionFileURL" + i);

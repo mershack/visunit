@@ -25,8 +25,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import userstudy.IntroductionFile;
 import userstudy.ListOfConditionsAndTheirCounters;
 import userstudy.QualitativeQuestion;
+import userstudy.StandardizedTest;
 import userstudy.StudyParameters;
 import userstudy.TaskDetails;
 import userstudy.ViewerManager;
@@ -131,7 +133,15 @@ public class StudyManager extends HttpServlet {
                     //now append the study name to the study so that it can be returned later.
                     msg += "::" + nameofstudy;
                     // System.out.println("INSTRUCTION IS " + msg);
-                } else if (command.equalsIgnoreCase("getPreQualitativeQuestions")) {
+                } 
+                else if(command.equalsIgnoreCase("getIntroduction")){//the introduction file names
+                    System.out.println("getting the introduction file");
+                    
+                    msg = upmts.getIntroductionFileURL();                   
+                }
+                
+                
+                else if (command.equalsIgnoreCase("getPreQualitativeQuestions")) {
                     //send the qualitative questions if there is some, otherwise send an empty string
                     String allqualQuestions = "";
 
@@ -679,6 +689,9 @@ public class StudyManager extends HttpServlet {
 
             NodeList preStudyTaskNode = doc.getElementsByTagName("preStudyTask");
             NodeList postStudyTaskNode = doc.getElementsByTagName("postStudyTask");
+            
+            NodeList introductionTaskNode = doc.getElementsByTagName("introFile");
+            NodeList standardizedTestsNode = doc.getElementsByTagName("standardTest");
 
             NodeList datasetNode = doc.getElementsByTagName("dataset");
             NodeList datasetTypeNode = doc.getElementsByTagName("datasetType");
@@ -769,7 +782,7 @@ public class StudyManager extends HttpServlet {
 
                     String url = "users/" + userid + "/viewers/" + conditionurl;
 
-                    upmts.viewerConditionUrls.add(url);
+                    upmts.viewerConditionUrls.add(url); 
                     System.out.println("The url is" + url);
 
                 }
@@ -859,8 +872,65 @@ public class StudyManager extends HttpServlet {
                 }
             }
 
-            //TODO: get the introduction files too
-            //TODO: get the standard test files as well
+           
+           //get the information about the introduction files .
+           upmts.resetIntroFileList();
+            for (int temp = 0; temp < introductionTaskNode.getLength(); temp++) {
+                Node nNode = introductionTaskNode.item(temp);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    //get the url of the file
+                    String url = eElement.getElementsByTagName("introURL").item(0).getTextContent();
+                    
+                    //recompose the url   
+                    url = "users/" + userid + "/viewers/"+url;
+                    
+                    
+                    //get the condition this introduction file is for.
+                    String cond = eElement.getElementsByTagName("introCond").item(0).getTextContent();
+                   upmts.addAnIntroFile(new IntroductionFile(url, cond));                   
+                }
+            }
+            
+            //System.out.println("*standardized tests*");
+            
+            
+               //get the information about the introduction files .
+           upmts.resetStandardizedTests();
+            for (int temp = 0; temp < standardizedTestsNode.getLength(); temp++) {
+                
+                Node nNode = standardizedTestsNode.item(temp);                
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    //get the url of the file
+                    String url = eElement.getElementsByTagName("standardTestURL").item(0).getTextContent();
+                    //get the condition this introduction file is for.
+                    String respInterface = eElement.getElementsByTagName("standardTestUserResponse")
+                            .item(0).getTextContent();
+                    
+                    String perfInterface = eElement.getElementsByTagName("standardTestUserPerformance")
+                            .item(0).getTextContent();
+                                       
+                    upmts.addAStandardizedTest(new StandardizedTest(url, respInterface, perfInterface));                    
+                }
+            }
+            
+            
+            
+            //Test to see if the introduction files and standardized tests files are read.
+            for(int i=0; i<upmts.getIntroFiles().size(); i++)            {                
+                System.out.println("--Introfile: url "+ upmts.getIntroFiles().get(i).getFileURL()
+                                    +"\t condname: "+upmts.getIntroFiles().get(i).getFileCondition());
+                            }
+            
+             for(int i=0; i<upmts.getStandardizedTests().size(); i++)            {                
+                System.out.println("--StandardizedTest-File: url "+ upmts.getStandardizedTests().get(i).getUrl()
+                                    +"\t respInterface: "+upmts.getStandardizedTests().get(i).getUserRespInterface()
+                                    +"\t validatingInterface: "+upmts.getStandardizedTests().get(i).getUserPerformanceInterface());
+                            }
+            
+            
+            
             //viewer dimensions
             String viewerWidth = ((Element) viewerwidthNode.item(0)).getTextContent();
             String viewerHeight = ((Element) viewerheightNode.item(0)).getTextContent();

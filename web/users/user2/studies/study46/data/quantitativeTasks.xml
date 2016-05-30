@@ -38,13 +38,13 @@
 		<time>20</time>
 	</task>
 	<introFile>
-		<introURL>abc.html</introURL>
+		<introURL>viewer1/intro_graph_interpLong.html</introURL>
 		<introCond>all</introCond>
 	</introFile>
 	<standardTest>
-		<standardTestURL></standardTestURL>
-		<standardTestUserResponse></standardTestUserResponse>
-		<standardTestUserPerformance></standardTestUserPerformance>
+		<standardTestURL>color-blindness.html</standardTestURL>
+		<standardTestUserResponse>getResponses</standardTestUserResponse>
+		<standardTestUserPerformance>checkResponseAccuracy</standardTestUserPerformance>
 	</standardTest>
 	<preStudyTask>
 		<name>age</name>
