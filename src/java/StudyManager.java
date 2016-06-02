@@ -133,41 +133,39 @@ public class StudyManager extends HttpServlet {
                     //now append the study name to the study so that it can be returned later.
                     msg += "::" + nameofstudy;
                     // System.out.println("INSTRUCTION IS " + msg);
-                } 
-                else if(command.equalsIgnoreCase("getIntroduction")){//the introduction file names
-                    System.out.println("getting the introduction file");
-                    
-                    msg = upmts.getIntroductionFileURL();                   
-                }
-                
-                
-                else if (command.equalsIgnoreCase("getPreQualitativeQuestions")) {
+                } else if (command.equalsIgnoreCase("getIntroduction")) {//the introduction file names
+                    //System.out.println("getting the introduction file");                    
+                    msg = upmts.getIntroductionFileURL();
+
+                } else if (command.equalsIgnoreCase("getStandardizedTests")) {
+                    msg = upmts.getStandardTestDetails();
+                } else if (command.equalsIgnoreCase("saveStandardizedTestResponses")) {
+                    //get the user response for the standardized test and save it. 
+                    String userResp[] = request.getParameterValues("userResponse");
+                    String userPerf[] = request.getParameterValues("userPerformance");
+                    upmts.saveStandardTestResponses(userResp, userPerf);
+
+                } else if (command.equalsIgnoreCase("getPreQualitativeQuestions")) {
                     //send the qualitative questions if there is some, otherwise send an empty string
                     String allqualQuestions = "";
+                    //System.out.println("--------"+upmts.preStudyEvalQuestions.size());
 
-                    System.out.println("--------"+upmts.preStudyEvalQuestions.size());
-                    
                     for (int i = 0; i < upmts.preStudyQuestions.size(); i++) {
-                        System.out.println("^^^^^^^^^"+ upmts.preStudyEvalQuestions.get(i).getQuestion() + ":::" + upmts.preStudyEvalQuestions.get(i).getAnswerTypeAndOutputType());
-
-                        
+                        //  System.out.println("^^^^^^^^^"+ upmts.preStudyEvalQuestions.get(i).getQuestion() + ":::" + upmts.preStudyEvalQuestions.get(i).getAnswerTypeAndOutputType());
                         if (i == 0) {
                             allqualQuestions = upmts.preStudyEvalQuestions.get(i).getQuestion() + ":::" + upmts.preStudyEvalQuestions.get(i).getAnswerTypeAndOutputType();
                         } else {
                             allqualQuestions += "::::" + upmts.preStudyEvalQuestions.get(i).getQuestion() + ":::" + upmts.preStudyEvalQuestions.get(i).getAnswerTypeAndOutputType();
                         }
                     }
-                    
-                    
-                   
+
                     if (!allqualQuestions.isEmpty()) {
                         allqualQuestions = "Qualitative::::" + allqualQuestions;
                     }
-                    
-                    System.out.println("All questions is:: "+ allqualQuestions);
-                    
+
+                    //System.out.println("All questions is:: "+ allqualQuestions);
                     msg = allqualQuestions;
-                    
+
                 } else if (command.equalsIgnoreCase("firstViewerUrl")) {
                     msg = upmts.viewerConditionUrls.get(upmts.viewerConditionCounter);
                     upmts.viewerConditionCounter++;
@@ -219,9 +217,8 @@ public class StudyManager extends HttpServlet {
                                 && upmts.tutorialCounter % (upmts.sizeOfATrainingCondition) == 0
                                 && upmts.tutorialViewerchanged != true) {
 
-                            
-                            System.out.println("@@The condition Counter is "+ upmts.tutorialViewerConditionCounter);
-                            
+                            System.out.println("@@The condition Counter is " + upmts.tutorialViewerConditionCounter);
+
                             System.out.println("-- " + upmts.tutorialViewerConditionCounter);
                             String url = upmts.tutorialViewerUrls.get(upmts.tutorialViewerConditionCounter);
                             System.out.println("&& url is " + url);
@@ -261,7 +258,7 @@ public class StudyManager extends HttpServlet {
                             msg = "ChangeViewers:: " + upmts.firstConditionUrl;
 
                             upmts.isTutorial = false;
-                            
+
                         } else {
 
                             if (upmts.testCounter > 0) {//get the previousAnswer
@@ -370,7 +367,7 @@ public class StudyManager extends HttpServlet {
                                         allqualQuestions = upmts.postStudyEvalQuestions.get(i).getQuestion()
                                                 + ":::" + upmts.postStudyEvalQuestions.get(i).getAnsType();
                                     } else {
-                                        allqualQuestions += "::::" + upmts.postStudyEvalQuestions.get(i).getQuestion() 
+                                        allqualQuestions += "::::" + upmts.postStudyEvalQuestions.get(i).getQuestion()
                                                 + ":::" + upmts.postStudyEvalQuestions.get(i).getAnsType();
                                     }
 
@@ -403,14 +400,13 @@ public class StudyManager extends HttpServlet {
 
                 } else if (command.equalsIgnoreCase("setPreQualitativeAnswers")) {
                     System.out.println("---- Setting pre-qualitative answers");
-                    
-                    
+
                     String qualAnswers = request.getParameter("preQualitativeAnswers");
                     String split[] = qualAnswers.split("::::");
                     System.out.println("__PRE-QUALITATIVE ANSWERS ::: " + qualAnswers);
-                    
+
                     for (int i = 0; i < upmts.preStudyEvalQuestions.size(); i++) {
-                        upmts.preStudyEvalQuestions.get(i).setGivenAnswer(split[i]);                        
+                        upmts.preStudyEvalQuestions.get(i).setGivenAnswer(split[i]);
                         //System.out.println(upmts.qualEvalQuestionBefore.get(i).getAnswer());
                     }
                 } else if (command.equalsIgnoreCase("setQualitativeAnswers")) {
@@ -422,7 +418,7 @@ public class StudyManager extends HttpServlet {
                     String split[] = qualAnswers.split("::::");
 
                     for (int i = 0; i < upmts.postStudyEvalQuestions.size(); i++) {
-                        upmts.postStudyEvalQuestions.get(i).setGivenAnswer(split[i]);                        
+                        upmts.postStudyEvalQuestions.get(i).setGivenAnswer(split[i]);
                     }
                     String studyNameReverse = new StringBuffer(upmts.studyname.toUpperCase()).reverse().toString();
                     writeQualitativeAnswersToFile(upmts, userid);
@@ -487,17 +483,16 @@ public class StudyManager extends HttpServlet {
                     //check if the given answer is right, return "Correct" if right or "Wrong" if wrong
                     String givenAns = request.getParameter("givenAnswer").trim();
 
-                  /*  String acc = request.getParameter("accuracy");
-                    double accuracy = 0.0;
+                    /*  String acc = request.getParameter("accuracy");
+                     double accuracy = 0.0;
 
-                    if (!acc.trim().isEmpty()) {
-                        accuracy = Double.parseDouble(acc);
-                    }  */
+                     if (!acc.trim().isEmpty()) {
+                     accuracy = Double.parseDouble(acc);
+                     }  */
 
-                 /*   if (upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).hasCorrectAnswer()) {
-                        upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).setAverageCorrect(accuracy);
-                    } */
-
+                    /*   if (upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).hasCorrectAnswer()) {
+                     upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).setAverageCorrect(accuracy);
+                     } */
                     //upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).setAverageCorrect(givenAns);
                     upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).setGivenAnswer(givenAns);
 
@@ -505,17 +500,16 @@ public class StudyManager extends HttpServlet {
                     double averageCorrect = upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).getIsGivenAnsCorrect();
 
                    // int numOfErrors = upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).getNumberOfErrors();
-                   // int numberMissed = upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).getNumberMissed();
-
+                    // int numberMissed = upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).getNumberMissed();
                     //  System.out.println("here");
                   /*  if (numOfErrors > 0 && numberMissed > 0) {
-                        msg = "You missed " + numberMissed + " element(s)  and you made " + numOfErrors + " erroneous selection(s).";
-                    } else if (numOfErrors > 0) {
-                        msg = "You made " + numOfErrors + " erroneous selection(s). ";
-                    } else if (numberMissed > 0) {
+                     msg = "You missed " + numberMissed + " element(s)  and you made " + numOfErrors + " erroneous selection(s).";
+                     } else if (numOfErrors > 0) {
+                     msg = "You made " + numOfErrors + " erroneous selection(s). ";
+                     } else if (numberMissed > 0) {
 
-                        msg = "You missed " + numberMissed + " element(s).";
-                    } else*/
+                     msg = "You missed " + numberMissed + " element(s).";
+                     } else*/
                     if (averageCorrect == 1.0) {
                         msg = "Correct!";
                     } else {
@@ -635,12 +629,11 @@ public class StudyManager extends HttpServlet {
         upmts.qualQuestionCodesAfter = new ArrayList<String>();
         upmts.qualQuestionsAfter = new ArrayList<String>();
         upmts.qualEvalQuestionAfter = new ArrayList<QualitativeQuestion>();
-        
+
         upmts.postStudyEvalQuestions = new ArrayList<EvaluationQuestion>();
         upmts.postStudyQuestionCodes = new ArrayList<String>();
-        upmts.postStudyQuestions =  new ArrayList<String>();
+        upmts.postStudyQuestions = new ArrayList<String>();
         upmts.postStudyTaskDetails = new ArrayList<TaskDetails>();
-        
 
         //for qual qns before
         upmts.qualQuestionCodesBefore = new ArrayList<String>();
@@ -649,12 +642,11 @@ public class StudyManager extends HttpServlet {
 
         upmts.preStudyEvalQuestions = new ArrayList<EvaluationQuestion>();
         upmts.preStudyQuestionCodes = new ArrayList<String>();
-        upmts.preStudyQuestions =  new ArrayList<String>();
+        upmts.preStudyQuestions = new ArrayList<String>();
         upmts.preStudyTaskDetails = new ArrayList<TaskDetails>();
-        
-        
-        upmts.evalQuestions = new ArrayList<EvaluationQuestion>();     
-        
+
+        upmts.evalQuestions = new ArrayList<EvaluationQuestion>();
+
         upmts.tutorialQuestions = new ArrayList<EvaluationQuestion>();
         upmts.viewerConditionShortnames = new ArrayList<String>();
         upmts.viewerConditionUrls = new ArrayList<String>();
@@ -689,7 +681,7 @@ public class StudyManager extends HttpServlet {
 
             NodeList preStudyTaskNode = doc.getElementsByTagName("preStudyTask");
             NodeList postStudyTaskNode = doc.getElementsByTagName("postStudyTask");
-            
+
             NodeList introductionTaskNode = doc.getElementsByTagName("introFile");
             NodeList standardizedTestsNode = doc.getElementsByTagName("standardTest");
 
@@ -782,7 +774,7 @@ public class StudyManager extends HttpServlet {
 
                     String url = "users/" + userid + "/viewers/" + conditionurl;
 
-                    upmts.viewerConditionUrls.add(url); 
+                    upmts.viewerConditionUrls.add(url);
                     System.out.println("The url is" + url);
 
                 }
@@ -808,7 +800,7 @@ public class StudyManager extends HttpServlet {
                     upmts.questionSizes.add(Integer.parseInt(questionSize));
                     upmts.totalNumOfQuestions += Integer.parseInt(questionSize);
                     upmts.questionMaxTimes.add(Integer.parseInt(questionTime));
-                    
+
                     //read the task details
                     TaskDetails td = readTaskDetails(request, userid, question,
                             questionCode);
@@ -872,65 +864,58 @@ public class StudyManager extends HttpServlet {
                 }
             }
 
-           
-           //get the information about the introduction files .
-           upmts.resetIntroFileList();
+            //get the information about the introduction files .
+            upmts.resetIntroFileList();
             for (int temp = 0; temp < introductionTaskNode.getLength(); temp++) {
                 Node nNode = introductionTaskNode.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
                     //get the url of the file
                     String url = eElement.getElementsByTagName("introURL").item(0).getTextContent();
-                    
+
                     //recompose the url   
-                    url = "users/" + userid + "/viewers/"+url;
-                    
-                    
+                    url = "users/" + userid + "/viewers/" + url;
+
                     //get the condition this introduction file is for.
                     String cond = eElement.getElementsByTagName("introCond").item(0).getTextContent();
-                   upmts.addAnIntroFile(new IntroductionFile(url, cond));                   
+                    upmts.addAnIntroFile(new IntroductionFile(url, cond));
                 }
             }
-            
+
             //System.out.println("*standardized tests*");
-            
-            
-               //get the information about the introduction files .
-           upmts.resetStandardizedTests();
+            //get the information about the introduction files .
+            upmts.resetStandardizedTests();
             for (int temp = 0; temp < standardizedTestsNode.getLength(); temp++) {
-                
-                Node nNode = standardizedTestsNode.item(temp);                
+
+                Node nNode = standardizedTestsNode.item(temp);
                 if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) nNode;
                     //get the url of the file
                     String url = eElement.getElementsByTagName("standardTestURL").item(0).getTextContent();
+                    url = "users/" + userid + "/viewers/" + url;
                     //get the condition this introduction file is for.
                     String respInterface = eElement.getElementsByTagName("standardTestUserResponse")
                             .item(0).getTextContent();
-                    
+
                     String perfInterface = eElement.getElementsByTagName("standardTestUserPerformance")
                             .item(0).getTextContent();
-                                       
-                    upmts.addAStandardizedTest(new StandardizedTest(url, respInterface, perfInterface));                    
+
+                    upmts.addAStandardizedTest(new StandardizedTest(url, respInterface, perfInterface));
                 }
             }
-            
-            
-            
+
             //Test to see if the introduction files and standardized tests files are read.
-            for(int i=0; i<upmts.getIntroFiles().size(); i++)            {                
-                System.out.println("--Introfile: url "+ upmts.getIntroFiles().get(i).getFileURL()
-                                    +"\t condname: "+upmts.getIntroFiles().get(i).getFileCondition());
-                            }
-            
-             for(int i=0; i<upmts.getStandardizedTests().size(); i++)            {                
-                System.out.println("--StandardizedTest-File: url "+ upmts.getStandardizedTests().get(i).getUrl()
-                                    +"\t respInterface: "+upmts.getStandardizedTests().get(i).getUserRespInterface()
-                                    +"\t validatingInterface: "+upmts.getStandardizedTests().get(i).getUserPerformanceInterface());
-                            }
-            
-            
-            
+            for (int i = 0; i < upmts.getIntroFiles().size(); i++) {
+                System.out.println("--Introfile: url " + upmts.getIntroFiles().get(i).getFileURL()
+                        + "\t condname: " + upmts.getIntroFiles().get(i).getFileCondition());
+            }
+
+            for (int i = 0; i < upmts.getStandardizedTests().size(); i++) {
+                System.out.println("--StandardizedTest-File: url " + upmts.getStandardizedTests().get(i).getUrl()
+                        + "\t respInterface: " + upmts.getStandardizedTests().get(i).getUserRespInterface()
+                        + "\t validatingInterface: " + upmts.getStandardizedTests().get(i).getUserPerformanceInterface());
+            }
+
             //viewer dimensions
             String viewerWidth = ((Element) viewerwidthNode.item(0)).getTextContent();
             String viewerHeight = ((Element) viewerheightNode.item(0)).getTextContent();
@@ -1175,7 +1160,6 @@ public class StudyManager extends HttpServlet {
         TaskDetails td = null;
 
        // System.out.println("--taskShortname is " + taskShortName);
-
         try {
             File sysFile_QuanttaskList = new File(getServletContext().getRealPath("quanttasks" + File.separator + "quanttasklist.txt"));
 
@@ -1198,9 +1182,8 @@ public class StudyManager extends HttpServlet {
 
             while ((line = br2.readLine()) != null) {
                // System.out.println("___"+line);
-                
+
                 //System.out.println(line.split(":::")[0]+"__"+taskShortName);
-                
                 if ((line.split(":::")[0].trim()).equalsIgnoreCase(taskShortName.trim())) {
                     usr_taskShortname = taskShortName.trim();
                     break;
@@ -1213,16 +1196,16 @@ public class StudyManager extends HttpServlet {
                 //we will read the file from the user's directory
                 taskFileName = getServletContext().getRealPath("users"
                         + File.separator + userid + File.separator + "quanttasks" + File.separator + usr_taskShortname + ".xml");
-                
-                System.out.println("the task is now &&  "+taskFileName);
+
+                System.out.println("the task is now &&  " + taskFileName);
             } else {
                 //we will read the file from the main quanttask directory.
                 System.out.println("user task shortname is empty");
                 taskFileName = getServletContext().getRealPath("quanttasks" + File.separator + sys_taskShortname + ".xml");
             }
 
-            System.out.println("@@ taskfilename "+ taskFileName);
-            
+            System.out.println("@@ taskfilename " + taskFileName);
+
             //read the quanttasks file and return the answer type for the current task.
             //read the quant-task-files.
             //String filename = getServletContext().getRealPath("quanttasks" + File.separator + "quanttasks.xml");
@@ -1430,11 +1413,11 @@ public class StudyManager extends HttpServlet {
                 EvaluationQuestion evalQn = new EvaluationQuestion(question, "", new ArrayList<String>(),
                         td.getAnswerType(), 0, td.getInputTypes(), td.getOutputType(),
                         "", "", td.getHasCorrectAnswer());
-                
+
                 System.out.println("Hello World");
                 upmts.preStudyEvalQuestions.add(evalQn);
             }
-                //System.out.println("&&& The number of pre-study tasks is "+ upmts.preStudyEvalQuestions.size());                
+            //System.out.println("&&& The number of pre-study tasks is "+ upmts.preStudyEvalQuestions.size());                
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1443,7 +1426,7 @@ public class StudyManager extends HttpServlet {
 
     public void preparePostStudyQuestions(HttpServletRequest request, StudyParameters upmts, String userid) {
         //prepare the quantitative questions here
-         try {
+        try {
             for (int i = 0; i < upmts.postStudyQuestionCodes.size(); i++) {
                 TaskDetails td = upmts.postStudyTaskDetails.get(i);
                 String question = upmts.postStudyQuestions.get(i);
@@ -1452,7 +1435,7 @@ public class StudyManager extends HttpServlet {
                         "", "", td.getHasCorrectAnswer());
                 upmts.postStudyEvalQuestions.add(evalQn);
             }
-            System.out.println("&&& The number of post-study tasks is "+ upmts.postStudyEvalQuestions.size());                
+            System.out.println("&&& The number of post-study tasks is " + upmts.postStudyEvalQuestions.size());
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1872,6 +1855,10 @@ public class StudyManager extends HttpServlet {
             onGoingStudyCounts.put(upmts.studyname, ongoing_studyCounts);
 
             writeQualitativeAnswersToFile(upmts, userid);
+            
+            writeStandardizedTestResponsesToFile(upmts, userid);
+            
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1979,7 +1966,7 @@ public class StudyManager extends HttpServlet {
                                 TaskDetails td = upmts.taskDetails.get(j);
                                 //qualitative task
                                 if (!td.hasCorrectAnswer()) {
-                                    qualTaskCnt++;                                  
+                                    qualTaskCnt++;
 
                                     String qcode = upmts.questionCodes.get(j) + "_" + upmts.currentCondition;
 
@@ -2077,7 +2064,7 @@ public class StudyManager extends HttpServlet {
     }
 
     //to be done.
-    public void writePreStudyAnswersToFile (StudyParameters upmts, String userid) {
+    public void writePreStudyAnswersToFile(StudyParameters upmts, String userid) {
         //write the pre-qualitative questions and the postqualitative questions to file
         System.out.println("*** About to write Qualitative answers to file ");
 
@@ -2178,7 +2165,7 @@ public class StudyManager extends HttpServlet {
                                 TaskDetails td = upmts.taskDetails.get(j);
                                 //qualitative task
                                 if (!td.hasCorrectAnswer()) {
-                                    qualTaskCnt++;                                  
+                                    qualTaskCnt++;
 
                                     String qcode = upmts.questionCodes.get(j) + "_" + upmts.currentCondition;
 
@@ -2224,12 +2211,55 @@ public class StudyManager extends HttpServlet {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }   
-  
+    }
 
+    public void writeStandardizedTestResponsesToFile(StudyParameters upmts, String userid) {
+        //we will be creating a file for each of the standardized tests (i.e. standardizedTest1, 2, etc.
 
-    
-    
+        try {
+            for (int i = 0; i < upmts.getStandardizedTests().size(); i++) {
+
+                String filename = "standardizedTest" + (i+1) + ".txt";
+
+                String studydataurl = "users" + File.separator + userid + File.separator
+                        + "studies" + File.separator + upmts.studyname + File.separator + "data";
+
+                File file = new File(getServletContext().getRealPath(studydataurl + File.separator + filename));
+
+                boolean newFile = false;
+
+                if (!file.exists()) {
+                    file.createNewFile();
+                    newFile = true;
+                }
+                FileWriter fw = new FileWriter(file, true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter pw = new PrintWriter(bw);
+
+                //first write the header
+          
+                if (newFile) {
+                    //print the header
+                    pw.println("User Response ::: User Performance");
+                    pw.println();
+                }
+                
+                String userResp = upmts.getStandardizedTests().get(i).getUserResponse();
+                String userPerf = upmts.getStandardizedTests().get(i).getUserPerformance();
+                
+                pw.println(userResp + " ::: " + userPerf);
+                //pw.println();
+                
+                pw.close();
+                fw.close();
+                
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void writeBetweenStudyAnwsersToFile(StudyParameters upmts, String userid) {
         //write a between study results to file
         try {

@@ -24,27 +24,27 @@ public class StudyParameters {
     public ArrayList<String> questionCodes = new ArrayList<String>();
     public ArrayList<Integer> questionMaxTimes = new ArrayList<Integer>();
     public ArrayList<TaskDetails> taskDetails = new ArrayList<TaskDetails>();
-    
+
     //for pre-study
     public ArrayList<String> preStudyQuestionCodes = new ArrayList<String>();
     public ArrayList<String> preStudyQuestions = new ArrayList<String>();
     public ArrayList<TaskDetails> preStudyTaskDetails = new ArrayList<TaskDetails>();
-    
+
     //for post study
     public ArrayList<String> postStudyQuestionCodes = new ArrayList<String>();
-    public ArrayList<String> postStudyQuestions = new ArrayList<String>();  
+    public ArrayList<String> postStudyQuestions = new ArrayList<String>();
     public ArrayList<TaskDetails> postStudyTaskDetails = new ArrayList<TaskDetails>();
-    
+
     // list of introduction files
     private ArrayList<IntroductionFile> introFiles = new ArrayList<IntroductionFile>();
     //list of standized tests
     private ArrayList<StandardizedTest> standardizedTests = new ArrayList<StandardizedTest>();
-      
+
     public ArrayList<String> viewerConditionUrls = new ArrayList<String>();
     public ArrayList<String> viewerConditionShortnames = new ArrayList<String>();
     public ArrayList<String> tutorialViewerShortnames = new ArrayList<String>();
     public ArrayList<String> tutorialViewerUrls = new ArrayList<String>();
-        
+
     public ArrayList<String> qualQuestionsAfter = new ArrayList<String>();
     public ArrayList<String> qualQuestionCodesAfter = new ArrayList<String>();
     public ArrayList<String> qualQuestionsBefore = new ArrayList<String>();
@@ -53,7 +53,7 @@ public class StudyParameters {
     public String firstConditionShortName = "";
     public String firstConditionUrl = "";
 
-   //
+    //
     public String studyname;
     public String dataseturl;
     public String nodePositions;
@@ -68,14 +68,10 @@ public class StudyParameters {
 
     public ArrayList<EvaluationQuestion> evalQuestions = new ArrayList<EvaluationQuestion>();
     public ArrayList<EvaluationQuestion> tutorialQuestions = new ArrayList<EvaluationQuestion>();
-  
+
     public ArrayList<EvaluationQuestion> preStudyEvalQuestions = new ArrayList<EvaluationQuestion>();
     public ArrayList<EvaluationQuestion> postStudyEvalQuestions = new ArrayList<EvaluationQuestion>();
-    
-    
-    
-    
-    
+
     public ArrayList<QualitativeQuestion> qualEvalQuestionAfter = new ArrayList<QualitativeQuestion>();
     public ArrayList<QualitativeQuestion> qualEvalQuestionBefore = new ArrayList<QualitativeQuestion>();
 
@@ -115,10 +111,8 @@ public class StudyParameters {
     public int tutorialViewerConditionCounter = 0;
     public boolean tutorialViewerchanged = false;
     public int sizeOfATrainingCondition = 0;
-    
+
     public int sizeOfADatasetCondition = 0;
-    
-    
 
     private ArrayList<String> datasetConditionNames = new ArrayList<String>();
     private ArrayList<String> datasetFormats = new ArrayList<String>();
@@ -143,14 +137,13 @@ public class StudyParameters {
         return datasetTypes;
     }
 
-   /* public void setDatasetFormats(ArrayList<String> df) {
-        datasetFormats = df;
-    }
+    /* public void setDatasetFormats(ArrayList<String> df) {
+     datasetFormats = df;
+     }
 
-    public ArrayList<String> getDatasetFormats() {
-        return datasetFormats;
-    }*/
-
+     public ArrayList<String> getDatasetFormats() {
+     return datasetFormats;
+     }*/
     public void setDatasetConditionUrls(ArrayList<String> dcu) {
         datasetConditionUrls = dcu;
     }
@@ -170,73 +163,115 @@ public class StudyParameters {
     public void incrementQuestionsWithTraining() {
         questionsWithTraining++;
     }
-    
+
     /**
      * get the introduction Files
-     * @return 
+     *
+     * @return
      */
-    public ArrayList<IntroductionFile> getIntroFiles(){
-        
+    public ArrayList<IntroductionFile> getIntroFiles() {
+
         return introFiles;
     }
+
     /**
      * set the introduction files arraylist
+     *
      * @param infiles the arrayList of introduction files
      */
-    public void setIntroFiles(ArrayList<IntroductionFile> infiles){
+    public void setIntroFiles(ArrayList<IntroductionFile> infiles) {
         introFiles = infiles;
     }
-    
-    public void addAnIntroFile(IntroductionFile infile){
+
+    public void addAnIntroFile(IntroductionFile infile) {
         introFiles.add(infile);
     }
-    
-    public void resetIntroFileList(){
+
+    public void resetIntroFileList() {
         introFiles = new ArrayList<IntroductionFile>();
     }
-    
-    public void setStandardizedTests(ArrayList<StandardizedTest> stndTests){
+
+    public void setStandardizedTests(ArrayList<StandardizedTest> stndTests) {
         standardizedTests = stndTests;
     }
-    
-    public void addAStandardizedTest(StandardizedTest sttest){
+
+    public void addAStandardizedTest(StandardizedTest sttest) {
         standardizedTests.add(sttest);
     }
 
-    public void resetStandardizedTests(){
+    public void resetStandardizedTests() {
         standardizedTests = new ArrayList<StandardizedTest>();
     }
-    
-    public ArrayList<StandardizedTest> getStandardizedTests(){
+
+    public ArrayList<StandardizedTest> getStandardizedTests() {
         return standardizedTests;
     }
-    
+
     /**
-     * Find the the introduction file that corresponds to the first viewer condition 
-     * @return 
+     * Find the the introduction file that corresponds to the first viewer
+     * condition
+     *
+     * @return
      */
-    public String getIntroductionFileURL(){        
+    public String getIntroductionFileURL() {
         String url = "";
         String allURL = "";
-        
-        
-        for(int i=0; i<introFiles.size(); i++){            
-            String cond = introFiles.get(i).getFileCondition();            
-            if(cond.trim().equalsIgnoreCase("all")){
+
+        for (int i = 0; i < introFiles.size(); i++) {
+            String cond = introFiles.get(i).getFileCondition();
+            if (cond.trim().equalsIgnoreCase("all")) {
                 //i.e. if this intro is for all the conditions
-                allURL = introFiles.get(i).getFileURL();       
-            }
-            else if(cond.trim().equalsIgnoreCase(firstConditionShortName.trim())){
-                url = introFiles.get(i).getFileURL();                
+                allURL = introFiles.get(i).getFileURL();
+            } else if (cond.trim().equalsIgnoreCase(firstConditionShortName.trim())) {
+                url = introFiles.get(i).getFileURL();
                 break;
             }
-        }       
-        
-        if(!url.isEmpty()){
-            return url;
         }
-        else{
-           return allURL;
+
+        if (!url.isEmpty()) {
+            return url;
+        } else {
+            return allURL;
         }
     }
+
+    public String getStandardTestDetails() {
+        String standardTestDetails = "";
+
+        for (int i = 0; i < standardizedTests.size(); i++) {
+            //concatenate the url and the names of the other interfaces.
+
+            if (i == 0) {
+                StandardizedTest stdt = standardizedTests.get(i);
+                standardTestDetails += stdt.getUrl()
+                        + ":::" + stdt.getUserRespInterface()
+                        + ":::" + stdt.getUserPerformanceInterface();
+            } else {
+
+                StandardizedTest stdt = standardizedTests.get(i);
+                standardTestDetails += "::::" + stdt.getUrl()
+                        + ":::" + stdt.getUserRespInterface()
+                        + ":::" + stdt.getUserPerformanceInterface();
+
+            }
+        }
+
+        return standardTestDetails;
+    }
+
+    public void saveStandardTestResponses(String[] responses, String[] validations) {
+
+        for (int i = 0; i < standardizedTests.size(); i++) {
+            //set the user response and the validation of the user's response
+            standardizedTests.get(i).setUserResponse(responses[i]);
+            
+            if(validations[i].trim().isEmpty()){
+                validations[i] = "not-validated";
+            }
+            
+            standardizedTests.get(i).setUserPerformance(validations[i]);
+        }
+
+    }
+
 }
