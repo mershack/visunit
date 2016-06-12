@@ -121,7 +121,11 @@ public class UserAccount extends HttpServlet {
                     username = session.getAttribute("username").toString();
                 }
 
+                if(!username.isEmpty())
                 out.print(username);
+                else{
+                   response.sendRedirect("login.html");
+                }
             } else if (command.equalsIgnoreCase("login")) {
 
                 //check the login detils

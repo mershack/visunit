@@ -121,7 +121,10 @@ public class ViewerManager extends HttpServlet {
                 int count = 0;
                 File[] files = f.listFiles();
 
-                count = files.length;
+                if(files != null){
+                    count = files.length;
+                }
+                
 
                // String viewerDirNames = "";
                 ArrayList<String> viewerDirNameList = new ArrayList<String>();

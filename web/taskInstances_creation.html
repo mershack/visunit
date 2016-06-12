@@ -61,8 +61,11 @@ and open the template in the editor.
         <script type="text/javascript">
 
             window.onload = function() {
-                //we will try and get the respective name for this current study
-                var div = document.getElementById("qnDiv");
+                setUserId(preparePage);
+            };
+            
+            function preparePage(){
+                 var div = document.getElementById("qnDiv");
                // loadTasks(div, "Task Type");
                 
                 loadTasks(div, "label", "1", "taskType");
@@ -72,8 +75,8 @@ and open the template in the editor.
                 getExistingDirectoryNamesAndHTMLFilenames();
 
                 getNewTempName();
-
-            };
+            }
+            
 
             //function to get the new temp name
             function getNewTempName() {

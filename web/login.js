@@ -11,8 +11,7 @@
 
                 event = event || window.event; // IE-ism
 
-                var keyCode = event.keyCode;
-               
+                var keyCode = event.keyCode;               
                 if (keyCode === 13) { //click the next                     
                     checkLoginForm();
                 }

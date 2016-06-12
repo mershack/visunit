@@ -106,8 +106,10 @@ function setUserId(func) {
             //alert(document.getElementById("userid").value);
           document.getElementById("userid").value = xmlHttpRequest.responseText;
          // alert(document.getElementById("userid").value);
+         if(func){
+            func(); 
+         }
          
-         func();
         }
     };
     xmlHttpRequest.open("GET", url, true);

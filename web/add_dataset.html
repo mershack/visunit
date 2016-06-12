@@ -46,7 +46,7 @@ and open the template in the editor.
         }
         .errorNotices{
             color: red !important;
-            
+
             /*background-color: yellow;*/
             display: none;
         }
@@ -54,6 +54,11 @@ and open the template in the editor.
     </style>
 
     <script type="text/javascript">
+
+        window.onload = function() {
+            setUserId();
+        };
+
         function uploadDatasets() {
             var thefiles = document.getElementById("thefiles").files;
             var userid = document.getElementById("userid").value;
@@ -65,10 +70,10 @@ and open the template in the editor.
             //check if no file has been added
             if (thefiles.length === 0) {
                 //show the errorNotices
-                
+
                 document.getElementById("filesError").style.display = "block";
-                
-                
+
+
             }
             else {
                 //let's upload the datasets
@@ -131,11 +136,11 @@ and open the template in the editor.
 
     </div>
     <input type="hidden" id="userid" value="user2" />
-    
+
     <!--<input type="hidden" id="userid" value="user2" />
     <input type="hidden" id="userid" value="user4" />
     <input type="hidden" id="userid" value="user5" />
     <input type="hidden" id="userid" value="user1" />  -->
-    
+
 </body>
 </html>

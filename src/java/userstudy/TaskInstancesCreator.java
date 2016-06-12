@@ -55,11 +55,9 @@ public class TaskInstancesCreator extends HttpServlet {
         HttpSession session = request.getSession();
         try {
             String command = request.getParameter("command");
-            
-            System.out.println("command is:  "+command);
-            
-            
-            
+
+            System.out.println("command is:  " + command);
+
             if (command.equalsIgnoreCase("getTempName")) {
                 String tempDirName = getTempDirName();
                 String tempDirPath = getServletContext().getRealPath("temp-files" + File.separator + tempDirName);
@@ -129,29 +127,34 @@ public class TaskInstancesCreator extends HttpServlet {
                 File usertaskListFile = new File(getServletContext().getRealPath(
                         "users" + File.separator + userid + File.separator
                         + "quanttasks" + File.separator + "quanttasklist.txt"));
-                BufferedReader br2 = new BufferedReader(new FileReader(usertaskListFile));
 
                 AllTaskLines = new ArrayList<String>();
                 taskGroups = new ArrayList<String>();
-                //read the header again for this file too.
-                br2.readLine();
-                while ((line = br2.readLine()) != null) {
 
-                    String group = userid + "_" + line.split(":::")[2].trim();
+                if (usertaskListFile.exists()) {
+                    BufferedReader br2 = new BufferedReader(new FileReader(usertaskListFile));
 
-                    boolean groupExists = false;
-                    //check if the group already exists in the array
-                    for (int i = 0; i < taskGroups.size(); i++) {
-                        if (group.trim().equalsIgnoreCase(taskGroups.get(i))) {
-                            groupExists = true;
-                            break;
+                    //read the header again for this file too.
+                    br2.readLine();
+                    while ((line = br2.readLine()) != null) {
+
+                        String group = userid + "_" + line.split(":::")[2].trim();
+
+                        boolean groupExists = false;
+                        //check if the group already exists in the array
+                        for (int i = 0; i < taskGroups.size(); i++) {
+                            if (group.trim().equalsIgnoreCase(taskGroups.get(i))) {
+                                groupExists = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if (!groupExists) {
-                        taskGroups.add(group.trim());
+                        if (!groupExists) {
+                            taskGroups.add(group.trim());
+                        }
+                        AllTaskLines.add(line);
                     }
-                    AllTaskLines.add(line);
+                      br2.close();
                 }
 
                 String usrTaskQnLines[] = new String[taskGroups.size()];
@@ -201,26 +204,25 @@ public class TaskInstancesCreator extends HttpServlet {
                 }
 
                 br1.close();
-                br2.close();
+              
                 out.write(allTasksString);
             } else if (command.equalsIgnoreCase("submitParametersToBegin")) {
-                
-                
-                   String viewerDir = request.getParameter("viewerDirectory").toString();
-                   String viewerURL = request.getParameter("viewerURL").toString();
-                   String userid = request.getParameter("userid").toString();
-                   String task = request.getParameter("task").toString();
-                   String dataset = request.getParameter("dataset").toString();
-                  String datasetFormat = request.getParameter("datasetFormat").toString();
-                 
-                   //save these parameters to file
-                    session.setAttribute("viewerDirectory", viewerDir);
-                    session.setAttribute("viewerURL", viewerDir+"/"+viewerURL);
-                    session.setAttribute("taskQn", task);
-                    session.setAttribute("dataset", dataset);
-                    session.setAttribute("datasetFormat", datasetFormat);
-                    session.setAttribute("userid", userid);
-            
+
+                String viewerDir = request.getParameter("viewerDirectory").toString();
+                String viewerURL = request.getParameter("viewerURL").toString();
+                String userid = request.getParameter("userid").toString();
+                String task = request.getParameter("task").toString();
+                String dataset = request.getParameter("dataset").toString();
+                String datasetFormat = request.getParameter("datasetFormat").toString();
+
+                //save these parameters to file
+                session.setAttribute("viewerDirectory", viewerDir);
+                session.setAttribute("viewerURL", viewerDir + "/" + viewerURL);
+                session.setAttribute("taskQn", task);
+                session.setAttribute("dataset", dataset);
+                session.setAttribute("datasetFormat", datasetFormat);
+                session.setAttribute("userid", userid);
+
             } else if (command.equalsIgnoreCase("getCurrentInstanceCreationTempName")) {
                 String tempname = session.getAttribute("tempname").toString();
 
@@ -229,34 +231,24 @@ public class TaskInstancesCreator extends HttpServlet {
                 RequestDispatcher view = request.getRequestDispatcher("visualizationForTaskInstances.html");
                 view.forward(request, response);
             } else if (command.equalsIgnoreCase("getViewerUrl")) {
-                
-                
+
                 String viewerDir = session.getAttribute("viewerDirectory").toString();
                 String viewerURL = session.getAttribute("viewerURL").toString();
-                
-                String userid = session.getAttribute("userid").toString();
-                
-                
-            
-                
-                
-                String viewerUrl = "users/" + userid + "/viewers/" + viewerURL;
-                
-                System.out.println("The viewerUrl IS  "+viewerURL);
 
-               
-                
-                
-                
-                
+                String userid = session.getAttribute("userid").toString();
+
+                String viewerUrl = "users/" + userid + "/viewers/" + viewerURL;
+
+                System.out.println("The viewerUrl IS  " + viewerURL);
+
                 out.write(viewerUrl);
             } else if (command.equalsIgnoreCase("getDataset")) {
                 String dataset = session.getAttribute("dataset").toString();
                 String datasetFormat = session.getAttribute("datasetFormat").toString();
                 String userid = session.getAttribute("userid").toString();
-                 
-                String datasetUrl = getServerUrl(request) + ("/users/" +userid 
-                        +"/datasets/" + dataset + "/" + dataset+datasetFormat);
+
+                String datasetUrl = getServerUrl(request) + ("/users/" + userid
+                        + "/datasets/" + dataset + "/" + dataset + datasetFormat);
                 out.write(datasetUrl);
             } else if (command.equalsIgnoreCase("getNodePositions")) {
                 String dataset = session.getAttribute("dataset").toString();
@@ -512,11 +504,8 @@ public class TaskInstancesCreator extends HttpServlet {
                     "users" + File.separator + userid + File.separator
                     + "taskInstances" + File.separator + dataset
                     + File.separator + taskname + ".xml"));
-            
-            
-            //System.out.println("!!!! "+taskInstancesDBFile);
-            
 
+            //System.out.println("!!!! "+taskInstancesDBFile);
             taskInstancesDBFile.createNewFile();
 
             //do the actual writings of the results to the file
@@ -549,14 +538,12 @@ public class TaskInstancesCreator extends HttpServlet {
                     }
                     if (taskOptions.length > i) {
                         pw.println("\t\t<taskoptions>" + taskOptions[i] + "</taskoptions>");
-                    }
-                    else{
+                    } else {
                         pw.println("\t\t<taskoptions></taskoptions>");
                     }
                     if (answers.length > i) {
                         pw.println("\t\t<answer>" + answers[i] + "</answer>");
-                    }
-                    else{
+                    } else {
                         pw.println("\t\t<answer></answer>");
                     }
                     pw.println("\t</question>");
@@ -581,7 +568,7 @@ public class TaskInstancesCreator extends HttpServlet {
                     pw.println("\t\t<input></input>");
 
                     pw.println("\t\t<taskoptions>" + taskOptions[i] + "</taskoptions>");
-               
+
                     pw.println("\t\t<answer></answer>");
                     pw.println("\t</question>");
                 }

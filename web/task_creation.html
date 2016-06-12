@@ -70,7 +70,12 @@ and open the template in the editor.
             }
         </style>
         <script type="text/javascript">
-
+            window.onload = function() {
+                //try and load all the studies of the user. including the date it was created.
+                setUserId();
+                
+               
+            };
 
         </script>
     </head>

@@ -176,7 +176,6 @@ public class DatasetManager extends HttpServlet {
         }
 
         //System.out.println("___" + datasetNamesAndExtensions);
-
         return datasetNamesAndExtensions;
 
     }
@@ -189,7 +188,9 @@ public class DatasetManager extends HttpServlet {
         int count = 0;
         File[] files = f.listFiles();
 
-        count = files.length;
+        if (files != null) {
+            count = files.length;
+        }
 
         String datasetNamesAndExtensions = "";
 
@@ -214,7 +215,7 @@ public class DatasetManager extends HttpServlet {
 
             String dsFileExts = "";
             File[] dsFiles = dsF.listFiles();
-            
+
             cnt = 0;
             for (int j = 0; j < dsFiles.length; j++) {
                 String filename = dsFiles[j].getName();

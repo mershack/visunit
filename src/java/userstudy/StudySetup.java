@@ -782,6 +782,9 @@ public class StudySetup extends HttpServlet {
         try {
             File qlFile = new File(getServletContext().getRealPath("quanttasks" + File.separator + "quanttasklist.txt"));
 
+            
+            
+            
             BufferedReader br = new BufferedReader(new FileReader(qlFile));
             String line = "";
             String sn = "";
