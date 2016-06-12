@@ -743,14 +743,17 @@ function displayNodes(inputsString, inputMutatorMethodsArr) {
                     paramExists = true;
                 }
             }
+          //  alert("--" +theInputs);
 
             if (paramExists === false) {
+                //alert("here");
                 //pass this input to the visualization using its mutator methods
                 var iframeContentWindow = document.getElementById("viewerFrame").contentWindow;
 
                 //if the method exists do it
                 if (typeof iframeContentWindow.window[inputMutatorMethodsArr[i]] === "function") {
 
+                   // alert("here3");
                     //reset the previous inputs to empty strings
                     iframeContentWindow.window[inputMutatorMethodsArr[i]]("");
                     //now pass the actual input.
@@ -765,7 +768,7 @@ function displayNodes(inputsString, inputMutatorMethodsArr) {
 
         //now replace the params with the inputs
         for (var i = 0; i < params.length; i++) {
-            question = question.replace("$" + params[i], theInputs[params[i] - 1]);
+            question = question.replace("$" + params[i], "<strong>"+ theInputs[params[i] - 1] +"</strong>");
         }
 
         if (params.length > 0) {
@@ -1241,7 +1244,7 @@ function saveTheStandardizedTests() {
         {
             if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
             {
-                alert("saved the standardized tests");
+               // alert("saved the standardized tests");
             }
         };
         xmlHttpRequest.open("GET", url, true);
@@ -1486,7 +1489,6 @@ function afterQuestionChangedNotification() {
  */
 function getAfterIntroductionActivities() {
     //get the standardized tests
-
     if (standardTestsDetails.length > 0) {
         // alert("over");
         standardizedTestCounter = 0;
@@ -1494,6 +1496,8 @@ function getAfterIntroductionActivities() {
     }
     else {
         //we will move on to the pre-study survey questions
+       // showTheStudy();
+       getPreQualitativeQuestions();
     }
 }
 /**
@@ -1517,8 +1521,9 @@ function getStandardizedTests() {
 
                 var split = xmlHttpRequest.responseText.split("::::");
 
-
+alert(split);
                 for (var i = 0; i < split.length; i++) {
+                    split[i];
 
                     var split2 = split[i].split(":::");
                     var stdTest = {"url": split2[0], "userResponseInterface": split2[1],
@@ -1623,7 +1628,8 @@ function  showStandardizedTests() {
             //continue to the study if this is the last standardized test.
             // alert("continue to the study");
 
-            showTheStudy();
+           // showTheStudy();
+           getPreQualitativeQuestions();
         }
 
     }

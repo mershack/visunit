@@ -56,13 +56,11 @@ public class StudySetup extends HttpServlet {
         try {
 
             HttpSession session = request.getSession();
-            
-            
-            if(session.getAttribute("username") !=null){
+
+            if (session.getAttribute("username") != null) {
                 String username = session.getAttribute("username").toString();
-                System.out.println("username is: "+ username);
+                System.out.println("username is: " + username);
             }
-            
 
             //printTheURL(request);
             // String nameofstudy = session.getAttribute("studyname").toString();
@@ -76,6 +74,8 @@ public class StudySetup extends HttpServlet {
 
             String command = request.getParameter("command");
             String userid = request.getParameter("userid");
+            
+            System.out.println("user id is :: "+ userid);
 
             System.out.println("command is :: " + command);
 
@@ -106,14 +106,16 @@ public class StudySetup extends HttpServlet {
 
                 String allNames = "";
 
-                for (int i = 0; i < files.length; i++) {
+                if (files != null) {
+                    for (int i = 0; i < files.length; i++) {
 
-                    if (i == 0) {
-                        allNames = files[i].getName();
-                    } else {
-                        allNames += "::" + files[i].getName();
+                        if (i == 0) {
+                            allNames = files[i].getName();
+                        } else {
+                            allNames += "::" + files[i].getName();
+                        }
+
                     }
-
                 }
 
                 out.print(allNames);
@@ -782,9 +784,6 @@ public class StudySetup extends HttpServlet {
         try {
             File qlFile = new File(getServletContext().getRealPath("quanttasks" + File.separator + "quanttasklist.txt"));
 
-            
-            
-            
             BufferedReader br = new BufferedReader(new FileReader(qlFile));
             String line = "";
             String sn = "";

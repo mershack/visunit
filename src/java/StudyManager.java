@@ -499,7 +499,7 @@ public class StudyManager extends HttpServlet {
                     String correctAns = upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).getCorrectAns(); //NB: check answer is only for tutorials
                     double averageCorrect = upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).getIsGivenAnsCorrect();
 
-                   // int numOfErrors = upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).getNumberOfErrors();
+                    // int numOfErrors = upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).getNumberOfErrors();
                     // int numberMissed = upmts.tutorialQuestions.get(upmts.tutorialCounter - 1).getNumberMissed();
                     //  System.out.println("here");
                   /*  if (numOfErrors > 0 && numberMissed > 0) {
@@ -892,15 +892,22 @@ public class StudyManager extends HttpServlet {
                     Element eElement = (Element) nNode;
                     //get the url of the file
                     String url = eElement.getElementsByTagName("standardTestURL").item(0).getTextContent();
-                    url = "users/" + userid + "/viewers/" + url;
-                    //get the condition this introduction file is for.
-                    String respInterface = eElement.getElementsByTagName("standardTestUserResponse")
-                            .item(0).getTextContent();
+System.out.println("*url is "+url);
+                    if (!url.trim().isEmpty()) {
+                        url = "users/" + userid + "/viewers/" + url;
+                        
+                        System.out.println("**url is "+url);
+                        
+                        //get the condition this introduction file is for.
+                        String respInterface = eElement.getElementsByTagName("standardTestUserResponse")
+                                .item(0).getTextContent();
 
-                    String perfInterface = eElement.getElementsByTagName("standardTestUserPerformance")
-                            .item(0).getTextContent();
+                        String perfInterface = eElement.getElementsByTagName("standardTestUserPerformance")
+                                .item(0).getTextContent();
 
-                    upmts.addAStandardizedTest(new StandardizedTest(url, respInterface, perfInterface));
+                        upmts.addAStandardizedTest(new StandardizedTest(url, respInterface, perfInterface));
+                    }
+
                 }
             }
 
@@ -1159,7 +1166,7 @@ public class StudyManager extends HttpServlet {
 
         TaskDetails td = null;
 
-       // System.out.println("--taskShortname is " + taskShortName);
+        // System.out.println("--taskShortname is " + taskShortName);
         try {
             File sysFile_QuanttaskList = new File(getServletContext().getRealPath("quanttasks" + File.separator + "quanttasklist.txt"));
 
@@ -1855,10 +1862,9 @@ public class StudyManager extends HttpServlet {
             onGoingStudyCounts.put(upmts.studyname, ongoing_studyCounts);
 
             writeQualitativeAnswersToFile(upmts, userid);
-            
+
             writeStandardizedTestResponsesToFile(upmts, userid);
-            
-            
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -2219,7 +2225,7 @@ public class StudyManager extends HttpServlet {
         try {
             for (int i = 0; i < upmts.getStandardizedTests().size(); i++) {
 
-                String filename = "standardizedTest" + (i+1) + ".txt";
+                String filename = "standardizedTest" + (i + 1) + ".txt";
 
                 String studydataurl = "users" + File.separator + userid + File.separator
                         + "studies" + File.separator + upmts.studyname + File.separator + "data";
@@ -2237,22 +2243,21 @@ public class StudyManager extends HttpServlet {
                 PrintWriter pw = new PrintWriter(bw);
 
                 //first write the header
-          
                 if (newFile) {
                     //print the header
                     pw.println("User Response ::: User Performance");
                     pw.println();
                 }
-                
+
                 String userResp = upmts.getStandardizedTests().get(i).getUserResponse();
                 String userPerf = upmts.getStandardizedTests().get(i).getUserPerformance();
-                
+
                 pw.println(userResp + " ::: " + userPerf);
                 //pw.println();
-                
+
                 pw.close();
                 fw.close();
-                
+
             }
 
         } catch (Exception ex) {

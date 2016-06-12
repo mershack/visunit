@@ -745,8 +745,9 @@ function startStudy() {
     gettingTurkId = false;
     document.getElementById("afterTrialControls").style.display = "none";
     document.getElementById("studyControls").style.display = "block";
+    
     getQuestion();
-   // getNodes(); //get the nodes to be highlighted.
+    getNodes(); //get the nodes to be highlighted.
     startQuestionDurationCountDown();
 }
 

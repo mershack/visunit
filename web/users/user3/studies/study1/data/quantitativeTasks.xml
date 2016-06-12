@@ -38,7 +38,7 @@
 		<time>30</time>
 	</task>
 	<introFile>
-		<introURL>Intro</introURL>
+		<introURL>RadialViewer/abc.html</introURL>
 		<introCond>all</introCond>
 	</introFile>
 	<standardTest>

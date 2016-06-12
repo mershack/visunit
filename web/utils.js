@@ -95,6 +95,7 @@ function setUserId(func) {
     var command = "getUserId";
 
 
+
     var url = "UserAccount?command=" + command;
     var xmlHttpRequest = getXMLHttpRequest();
     xmlHttpRequest.onreadystatechange = function()
@@ -104,12 +105,21 @@ function setUserId(func) {
             //alert(xmlHttpRequest.responseText);
             //create the task option box.      
             //alert(document.getElementById("userid").value);
-          document.getElementById("userid").value = xmlHttpRequest.responseText;
-         // alert(document.getElementById("userid").value);
-         if(func){
-            func(); 
-         }
-         
+
+            if (xmlHttpRequest.responseText.trim() !== "") {
+                document.getElementById("userid").value = xmlHttpRequest.responseText;
+                // alert(document.getElementById("userid").value);
+                if (func) {
+                    func();
+                }
+            }
+            else{
+                window.open("login.html");
+            }
+
+
+
+
         }
     };
     xmlHttpRequest.open("GET", url, true);

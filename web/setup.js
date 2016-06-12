@@ -332,7 +332,8 @@ function submitFormDetails() {
         
         var st_dir = document.getElementById("standardTestDirName" + i).value;
         
-        st_url = st_dir + "/" + st_url;
+        if(st_dir.trim()!== "" && st_url.trim()!=="")
+                st_url = st_dir + "/" + st_url;
         
         
         var respInterface = document.getElementById("standardTestUserResponseInterface" + i).value;
@@ -678,11 +679,15 @@ function createUpdateViewerDir() {
 }
 
 function createUpdateTask() {
-    window.open("task_creation.html", "_blank")
+    window.open("task_creation.html", "_blank");
 }
 
 function uploadUpdateDataset() {
     window.open("add_dataset.html", "_blank");
+}
+
+function createTaskInstances(){
+    window.open("taskInstances_creation.html", "_blank");
 }
 
 

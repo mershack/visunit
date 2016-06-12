@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<task_details>
+	<taskname>rateIntuitiveness</taskname>
+	<accuracyCheckingInterface></accuracyCheckingInterface>
+	<outputtype></outputtype>
+	<outputTypeDescription></outputTypeDescription>
+	<answertype>options-fixed:::5::4::3::2::1</answertype>
+	<taskquestion>How will you rate the Intuitiveness of the visualization?</taskquestion>
+	<taskDescription>User will rate the intuitiveness of the visualization</taskDescription>
+	<inputsize>1</inputsize>
+<hasCorrectAnswer>no</hasCorrectAnswer>
+	<input>
+		<inputtype></inputtype>
+		<inputdescription></inputdescription>
+		<inputmedium></inputmedium>
+	</input>
+</task_details>

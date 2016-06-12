@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+	<study_specification>
+	<datasetCondition>
+		<dataset>miserables</dataset>
+		<datasetType>System_Datasets</datasetType>
+		<datasetFormat>.json</datasetFormat>
+	</datasetCondition>		
+	<datasetFormat>.json</datasetFormat>
+	<studyname>study1</studyname>
+	<experimenttype_vis>Between</experimenttype_vis>
+	<experimenttype_ds>Between</experimenttype_ds>
+	<trainingsize>2</trainingsize>
+	<condition>
+		<conditionurl>viewer1/nodeLink_LongTrainnig6_G5.html</conditionurl>
+		<conditionshortname>nl</conditionshortname>
+	</condition>
+	<condition>
+		<conditionurl>viewer2/matrix__Long_intro_IdenticalQn4.html</conditionurl>
+		<conditionshortname>mat</conditionshortname>
+	</condition>
+	<condition>
+		<conditionurl>viewer1/nodeLink_LongTrainnig6_G5.html</conditionurl>
+		<conditionshortname>nl</conditionshortname>
+	</condition>
+	<condition>
+		<conditionurl>viewer2/matrix__Long_intro_IdenticalQn4.html</conditionurl>
+		<conditionshortname>mat</conditionshortname>
+	</condition>
+	<viewerwidth>860</viewerwidth>
+	<viewerheight>800</viewerheight>
+	<introFile>
+		<introURL>viewer1/intro_graph_interpLong.html</introURL>
+		<introCond>all</introCond>
+	</introFile>
+		<standardTest>
+		<standardTestURL></standardTestURL>
+		<standardTestUserResponse></standardTestUserResponse>
+		<standardTestUserPerformance></standardTestUserPerformance>
+	</standardTest>
+	
+	<task>
+		<name>shortestPathBetweenThree</name>
+		<question>How long is the shortest path between the highlighted nodes?</question>
+		<size>3</size>
+		<time>20</time>
+	</task>
+</study_specification>

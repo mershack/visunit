@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<task_details>
+	<taskname>howdeepIsANode</taskname>
+	<accuracyCheckingInterface></accuracyCheckingInterface>
+	<outputtype></outputtype>
+	<outputTypeDescription></outputTypeDescription>
+	<answertype>Number</answertype>
+	<taskquestion>How many levels deep is the highlighted node?</taskquestion>
+	<taskDescription>The user will determine how deep a highlighted node is </taskDescription>
+	<inputsize>1</inputsize>
+<hasCorrectAnswer>yes</hasCorrectAnswer>
+	<input>
+		<inputtype>node</inputtype>
+		<inputdescription>The node to be highlighted</inputdescription>
+		<inputmedium>by-typing</inputmedium>
+	</input>
+</task_details>

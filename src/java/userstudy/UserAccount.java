@@ -122,9 +122,9 @@ public class UserAccount extends HttpServlet {
                 }
 
                 if(!username.isEmpty())
-                out.print(username);
+                    out.print(username);
                 else{
-                   response.sendRedirect("login.html");
+                   out.print("");
                 }
             } else if (command.equalsIgnoreCase("login")) {
 
@@ -164,6 +164,9 @@ public class UserAccount extends HttpServlet {
                     password = password.trim();
                     userNameInFile = userNameInFile.trim();
                     passwordInFile = passwordInFile.trim();
+                    
+                    System.out.println("usernamein file: "+userNameInFile);
+                    System.out.println("passwordinfile: "+ passwordInFile);
 
                     if (username.equalsIgnoreCase(userNameInFile)
                             && password.equalsIgnoreCase(passwordInFile)) {
@@ -171,9 +174,11 @@ public class UserAccount extends HttpServlet {
                         accountExists = "true";
                         session.setAttribute("username", username);
                     }
+                    
+                  
 
                 }
-
+  System.out.println(accountExists);
                 out.print(accountExists);
 
             }
@@ -205,8 +210,10 @@ public class UserAccount extends HttpServlet {
             }
 
         }
+        
+       
 
-        //System.out.println(exist);
+       System.out.println(username);
 
         return exist;
     }

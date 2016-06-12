@@ -30,4 +30,10 @@
 		<taskoptions></taskoptions>
 		<answer>No</answer>
 	</question>
+	<question>
+		<input>flex</input>
+		<input>graph</input>
+		<taskoptions></taskoptions>
+		<answer>No</answer>
+	</question>
 </taskFile>
