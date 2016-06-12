@@ -46,9 +46,9 @@ function loadTasks(div, label, num, id) {
 }
 
 //function for creating the task option box.
-function createTasksSelectWidget(tasklist,div, label, num, id) {
+function createTasksSelectWidget(tasklist, div, label, num, id) {
     var select = document.createElement("select");
-    select.setAttribute("id", id+num);
+    select.setAttribute("id", id + num);
     select.setAttribute("name", "quantitativeTasks");
 
     var opt1 = document.createElement("option");
@@ -88,5 +88,31 @@ function createTasksSelectWidget(tasklist,div, label, num, id) {
 
     //var qnDiv = document.getElementById("qnDiv");
     div.appendChild(select);
+
+}
+
+function setUserId(func) {
+    var command = "getUserId";
+
+
+    var url = "UserAccount?command=" + command;
+    var xmlHttpRequest = getXMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function()
+    {
+        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
+        {
+            //alert(xmlHttpRequest.responseText);
+            //create the task option box.      
+            //alert(document.getElementById("userid").value);
+          document.getElementById("userid").value = xmlHttpRequest.responseText;
+         // alert(document.getElementById("userid").value);
+         
+         func();
+        }
+    };
+    xmlHttpRequest.open("GET", url, true);
+    xmlHttpRequest.send();
+
+
 
 }

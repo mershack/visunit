@@ -143,9 +143,13 @@ and open the template in the editor.
                 //we will try and get the respective name for this current study              
 
                 //get management command of this setup.
+                
+                setUserId(loadManagementCommand());
+            };
+
+            function loadManagementCommand() {
 
                 var userid = document.getElementById("userid").value;
-
                 var command = "getManagementCommand";
                 var url = "StudySetup?command=" + command + "&userid=" + userid;
                 var xmlHttpRequest = getXMLHttpRequest();
@@ -171,10 +175,7 @@ and open the template in the editor.
 
 
 
-
-
-
-            };
+            }
 
 
 
@@ -559,7 +560,7 @@ and open the template in the editor.
                     </div>
 
                 </div>
-                
+
                 <hr>
                 <h4> Standardized Tests</h4>
                 <!-- <input type="button" value="Include a Standard Test" onclick="showStandardTestDiv();" class="buttonCenter2" id="inclStandardTestBtn"/>-->
@@ -569,12 +570,12 @@ and open the template in the editor.
                             <tr>
                                 <th></th>
                                 <th>Standardized Test Directory
-                                 <img src="images/refresh-icon.png" title="Refresh Viewer Directories" 
+                                    <img src="images/refresh-icon.png" title="Refresh Viewer Directories" 
                                          alt="Refresh Viewer Directories" 
                                          onclick="getExistingDirectNamesAndFilenamesForStandTests();" 
                                          class="refreshIconSmall"/>
                                 </th>
-                                
+
                                 <th>Standardized Test URL
 
                                 </th>
@@ -588,15 +589,15 @@ and open the template in the editor.
                             </tr>
                             <tr class="questionNumberEven" id="standardTestRow1">
                                 <td id="standardTestPosition1">1. </td>
-                                
+
                                 <td>
                                     <select id="standardTestDirName1" onchange="standardTestNameChanged(this, '1')">
                                     </select>
                                 </td>
-                                
+
                                 <td id="standardTestURL1TD">
-                                   
-                                     <p>
+
+                                    <p>
                                         <select id="standardTestURL1" 
                                                 style="min-width:100%;">
                                             <option value="">Select An Uploaded Web-page</option>

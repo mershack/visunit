@@ -53,14 +53,18 @@ and open the template in the editor.
 
             window.onload = function() {
                 //try and load all the studies of the user. including the date it was created.
-
-                loadStudies();
+                setUserId(loadStudies);
+                
+               
             };
             function loadStudies() {
                 var studytable = document.getElementById("studyTable");
                 removeDivChildren(studytable);
 
                 var userid = document.getElementById("userid").value;
+                
+                alert(userid);
+                
                 var command = "getAllStudyNames";
                 var url = "StudySetup?command=" + command + "&userid=" + userid;
                 var xmlHttpRequest = getXMLHttpRequest();

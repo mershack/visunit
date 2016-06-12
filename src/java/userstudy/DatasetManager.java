@@ -224,7 +224,8 @@ public class DatasetManager extends HttpServlet {
                     ext = filename.substring(filename.lastIndexOf("."));
                 }
 
-                if (!ext.trim().isEmpty() && !ext.trim().equalsIgnoreCase(".txt")) {
+                //if (!ext.trim().isEmpty() && !ext.trim().equalsIgnoreCase(".txt")) {
+                if (!ext.trim().isEmpty()) {
                     if (cnt == 0) {
                         dsFileExts = ext;
                     } else {

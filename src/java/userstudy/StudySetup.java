@@ -56,6 +56,13 @@ public class StudySetup extends HttpServlet {
         try {
 
             HttpSession session = request.getSession();
+            
+            
+            if(session.getAttribute("username") !=null){
+                String username = session.getAttribute("username").toString();
+                System.out.println("username is: "+ username);
+            }
+            
 
             //printTheURL(request);
             // String nameofstudy = session.getAttribute("studyname").toString();

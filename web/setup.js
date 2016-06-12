@@ -612,6 +612,7 @@ function loadDatasets(val) {
     {
         if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
         {
+            
             var allDatasets = xmlHttpRequest.responseText;
             var sysDatasets = allDatasets.split("::::::")[0];
             var sysDatasetsArr = sysDatasets.split("::::");
