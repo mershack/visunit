@@ -1,0 +1,6 @@
+		OrderOfConditions		WindowWidth		WindowHeight		OffFocusTime		UserAccuracyInfo		UserTimeInfo		ColorBlindessTestAnswers		DateAndTime
+		matrix		1429		995		notRecorded						no color-blind-test		Mon Jun 13 2016 22:56:24 GMT-0400 (Eastern Standard Time)
+		matrix		1429		995		notRecorded						no color-blind-test		Mon Jun 13 2016 23:07:40 GMT-0400 (Eastern Standard Time)
+		graph		1429		995		notRecorded						no color-blind-test		Mon Jun 13 2016 23:16:53 GMT-0400 (Eastern Standard Time)
+		matrix		1429		963		notRecorded		0.2		1.1		no color-blind-test		Tue Jun 14 2016 00:00:46 GMT-0400 (Eastern Standard Time)
+		graph		1280		923		notRecorded		0.1		1.3		no color-blind-test		Tue Jun 14 2016 00:04:49 GMT-0400 (Eastern Daylight Time)

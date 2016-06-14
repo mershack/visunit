@@ -30,9 +30,9 @@
 		<introCond>all</introCond>
 	</introFile>
 	<standardTest>
-		<standardTestURL></standardTestURL>
-		<standardTestUserResponse></standardTestUserResponse>
-		<standardTestUserPerformance></standardTestUserPerformance>
+		<standardTestURL>ColorBlindnessViewer/color-blind-test.html</standardTestURL>
+		<standardTestUserResponse>getBlindTestAnswers</standardTestUserResponse>
+		<standardTestUserPerformance>validateUserResponse</standardTestUserPerformance>
 	</standardTest>
 	<preStudyTask>
 		<name>age</name>

@@ -177,6 +177,7 @@ function setUpAnswerControllers(controllersString) {
         //it is some kind of widget
         answergroup = "widget";
         dataType = split[0].split("::")[0];
+     
     }
 
 

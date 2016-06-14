@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+	<user_account>
+		<username>user1</username>
+		<password>user1</password>
+		<firstname>Default User</firstname>
+		<lastname>Account</lastname>	
+	</user_account>

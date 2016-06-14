@@ -430,7 +430,7 @@ function getQuestion() {
                 var viewerFrame = document.getElementById("viewerFrame");
 
                 viewerFrame.setAttribute("src", newViewerUrl);
-                getAndSetNodePositions();
+              //  getAndSetNodePositions();
 
                 //NB: get and set datasets is currently also called in 
                 //in the getAndSetNodePositions() function. Ideally, we will change
@@ -1066,7 +1066,7 @@ function createViewerFrame(url) {
     viewers.appendChild(myframe);
     //get the dataset      
 
-    getAndSetNodePositions();
+    //getAndSetNodePositions();
     getAndSetDataset();
 
     if (!questionsPrepared) { //questions will be prepared only once.
@@ -1521,7 +1521,7 @@ function getStandardizedTests() {
 
                 var split = xmlHttpRequest.responseText.split("::::");
 
-alert(split);
+//alert(split);
                 for (var i = 0; i < split.length; i++) {
                     split[i];
 

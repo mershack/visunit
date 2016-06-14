@@ -10,33 +10,50 @@
 <experimenttype_ds>Between</experimenttype_ds>
 <trainingsize>3</trainingsize>
 <condition>
-<conditionurl>nodeLink_LongTrainnig6.html</conditionurl>
+<conditionurl>g1_v1/nodeLink_LongTrainnig6.html</conditionurl>
 <conditionshortname>NL</conditionshortname>
 </condition>
 <condition>
-<conditionurl>matrix__Long_intro_IdenticalQn12.html</conditionurl>
+<conditionurl>g1_v1/matrix__Long_intro_IdenticalQn12.html</conditionurl>
 <conditionshortname>MAT</conditionshortname>
 </condition>
 <viewerwidth>820</viewerwidth>
 <viewerheight>790</viewerheight>
 <task>
-<name>selectNodeWithHighestDegree2</name>
+<name>mostConnectedNode</name>
 <question>Select the most connected node</question>
 <size>10</size>
 <time>15</time>
 </task>
 <task>
-<name>selectAllNeigbhorsOf1Node</name>
+<name>selectAllNeighborsOf1Node</name>
 <question>Select all the neighbors of the highlighted node</question>
 <size>10</size>
 <time>25</time>
 </task>
+<!--
 <task>
 <name>selectMoreInterconnectedCluster2Clusters</name>
 <question>Given the two highlighted clusters (red and blue), select the one that is more interconnected</question>
 <size>10</size>
 <time>10</time>
 </task>
+-->
+
+<introFile>
+	<introURL>g1_v1//intro_graph_interpLong.html</introURL>
+	<introCond>NL</introCond>
+</introFile>
+<introFile>
+	<introURL>g1_v1//intro_graph_interpLong.html</introURL>
+	<introCond>MAT</introCond>
+</introFile>
+<standardTest>
+	<standardTestURL></standardTestURL>
+	<standardTestUserResponse></standardTestUserResponse>
+	<standardTestUserPerformance></standardTestUserPerformance>
+</standardTest>
+
 
 <!--
 <task>

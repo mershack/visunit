@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <task_details>
 	<taskname>neighborCount</taskname>
+	<accuracyCheckingInterface></accuracyCheckingInterface>
 	<outputtype></outputtype>
 	<outputTypeDescription>Description 1</outputTypeDescription>
-	<answertype>widget:::integer</answertype>
+	<answertype>Number</answertype>
 	<taskquestion>
 		How many nodes can be reached in one step from the highlighted node?
 	</taskquestion>
@@ -12,5 +13,7 @@
 	<input>
 		<inputtype>node</inputtype>
 		<inputdescription>a single node</inputdescription>
+		<inputmedium>a single node</inputmedium>
 	</input>
+	<hasCorrectAnswer>yes</hasCorrectAnswer>
 </task_details>

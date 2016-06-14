@@ -2,4 +2,4 @@ shortname ::: taskquestion ::: taskgroup
 age ::: Please Enter your age :::  noGroup
 rateIntuitiveness ::: How will you rate the Intuitiveness of the visualization? :::  noGroup
 howdeepIsANode ::: How many levels deep is the highlighted node? :::  noGroup
-isHighlightedNodeDeeper ::: Is the highlighted node deeper than $1 ? :::  noGroup
+isHighlightedNodeDeeper ::: Is the highlighted node deeper than $2 ? :::  noGroup
