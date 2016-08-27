@@ -5,7 +5,7 @@
 	<outputtype></outputtype>
 	<outputTypeDescription></outputTypeDescription>
 	<answertype>Number</answertype>
-	<taskquestion>please input your age, please</taskquestion>
+	<taskquestion>Please enter your age</taskquestion>
 	<taskDescription>Age</taskDescription>
 	<inputsize>0</inputsize>
 <hasCorrectAnswer>no</hasCorrectAnswer>

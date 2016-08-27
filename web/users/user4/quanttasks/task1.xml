@@ -5,7 +5,7 @@
 	<outputtype></outputtype>
 	<outputTypeDescription></outputTypeDescription>
 	<answertype>options-fixed:::Yes::No</answertype>
-	<taskquestion>Does $1 has more children than $2?</taskquestion>
+	<taskquestion>Does $1 have more children than $2?</taskquestion>
 	<taskDescription>This question needs two parameters, referring to $1 and $2, respectively.</taskDescription>
 	<inputsize>2</inputsize>
 <hasCorrectAnswer>yes</hasCorrectAnswer>

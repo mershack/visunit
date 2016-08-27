@@ -169,7 +169,9 @@ function setUpAnswerControllers(controllersString) {
 
     if (answergroup.trim() === "interface") {
         dataType = split[1].split("::")[0];
+
         outputAccessorMethod = "get" + capitalizeFirstLetter(dataType);
+
         outputMutatorMethod = "set" + capitalizeFirstLetter(dataType);
         //get interface for checking answer correctness
     }
@@ -177,7 +179,7 @@ function setUpAnswerControllers(controllersString) {
         //it is some kind of widget
         answergroup = "widget";
         dataType = split[0].split("::")[0];
-     
+
     }
 
 
@@ -669,58 +671,102 @@ function checkAnswer() {
     }
     else if (getAnswerGroup() === "interface") {
         var iframe = document.getElementById("viewerFrame");
-        var outInterfaceName = getOutputInterface();
 
-        //alert(outInterfaceName);
+        //var outInterfaceName = getOutputInterface();
+        var outInterfaceName = getOutputAccessorMethod();
 
         if (typeof iframe.contentWindow.window[outInterfaceName] == "function") {
+
             var output = iframe.contentWindow.window[outInterfaceName]();
+
             if (output === "") {
                 alert("Please provide a valid answer to check its correctness");
                 return false;
             }
 
-            var outputStr = "";
-            for (var i = 0; i < output.length; i++) {
-                if (i === 0) {
-                    outputStr = output[i];
-                }
-                else {
-                    outputStr += ";;" + output[i];
-                }
-            }
+
             //alert(outputStr);
-            document.getElementById("selectedAnswer").value = outputStr;
+            document.getElementById("selectedAnswer").value = output;
             givenAnswer = document.getElementById("selectedAnswer").value;
         }
         else {
-            alert("The output method that returns the output is not implemented.");
+            alert("The output method (" + outInterfaceName + ") that returns the output is not implemented.");
         }
     }
-    
-    if(givenAnswer.trim() === correctAnswer.trim()){
-        document.getElementById("correctnessOfAnswer").innerHTML = "Correct!";
-    }
-    else{
-        document.getElementById("correctnessOfAnswer").innerHTML = "Wrong.";
-    }
-    
-/*
-    var studyid = document.getElementById("studyid").value;
-    //  +"&studyid="+studyid;
-    var url = "StudyManager?command=checkAnswer&givenAnswer=" + givenAnswer + "&studyid=" + studyid;
-    var xmlHttpRequest = getXMLHttpRequest();
-    xmlHttpRequest.onreadystatechange = function()
-    {
-        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-        {
-            //alert(xmlHttpRequest.responseText);
-            //set the correctness of the answer label with the returned response
-            document.getElementById("correctnessOfAnswer").innerHTML = xmlHttpRequest.responseText;
+
+
+    var validateAnswerInterface = getInterfaceForValidatingAnswers();
+    var interfaceValidation = "";
+
+
+    if (validateAnswerInterface !== "" && getAnswerGroup() === "interface") {
+        var iframeContentWindow = document.getElementById("viewerFrame").contentWindow;
+        //if the method exists do it
+        if (typeof iframeContentWindow.window[validateAnswerInterface] === "function") {
+
+            //this function will be passed the correct answer, and 
+            //the answer given by the user
+            interfaceValidation = iframeContentWindow.window[validateAnswerInterface](
+                    givenAnswer, correctAnswer);
+
+
+            //if interface validation is 0, then wrong otherwise specify the percentage missing.
+
+            if (interfaceValidation === parseInt(1)) {
+                document.getElementById("correctnessOfAnswer").innerHTML = "Correct!";
+            }
+
+            else if (interfaceValidation === 0) {
+                document.getElementById("correctnessOfAnswer").innerHTML = "Wrong.";
+            }
+            else {
+                var missing = 1 - interfaceValidation;
+                document.getElementById("correctnessOfAnswer").innerHTML = "You missed " + parseInt(missing * 100) + "% of the answer";
+
+            }
+
+
+
         }
-    };
-    xmlHttpRequest.open("GET", url, true);
-    xmlHttpRequest.send(null); */
+        else {
+            alert("The interface for validating answers has not been implemented");
+        }
+    }
+    else {
+        if (givenAnswer.trim() === correctAnswer.trim()) {
+            document.getElementById("correctnessOfAnswer").innerHTML = "Correct!";
+        }
+        else {
+            document.getElementById("correctnessOfAnswer").innerHTML = "Wrong.";
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+    /*
+     var studyid = document.getElementById("studyid").value;
+     //  +"&studyid="+studyid;
+     var url = "StudyManager?command=checkAnswer&givenAnswer=" + givenAnswer + "&studyid=" + studyid;
+     var xmlHttpRequest = getXMLHttpRequest();
+     xmlHttpRequest.onreadystatechange = function()
+     {
+     if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
+     {
+     //alert(xmlHttpRequest.responseText);
+     //set the correctness of the answer label with the returned response
+     document.getElementById("correctnessOfAnswer").innerHTML = xmlHttpRequest.responseText;
+     }
+     };
+     xmlHttpRequest.open("GET", url, true);
+     xmlHttpRequest.send(null); */
 }
 
 function setSelectedAnswer(element) {
@@ -746,7 +792,7 @@ function startStudy() {
     gettingTurkId = false;
     document.getElementById("afterTrialControls").style.display = "none";
     document.getElementById("studyControls").style.display = "block";
-    
+
     getQuestion();
     getNodes(); //get the nodes to be highlighted.
     startQuestionDurationCountDown();
@@ -788,10 +834,16 @@ function showPostStudyQualitativeQuestions(qnString) {
 
 
         var dataType = split2[1];
+
+        //convert the datatype to lowercase
+        dataType = dataType.toLowerCase();
+
+
+
         if (dataType === "options-fixed" || dataType === "options-dynamic") {
             createQualMultipleChoiceInput(li, i, split2[2]);
         }
-        else if (dataType === "integer" || dataType === "Number") {
+        else if (dataType === "integer" || dataType === "number") {
             //create a numeric input 
             createQualIntegerInput(li, i);
         }
@@ -956,11 +1008,15 @@ function showPreQualitativeQuestions(qnString) {
 
         var dataType = split2[1];
 
+        //convert datatype to lowercase
+        dataType = dataType.toLowerCase();
+
+
 
         if (dataType === "options-fixed" || dataType === "options-dynamic") {
             createQualMultipleChoiceInput(li, i, split2[2]);
         }
-        else if (dataType === "integer" || dataType === "Number") {
+        else if (dataType === "integer" || dataType === "number") {
             //create a numeric input 
             createQualIntegerInput(li, i);
         }

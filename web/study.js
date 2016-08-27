@@ -33,11 +33,14 @@ var some_answers = [];
 var some_answersArrCnt = 0;
 var two_hours_default_time_limit = 7200;   //default time for questions which are unlimited time
 
-
+var theURL;
 
 //var blankViewer;
 //var viewersFrame;
 window.onload = function() {
+  
+   theURL = document.URL;
+   
 
     if (checkBrowserSupport() === true) {
 
@@ -111,9 +114,9 @@ function getIntroduction() {
                 document.getElementById("defaultIntroduction").style.display = "none";
                 document.getElementById("givenIntroduction").style.display = "block";
             }
-            else {
-                alert("no introduction file has been specified");
-            }
+           else {
+                //alert("no introduction file has been specified");
+            } 
 
 
             //   $('.myIframe').css('height', $(window).height() + 'px'); //the height of that window
@@ -193,13 +196,41 @@ function getInstruction() {
             document.getElementById("note").innerHTML = note;
 
             document.getElementById("studyid").value = split[2];
-            getFirstConditionViewer(); //call the first condition vie                                
+           
+           
+            //if the study id is null, you should resend the command
+            if(split[2]  && split[2].trim()!== ""){
+                //alert(split[2]);
+                getFirstConditionViewer(); //call the first condition vie                                
+            }
+            else{
+                //alert("here");
+                refreshUserStudyPage();
+            }
+            
         }
     };
 
     xmlHttpRequest.open("GET", url, true);
     xmlHttpRequest.send();
 }
+
+function refreshUserStudyPage(){ 
+    
+    alert("refreshing page");
+    var xmlHttpRequest = getXMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function()
+    {
+        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
+        {                    
+        }
+    };
+
+    xmlHttpRequest.open("GET", theURL, true);
+    xmlHttpRequest.send();
+}
+
+
 
 /**
  * This method gets the url of the first condition viewer 
@@ -381,6 +412,7 @@ function getQuestion() {
     var hasCorrectAns = getHasCorrectAnswer();
 
     var validateAnswerInterface = getInterfaceForValidatingAnswers();
+    
     if (validateAnswerInterface !== "" && getAnswerGroup() === "interface"
             && previousAnswer != "" && hasCorrectAns === "yes") {
 
@@ -664,15 +696,16 @@ function getNodes() {
                 var inpMutatorMethods = getInputMutatorMethods();
 //                            /alert("input mutator methods is "+inpMutatorMethods);
 
-                //alert(inputMutatorMethods);
+              //alert("inputMutatorMethods: " +inputMutatorMethods);
 
+                //alert(inputValues);
 
-
-                // alert(inpMutatorMethods.length);
+              //  alert(inpMutatorMethods.length);
                 if (!(inpMutatorMethods.length > 0) || inpMutatorMethods[0] === "") {
                     inputInterfaceInterval = setInterval("checkIfInputMutatorMethodsIsSet()", 200);
                 }
                 else {
+                    //alert("here");
                     displayNodes(inputValues, inpMutatorMethods);
                 }
 
@@ -718,14 +751,11 @@ function displayNodes(inputsString, inputMutatorMethodsArr) {
 
     //now let's check the question to see if any of the inputs will be part of the question               
 
-    //   alert(theInputs);
+    
 
 
 
     var question = document.getElementById("currentQuestion").value;
-
-
-    //alert("here");
 
     if (inputsString !== "") {
 
@@ -735,6 +765,9 @@ function displayNodes(inputsString, inputMutatorMethodsArr) {
 
         for (var i = 0; i < theInputs.length; i++) {
             //first check if the input is a parameter or not
+            
+           // alert("__ "+i)
+            
             var currParam = i + 1;
             var paramExists = false;
             for (var j = 0; j < params.length; j++) {
@@ -746,24 +779,26 @@ function displayNodes(inputsString, inputMutatorMethodsArr) {
           //  alert("--" +theInputs);
 
             if (paramExists === false) {
-                //alert("here");
+               // alert("here");
                 //pass this input to the visualization using its mutator methods
                 var iframeContentWindow = document.getElementById("viewerFrame").contentWindow;
 
                 //if the method exists do it
                 if (typeof iframeContentWindow.window[inputMutatorMethodsArr[i]] === "function") {
-
                    // alert("here3");
                     //reset the previous inputs to empty strings
                     iframeContentWindow.window[inputMutatorMethodsArr[i]]("");
                     //now pass the actual input.
+                  
                     iframeContentWindow.window[inputMutatorMethodsArr[i]](theInputs[i]);
                 }
                 else {
-                    alert("the interface method " + inputMutatorMethodsArr[i]
-                            + "() has not been implemented in your visualization");
+                   // alert("aye "+ i);
+                    alert("the interface method ( " + inputMutatorMethodsArr[i]
+                            + "() ) has not been implemented in your visualization");
                 }
             }
+          
         }
 
         //now replace the params with the inputs
@@ -1020,7 +1055,7 @@ function advanceButtonClicked() {
         // alert("outputMutator method is + "+outInterfaceName);
 
 
-        if (typeof iframe.contentWindow.window[outputMutatorMethod] === "function") {
+        if (typeof iframe.contentWindow.window[outputAccessorMethod] === "function") {
             var outputStr = iframe.contentWindow.window[outputAccessorMethod]();
             //if user was timedout before they could select an answer.
 
@@ -1034,12 +1069,14 @@ function advanceButtonClicked() {
             }
 
 
+           // alert(outputStr);
 
             document.getElementById("selectedAnswer").value = outputStr;
 
         }
         else {
-            alert("The output method that returns the output is not implemented.");
+            
+            alert("The output method ("+outputAccessorMethod +   ") that returns the output is not implemented.");
         }
     }
 
@@ -1327,8 +1364,8 @@ function showTaskLegend(imgname) {
 
 function checkBrowserSupport() {
 
-    if ((navigator.userAgent.search("Chrome") >= 0
-            || navigator.userAgent.search("Firefox") >= 0)) {
+    if ((window.navigator.userAgent.search("Chrome") >= 0
+            || window.navigator.userAgent.search("Firefox") >= 0)) {
         return true;
     }
     return false;

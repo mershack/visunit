@@ -55,9 +55,9 @@ public class StudyParameters {
 
     //
     public String studyname;
-    public String dataseturl;
-    public String nodePositions;
-    public String datasetname;
+    //public String dataseturl;
+    //public String nodePositions;
+    //public String datasetname;
 
     //ArrayList<String> taskTypes = new ArrayList<String>();
     public ArrayList<String> orderOfConditionShortNames = new ArrayList<String>();

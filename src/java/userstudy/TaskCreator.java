@@ -12,7 +12,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +27,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -105,8 +110,8 @@ public class TaskCreator extends HttpServlet {
                             msg = "exists";
                             break;
                         }
-                    }
-
+                    }                    
+                    br2.close();
                 }
 
                 out.write(msg);
@@ -132,28 +137,24 @@ public class TaskCreator extends HttpServlet {
                 String inputTypeShortNamesArr[] = inputTypeShortNames.split(":::");
                 String inputTypeDescriptionsArr[] = inputTypeDescriptions.split(":::");
                 String inputMediumsArr[] = inputMediums.split(":::");
-                
-                String hasCorrectAnswer = request.getParameter("hasCorrectAnswer").toString();
-                
-                //String questionInputInfosArr[] = questionInputInfos.split(":::");
 
+                String hasCorrectAnswer = request.getParameter("hasCorrectAnswer").toString();
+
+                //String questionInputInfosArr[] = questionInputInfos.split(":::");
                 //conjugate the answertype
                 if (answerType.equalsIgnoreCase("interface")) {
                     answerType = "interface";
                 } else {
-                    
-                    if(answerType.equalsIgnoreCase("options-fixed")){
+
+                    if (answerType.equalsIgnoreCase("options-fixed")) {
                         answerType = answerType + ":::" + answerOptions;
-                    }
-                    
-                    else{
+                    } else {
                         answerType = answerType;
                     }
-                    
+
                 }
                   //if the 
-                
-                
+
                 //if user is admin or any of our admin id's we will save the task in the main task
                 //directory otherwise we will save it in the respective user directory.
                 if (!userid.equalsIgnoreCase("admin")) {
@@ -199,7 +200,7 @@ public class TaskCreator extends HttpServlet {
                     pw1.println("\t<taskquestion>" + taskQuestion + "</taskquestion>");
                     pw1.println("\t<taskDescription>" + taskDescription + "</taskDescription>");
                     pw1.println("\t<inputsize>" + numberOfInputs + "</inputsize>");
-                    pw1.println("<hasCorrectAnswer>"  + hasCorrectAnswer + "</hasCorrectAnswer>");
+                    pw1.println("<hasCorrectAnswer>" + hasCorrectAnswer + "</hasCorrectAnswer>");
 
                     //create the input elements
                     for (int i = 0; i < Integer.parseInt(numberOfInputs); i++) {
@@ -210,9 +211,9 @@ public class TaskCreator extends HttpServlet {
                                 + "</inputtype>");
                         pw1.println("\t\t<inputdescription>" + inputTypeDescriptionsArr[i]
                                 + "</inputdescription>");
-                        
+
                         pw1.println("\t\t<inputmedium>" + inputMediumsArr[i]
-                                + "</inputmedium>");                                              
+                                + "</inputmedium>");
                         /* pw1.println("\t\t<partofaquestion>" + questionInputInfosArr[i] 
                          + "</partofaquestion>");   */
 
@@ -320,6 +321,202 @@ public class TaskCreator extends HttpServlet {
                     transformer.transform(source, result);
                 }
 
+            } else if (command.equalsIgnoreCase("uploadNewTaskXMLFile")) {
+
+                String userid = request.getParameter("userid").toString();
+                String taskShortname = request.getParameter("taskShortName").toString();
+
+                String taskDirUrl = "users" + File.separator + userid + File.separator
+                        + "quanttasks";
+
+                if (ServletFileUpload.isMultipartContent(request)) {
+                    //  System.out.println("here now");
+                    try {
+                        List<FileItem> multiparts = new ServletFileUpload(
+                                new DiskFileItemFactory()).parseRequest(request);
+
+                        for (FileItem item : multiparts) {
+                            if (!item.isFormField()) {
+
+                                String name = new File(item.getName()).getName();
+
+                                //get the name for the dataset without the file extensions
+                                String taskName = taskShortname + ".xml";
+
+                                //  System.out.println("dataset name is " + dsName);
+                                String taskDirPath = getServletContext()
+                                        .getRealPath(taskDirUrl + File.separator + taskName);
+
+                                //File taskDir = new File(taskDirPath);
+                                //  System.out.println(taskDirPath);
+                                //now write the dataset in that directory
+                                item.write(new File(taskDirPath));
+
+                                System.out.println("here");
+
+                                //now read the file to get the task question
+                                File fXmlFile = new File(taskDirPath);
+                                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                                Document doc = dBuilder.parse(fXmlFile);
+
+                                //  System.out.println("here2");
+                                boolean validFile = true;
+
+                                //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+                                String taskQn = "";
+
+                                NodeList taskNode = doc.getElementsByTagName("task_details");
+                                if (taskNode != null) {
+                                    System.out.println("here3");
+                                    Node nNode = taskNode.item(0);
+                                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                                        Element eElement = (Element) nNode;
+                                        taskQn = eElement.getElementsByTagName("taskquestion").item(0).getTextContent();
+
+                                    } else {
+                                        validFile = false;
+                                    }
+                                } else {
+                                    validFile = false;
+                                }
+
+                                if (validFile) {
+                                    //now write this to the quantlist 
+                                    //also append the short name to the end of the task list file
+                                    File taskListFile = new File(getServletContext().getRealPath("users"
+                                            + File.separator + userid + File.separator
+                                            + "quanttasks" + File.separator + "quanttasklist.txt"));
+
+                                    boolean newFile = false;
+                                    if (!taskListFile.exists()) {
+                                        taskListFile.createNewFile();
+                                        //write the header too.
+                                        newFile = true;
+                                    }
+
+                                    FileWriter fw = new FileWriter(taskListFile, true);
+                                    BufferedWriter bw = new BufferedWriter(fw);
+                                    PrintWriter pw = new PrintWriter(bw);
+
+                                    if (newFile) {
+                                        pw.println("shortname ::: taskquestion ::: taskgroup");
+                                    }
+
+                                    pw.println(taskShortname + " ::: " + taskQn + " ::: " + " noGroup");  //noGroup now, but later we can let the user specify their own goup.
+
+                                    //System.out.println("finish printing");
+                                    //close the streams.
+                                    pw.close();
+                                    fw.close();
+                                    bw.close();
+
+                                    out.print("successful");
+                                } else {
+                                    out.print("failed");
+                                }
+
+                            }
+
+                        }
+                    } catch (Exception ex) {
+                        request.setAttribute("message", "File Upload Failed due to " + ex);
+                    }
+
+                }
+            } else if (command.equalsIgnoreCase("uploadNewTaskInstancesXMLFile")) {
+                String userid = request.getParameter("userid").toString();
+                String task = request.getParameter("task").toString();
+                String viewer = request.getParameter("viewer").toString();
+                String dataset = request.getParameter("dataset").toString();
+
+                // if(viewer.trim()===)
+                String name = dataset.trim();
+
+                if (name.isEmpty()) {
+                    name = viewer.trim();
+                }
+
+                //We will be adding this to the task instances rather.
+                String taskInstanceDirUrl = "users" + File.separator + userid + File.separator
+                        + "taskInstances" + File.separator + name;
+
+                //create the directory that the task instance will be saved in if 
+                File taskInstanceDir = new File(getServletContext()
+                        .getRealPath(taskInstanceDirUrl));
+
+                if (!taskInstanceDir.exists()) {
+                    taskInstanceDir.mkdir();
+                }
+
+                //get the taskShort name too.
+                String taskName = getTaskCode(task, userid);
+
+                if (ServletFileUpload.isMultipartContent(request)) {
+                    //  System.out.println("here now");
+                    try {
+                        List<FileItem> multiparts = new ServletFileUpload(
+                                new DiskFileItemFactory()).parseRequest(request);
+
+                        for (FileItem item : multiparts) {
+                            if (!item.isFormField()) {
+
+                                //String name = new File(item.getName()).getName();
+                                //get the name for the dataset without the file extensions
+                                taskName = taskName + ".xml";
+
+                                //  System.out.println("dataset name is " + dsName);
+                                String taskInstanceFilePath = getServletContext()
+                                        .getRealPath(taskInstanceDirUrl + File.separator + taskName);
+
+                                //now write the dataset in that directory
+                                item.write(new File(taskInstanceFilePath));
+
+                                //now read the file to get the task question
+                                File fXmlFile = new File(taskInstanceFilePath);
+                                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                                Document doc = dBuilder.parse(fXmlFile);
+
+                                //  System.out.println("here2");
+                                boolean validFile = true;
+
+                                //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+                                String taskQn = "";
+
+                                NodeList taskNode = doc.getElementsByTagName("taskFile");
+                                if (taskNode != null) {
+                                    // System.out.println("here3");
+                                    Node nNode = taskNode.item(0);
+                                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                                        Element eElement = (Element) nNode;
+                                        taskQn = eElement.getElementsByTagName("question").item(0).getTextContent();
+
+                                    } else {
+                                        validFile = false;
+                                    }
+                                } else {
+                                    validFile = false;
+                                }
+                                
+                                //System.out.println(taskInstanceFilePath + " :: ");
+                                
+                                
+
+                                if (validFile) {
+                                    out.print("successful");
+                                } else {
+                                    out.print("failed");
+                                }
+
+                            }
+
+                        }
+                    } catch (Exception ex) {
+                        request.setAttribute("message", "File Upload Failed due to " + ex);
+                    }
+
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -327,6 +524,55 @@ public class TaskCreator extends HttpServlet {
         } finally {
             out.close();
         }
+    }
+
+    public String getTaskCode(String task, String userid) {
+        String shortname = "";
+        //check if we can find the task among the existing tasks, 
+        //otherwise check the tasks in the user directory
+        try {
+            File qlFile = new File(getServletContext().getRealPath("quanttasks" + File.separator + "quanttasklist.txt"));
+
+            BufferedReader br = new BufferedReader(new FileReader(qlFile));
+            String line = "";
+            String sn = "";
+            while ((line = br.readLine()) != null) {
+                sn = line.split(":::")[0].trim();
+                String t = line.split(":::")[1].trim();
+                if (t.equalsIgnoreCase(task.trim())) {
+                    shortname = sn;
+                    break;
+                }
+            }
+            br.close();
+
+            //now check if the shortname has already been found ampong the system's files
+            if (shortname.trim().equalsIgnoreCase("")) {
+                //get the shortname among the user's files
+                qlFile = new File(getServletContext().getRealPath(
+                        "users" + File.separator + userid + File.separator
+                        + "quanttasks" + File.separator + "quanttasklist.txt"));
+
+                br = new BufferedReader(new FileReader(qlFile));
+                line = "";
+                sn = "";
+                while ((line = br.readLine()) != null) {
+                    sn = line.split(":::")[0].trim();
+                    String t = line.split(":::")[1].trim();
+                    if (t.equalsIgnoreCase(task.trim())) {
+                        shortname = sn;
+                        break;
+                    }
+                }
+                br.close();
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        System.out.println("The short name is: " + shortname);
+
+        return shortname;
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

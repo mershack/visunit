@@ -760,23 +760,6 @@ public class StudySetup extends HttpServlet {
 
     public String getTaskCode(String task, String userid) {
 
-        /*String taskCode = "";
-
-         //System.out.println("::::::::"+task+"::::::::::::");
-         if (task.equalsIgnoreCase("Are the two highlighted nodes directly connected?")) {
-         taskCode = "neighborOneStep";
-         } else if (task.equalsIgnoreCase("Can you get from one of the highlighted nodes to the other with exactly 2 steps?")) {
-         taskCode = "neighborTwoStep";
-         } else if (task.equalsIgnoreCase("How many nodes can be reached in one step from the highlighted node?")) {
-         taskCode = "neighborCount";
-         } else if (task.equalsIgnoreCase("Are the three highlighted nodes directly connected?")) {
-         taskCode = "neighborThreeNodes";
-         } else if (task.equalsIgnoreCase("Select the most connected node")) {
-         taskCode = "mostConnectedNode";
-         }
-         else if(task.equalsIgnoreCase("Given the two highlighted nodes, select the one with the highest degree")){
-         taskCode = "selectNodeWithHighestDegree2";
-         }*/
         String shortname = "";
 
         //check if we can find the task among the existing tasks, 
@@ -822,78 +805,9 @@ public class StudySetup extends HttpServlet {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-
-//        try {
-//            //read the quant-task-files.
-//            String filename = getServletContext().getRealPath("quanttasks" + File.separator + "quanttasks.xml");
-//            File fXmlFile = new File(filename);
-//            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-//            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-//            Document doc = dBuilder.parse(fXmlFile);
-//            doc.getDocumentElement().normalize();
-//
-//            //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-//            NodeList taskNode = doc.getElementsByTagName("task");
-//            //get the condition urls and shortnames
-//            for (int i = 0; i < taskNode.getLength(); i++) {
-//                Node nNode = taskNode.item(i);
-//
-//                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-//                    Element eElement = (Element) nNode;
-//                    String sn = eElement.getElementsByTagName("taskname").item(0).getTextContent();
-//                    String qn = eElement.getElementsByTagName("taskquestion").item(0).getTextContent();
-//                    //check if the question is similar                        
-//                    if (task.trim().equalsIgnoreCase(qn.trim())) {
-//                        shortname = sn;
-//                        break;
-//                    }
-//                }
-//            }
-//
-//            if (shortname.trim().equalsIgnoreCase("")) {//the shortname is not part of the system's tasks
-//                //let's find this task among the user's own tasks.
-//
-//                //read the quant-task-files.
-//                String filename2 = getServletContext().getRealPath(
-//                        "users" + File.separator + userid + File.separator
-//                        + "quanttasks" + File.separator + "quanttasks.xml");
-//                File fXmlFile2 = new File(filename2);
-//                DocumentBuilderFactory dbFactory2 = DocumentBuilderFactory.newInstance();
-//                DocumentBuilder dBuilder2 = dbFactory2.newDocumentBuilder();
-//                Document doc2 = dBuilder2.parse(fXmlFile2);
-//                doc2.getDocumentElement().normalize();
-//
-//                //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-//                taskNode = doc2.getElementsByTagName("task");
-//            //get the condition urls and shortnames
-//
-//                //  System.out.println("^^^^^^ The Task is " + task);
-//                for (int i = 0; i < taskNode.getLength(); i++) {
-//                    Node nNode = taskNode.item(i);
-//
-//                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-//                        Element eElement = (Element) nNode;
-//                        String sn = eElement.getElementsByTagName("taskname").item(0).getTextContent();
-//                        String qn = eElement.getElementsByTagName("taskquestion").item(0).getTextContent();
-//                        //System.out.println("--- " + qn.trim());
-//                        //check if the question is similar                        
-//                        if (task.trim().equalsIgnoreCase(qn.trim())) {
-//                            shortname = sn;
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//            }
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
         System.out.println("The short name is: " + shortname);
 
         return shortname;
-
-        //return taskCode;
     }
 
     public String getQualitativeTaskCode(String task) {

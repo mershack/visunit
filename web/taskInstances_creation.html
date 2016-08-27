@@ -51,7 +51,7 @@ and open the template in the editor.
                 margin: 1px;
                 padding: 1px;
             }
-             .refreshIconSmall{
+            .refreshIconSmall{
                 margin-left: 10px;
                 margin-right: 10px;
                 width: 20px;
@@ -63,43 +63,13 @@ and open the template in the editor.
             window.onload = function() {
                 setUserId(preparePage);
             };
-            
-            function preparePage(){
-                 var div = document.getElementById("qnDiv");
-               // loadTasks(div, "Task Type");
-                
-                loadTasks(div, "label", "1", "taskType");
-                
-            
-                loadDatasets("1");
-                getExistingDirectoryNamesAndHTMLFilenames();
-
-                getNewTempName();
-            }
-            
-
-            //function to get the new temp name
-            function getNewTempName() {
-
-                var command = "getTempName";
-                var url = "TaskInstancesCreator?command=" + command;
-                var xmlHttpRequest = getXMLHttpRequest();
-                xmlHttpRequest.onreadystatechange = function()
-                {
-                    if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-                    {
-                        document.getElementById("tempname").value = xmlHttpRequest.responseText;
-                    }
-                };
-                xmlHttpRequest.open("GET", url, true);
-                xmlHttpRequest.send();
-            }
 
         </script>
     </head>
     <body>
         <div id="controlBox">
             <h2> Create Task Instances </h2>
+            <p> <a href="upload-task-instance-xml.html">(Or Upload a new task XML file)</a></p>            
             <form>
                 <hr>
                 <!--
@@ -110,7 +80,7 @@ and open the template in the editor.
                     </p>
                 </div> 
                 -->
-                
+
                 <h4>Create or Update files</h4>
 
                 <div class="innerBox divCenter2" >
@@ -121,99 +91,81 @@ and open the template in the editor.
 
                     <br/> <br/>
                 </div>      
-                
-                
+
+
             </form>
             <form method="GET" action="TaskInstancesCreator"  id="setupForm">
                 <hr>
                 <h4> Viewer </h4>
-              <!--  <div class="innerBox">
-                    <div id="viewerConditionsDiv">
-                        <div class="conditionNumberOdd">
-                            <p> Specify Viewer Name
-                                <select id="viewer" name="conditions" class="right" style="min-width:50%;">
-                                    <option value="">Select An Uploaded File</option>
-                                </select>                           
-                        </div>
-                        <br />
-                    </div>
-
-                </div>  -->
-                
-                
-                
-                 <table class="center" id="conditionsTable">
-                            <tr>
-                                <th></th>
-                                <th>Viewer Directory 
-                                    <img src="images/refresh-icon.png" title="Refresh Viewer Directories" 
-                                         alt="Refresh Viewer Directories" 
-                                         onclick="getExistingDirectoryNamesAndHTMLFilenames();" 
-                                         class="refreshIconSmall"/>
-                                </th>
-                                <th>Condition URL</th>
-                            </tr>
-                            <tr class="conditionNumberOdd" id="conditionRow1">
-                                <td id="conditionPosition1"> 1. </td>
-                                <td>
-                                    <select id="existingViewerDirName1" onchange="viewerDirectoryChanged(this, '1')">
-                                    </select>
-                                </td>
-                                <td>
-                                    <p>
-                                        <select id="condition1" name="conditions" 
-                                                style="min-width:100%;">
-                                            <option value="">Select An Uploaded Web-page</option>                                            
-                                        </select>   
-                                        <br/>
-                                    </p>
-                                </td>
-                            </tr>
-                 </table>
-                
-                
-                
-                
-                
-                
-                
-                
+                <table class="center" id="conditionsTable">
+                    <tr>
+                        <th></th>
+                        <th>Viewer Directory 
+                            <img src="images/refresh-icon.png" title="Refresh Viewer Directories" 
+                                 alt="Refresh Viewer Directories" 
+                                 onclick="getExistingDirectoryNamesAndHTMLFilenames();" 
+                                 class="refreshIconSmall"/>
+                        </th>
+                        <th>Condition URL</th>
+                    </tr>
+                    <tr class="conditionNumberOdd" id="conditionRow1">
+                        <td id="conditionPosition1"> 1. </td>
+                        <td>
+                            <select id="existingViewerDirName1" onchange="viewerDirectoryChanged(this, '1')">
+                            </select>
+                        </td>
+                        <td>
+                            <p>
+                                <select id="condition1" name="conditions" 
+                                        style="min-width:100%;">
+                                    <option value="">Select An Uploaded Web-page</option>                                            
+                                </select>   
+                                <br/>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
                 <hr>
 
                 <h4>Dataset</h4>
-                
                 <table class="center" id="datasetsTable">
-                        <tr>
-                            
-                            <th>Dataset
-                                <img src="images/refresh-icon.png" title="Refresh Datasets" 
-                                     alt="Refresh Datasets" onclick="loadDatasets()" class="refreshIconSmall"/>
+                    <tr>
 
-                            </th>
-                            <th>Format</th>                        
-                        </tr>
-                        <tr class="questionNumberEven" id="datasetRow1">
-                           
-                            <td>
-                                <p>                                   
-                                    <select name="dataset" id="dataset1" onchange="datasetChanged(this);">
-                                        <option value ="">Select One</option> 
-                                    </select>
-                                </p>
-                            </td>
-                            <td>
-                                <p>
-                                    <select style="min-width: 100px" name="datasetFormat" id="datasetFormat1">
-                                    </select>
-                                </p>
-                            </td>
-                           
-                        </tr>
+                        <th>Dataset
+                            <img src="images/refresh-icon.png" title="Refresh Datasets" 
+                                 alt="Refresh Datasets" onclick="loadDatasets()" class="refreshIconSmall"/>
 
-                    </table>
-                
-                
-                
+                        </th>
+                        <th>Format</th>                        
+                    </tr>
+                    <tr class="questionNumberEven" id="datasetRow1">
+                        <td>
+                            <p>                                   
+                                <select name="dataset" id="dataset1" onchange="datasetChanged(this);">
+                                    <option value ="">Select One</option> 
+                                </select>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <select style="min-width: 100px" name="datasetFormat" id="datasetFormat1">
+                                </select>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                <table class="center">
+                    <tr>
+                        <td>
+                            <p>
+                                <input type="checkbox" /> Task instances will not be based on dataset.
+                            </p>
+                        </td>                    
+                    </tr>
+                </table>
+
+
+
                 <!-- <div class="innerBox">
                     <p> Select the Dataset                         
                         <select name="dataset" id="dataset" class="right">
@@ -234,7 +186,7 @@ and open the template in the editor.
                 <div class="innerBox">
                     <div id="quantitativeTasksDiv">
                         <div class="questionNumberOdd" id="qnDiv">
-                           
+
                             <br>                          
                         </div>
                     </div>
@@ -250,11 +202,11 @@ and open the template in the editor.
             </form>
 
             <input type="hidden" id="userid" value="user2" />
-    
-    <!--<input type="hidden" id="userid" value="user2" />
-    <input type="hidden" id="userid" value="user4" />
-    <input type="hidden" id="userid" value="user5" />
-    <input type="hidden" id="userid" value="user1" />  -->
+
+            <!--<input type="hidden" id="userid" value="user2" />
+            <input type="hidden" id="userid" value="user4" />
+            <input type="hidden" id="userid" value="user5" />
+            <input type="hidden" id="userid" value="user1" />  -->
         </div>
 
     </body>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Rectangle vs Treemap</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+
+        <style type="text/css">
+            body{
+                margin: 200px;
+                margin-right: 200px;
+                margin-left: 200px;
+                margin-top: 100px;
+                margin-bottom: 50px;
+                background-color: #E8E8E8;
+            }
+            h1{
+                width: 300px;
+                height: 50px;
+                margin-top: 30px;
+                margin-left: 200px;
+                margin-right: 200px;   
+            }
+            li{
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            .grayBackground{
+                background-color: lightGray;
+            }
+            pre{
+                /*background-color: white;*/
+                border-left: 2px solid #ccc;
+                margin-left: 20px;
+                padding-left: 20px;
+            }
+
+        </style>
+
+    </head>
+    <body>
+        <h2>How people judge the size of shapes in rectangles and treemaps</h2>
+        <img src="example.png"/>  
+        <br/><br/>
+        We will follow the following steps to design the study assuming we have stimuli 
+        (static images of instances) for rectangles (<a href="rectangle.zip">download stimuli</a>) 
+        and stimuli for treemaps (<a href="tree_map.zip">download stimuli</a>):
+        <ul>
+            <li><em>
+                    <strong>Creating viewers: </strong>  
+                </em>
+                First, we will include HTML files 
+                that will represent the visualizations 
+                for <a href="rectangle_viewer.html">rectangle</a> and 
+                <a href="treemap_viewer.html">treemap</a> and will be used to display 
+                the stimuli.  
+                <br/><br/>
+                Then use the <a href="add-viewers.html">add new viewer form</a> to create a viewer directory for  Rectangles and upload the rectangle stimuli files
+                and the HTML file (<a href="rectangle_1.zip">rectangle.zip</a>).
+                <br/> <br/>
+                Similarly, create a viewer directory for Treemap and upload the treemap stimuli files and HTML file(<a href="tree_map_1.zip">treemap.zip</a>).
+            </li>
+            <li>
+                <em><strong>Creating tasks: </strong></em> Use the <a href="../task_creation.html" target="_blank">
+                    new task form
+                </a>
+                to create the following 2 tasks. 
+                Task#1: Which of the two rectangles (marked A or B) is smaller?. Task#2: Estimate the percentage of the smaller rectangle to the larger one.
+
+                <br /><br />These tasks can be created from scratch as demonstrated here 
+                (<a href="whichIsSmaller.png">task1</a>, <a href="estimatePercentage.png">task2</a>)
+
+                <br/><br/>
+
+                Or by uploading the following task xml files
+                for <a href="whichIsSmaller.xml">task1</a> and <a href="estimatePercentage.xml">task2</a>
+                using the upload link on the new task form
+
+                <br/> <br/>
+                <strong>Note: </strong> These tasks require an input 
+                of the type "stimuli", as such, the HTML files for the 
+                visualizations (i.e. the rectangle and treemap visualizations)
+                need to include a <em>setStimuli</em> interface method that 
+                VisUnit will use to pass the input of each task instance to 
+                the visualization.    
+
+                For example, the interface method for the rectangle can be as follows:
+
+                <pre>
+<code>
+ function setStimuli(name) {
+      document.getElementById("stimuliImage").setAttribute("src", name);
+ }                      
+</code>
+                </pre>
+
+
+
+
+
+            </li>
+            <li>
+                <em><strong>Creating task instances: </strong></em>
+
+                Use the upload link on the <a href="../taskInstances_creation.html"> new task Instances form </a>
+                to upload the following taskInstance xml files for the 
+                rectangle and treemap viewer files as demonstrated in images
+                (<a href="rect_t1.xml" target="_blank">rect_t1.xml</a> |
+                <a href="rect_task1.png">pic</a>)
+                , (<a href="rect_t2.xml" target="_blank">rect_t2.xml</a> |
+                <a href="rect_task2.png" target="_blank">pic</a>)
+                ,(<a href="treemap_t1.xml" target="_blank">treemap_t1.xml</a> |
+                <a href="treemap_task1.png" target="_blank">pic</a>)
+
+                , (<a href="treemap_t2.xml" target="_blank">treemap_t2.xml</a> |
+                <a href="treemap_task2.png" target="_blank">pic</a>)
+            </li>
+            <li><em><strong>Design the study: </strong></em>
+
+                Use the <a href="../userstudy_setup.html" target="_blank">study design</a> form to design the study as demonstrated
+                in the following images: <br/> <br />
+                Specify the viewers and experimental design type (<a href="specify-viewers.png" target="_blank">image</a>)
+                <br/> Specify the introduction file (<a href="specify-intro.png" target="_blank">image</a>)
+                <br/> Specify the actual tasks (<a href="specify-tasks.png" target="_blank">image</a>)                        
+
+
+            </li>
+
+        </ul>
+    </body>
+</html>

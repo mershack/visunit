@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<taskFile>
+	<question>
+		<input>0540150067067.png</input>
+		<taskoptions></taskoptions>
+		<answer>10</answer>
+	</question>
+	<question>
+		<input>0550280067067.png</input>
+		<taskoptions></taskoptions>
+		<answer>25</answer>
+	</question>
+	<question>
+		<input>0560410067067.png</input>
+		<taskoptions></taskoptions>
+		<answer>40</answer>
+	</question>
+	<question>
+		<input>0570450067067.png</input>
+		<taskoptions></taskoptions>
+		<answer>40</answer>
+	</question>
+	<question>
+		<input>0580850067067.png</input>
+		<taskoptions></taskoptions>
+		<answer>98</answer>
+	</question>
+	
+</taskFile>

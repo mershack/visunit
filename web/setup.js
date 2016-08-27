@@ -329,18 +329,18 @@ function submitFormDetails() {
     var stCounter = document.getElementById("standardTestCounter").value;
     for (var i = 1; i <= stCounter; i++) {
         var st_url = document.getElementById("standardTestURL" + i).value;
-        
+
         var st_dir = document.getElementById("standardTestDirName" + i).value;
-        
-        if(st_dir.trim()!== "" && st_url.trim()!=="")
-                st_url = st_dir + "/" + st_url;
-        
-        
+
+        if (st_dir.trim() !== "" && st_url.trim() !== "")
+            st_url = st_dir + "/" + st_url;
+
+
         var respInterface = document.getElementById("standardTestUserResponseInterface" + i).value;
         var perfInterface = document.getElementById("standardTestUserPerformanceInterface" + i).value;
 
         if (i === 1) {
-            
+
             standardTests = "standardTestURLs=" + st_url
                     + "&standardTestUserRespInterface=" + respInterface
                     + "&standardTestUserPerfInterface=" + perfInterface;
@@ -613,7 +613,7 @@ function loadDatasets(val) {
     {
         if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
         {
-            
+
             var allDatasets = xmlHttpRequest.responseText;
             var sysDatasets = allDatasets.split("::::::")[0];
             var sysDatasetsArr = sysDatasets.split("::::");
@@ -686,7 +686,7 @@ function uploadUpdateDataset() {
     window.open("add_dataset.html", "_blank");
 }
 
-function createTaskInstances(){
+function createTaskInstances() {
     window.open("taskInstances_creation.html", "_blank");
 }
 
@@ -820,10 +820,10 @@ function getExistingDirectoryNamesAndHTMLFilenames() {
         if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
         {
             for (var i = 1; i <= viewerCondsCounter; i++) {
-
                 var select = document.getElementById("existingViewerDirName" + i);
 
                 if (select) {
+
                     //viewer directory
                     removeDivChildren(select);
                     var dirNamesStr = xmlHttpRequest.responseText.split("::::::")[0];
@@ -1232,20 +1232,20 @@ function deleteStandardTestIconClicked(val) {
             var img = document.getElementById("deleteStandardTestIcon" + (i));
             img.setAttribute("id", "deleteStandardTestIcon" + (i - 1));
             img.setAttribute("onclick", "deleteStandardTestIconClicked('" + (i - 1) + "')");
-            
+
             //change the standardtest directory ids too.
-            
-            
-           
+
+
+
             var input_dir = document.getElementById("standardTestDirName" + i);
             input_dir.setAttribute("id", "standardTestDirName" + (i - 1));
-            input_dir.setAttribute("onchange", "standardTestNameChanged(this,'"+(i-1)+"')");
-            
-            
-            
+            input_dir.setAttribute("onchange", "standardTestNameChanged(this,'" + (i - 1) + "')");
+
+
+
             //change the ID of the url, and the two interface names too.
             /**<!--var td_url = document.getElementById("standardTestURL" + i + "TD");
-            td_url.setAttribute("id", "standardTestURL" + (i - 1) + "TD"); **/
+             td_url.setAttribute("id", "standardTestURL" + (i - 1) + "TD"); **/
             var input_url = document.getElementById("standardTestURL" + i);
             input_url.setAttribute("id", "standardTestURL" + (i - 1));
             //userResponse
@@ -1512,15 +1512,15 @@ function deleteIntroductionFileIconClicked(val) {
         img.setAttribute("onclick", "deleteIntroductionFileIconClicked('" + (i - 1) + "')");
 
         //change the id of the dir name too
-        var input_dir = document.getElementById("introDirName"+ i);
-        input_dir.setAttribute("id", "introDirName"+ (i-1));        
-        input_dir.setAttribute("onchange", "introDirNameChanged(this, '"+(i-1)+"')");
-        
-        
-        
-        
-        
-                
+        var input_dir = document.getElementById("introDirName" + i);
+        input_dir.setAttribute("id", "introDirName" + (i - 1));
+        input_dir.setAttribute("onchange", "introDirNameChanged(this, '" + (i - 1) + "')");
+
+
+
+
+
+
         //change the ID of the url, and the two interface names too.
         var td_url = document.getElementById("introductionFileURL" + i + "TD");
         td_url.setAttribute("id", "introductionFileURL" + (i - 1) + "TD");

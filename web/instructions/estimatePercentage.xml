@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<task_details>
+	<taskname>estimatePercentage</taskname>
+	<accuracyCheckingInterface>checkAccuracy</accuracyCheckingInterface>
+	<outputtype></outputtype>
+	<outputTypeDescription></outputTypeDescription>
+	<answertype>Number</answertype>
+	<taskquestion>Estimate the percentage of the smaller rectangle to the larger one</taskquestion>
+	<taskDescription>estimating the percentage a smaller rectangle is of a larger rectangle</taskDescription>
+	<inputsize>1</inputsize>
+<hasCorrectAnswer>yes</hasCorrectAnswer>
+	<input>
+		<inputtype>stimuli</inputtype>
+		<inputdescription>the stimuli for the task</inputdescription>
+		<inputmedium></inputmedium>
+	</input>
+</task_details>

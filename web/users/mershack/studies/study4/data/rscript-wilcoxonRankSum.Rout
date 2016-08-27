@@ -1,0 +1,6 @@
+Warning message:
+In wilcox.test.default(Acc_withVisUnit_cond1, Acc_withoutVisUnit_cond2) :
+  cannot compute exact p-value with ties
+Warning message:
+In wilcox.test.default(Time_howdeepIsANode_cond1, Time_howdeepIsANode_cond2) :
+  cannot compute exact p-value with ties

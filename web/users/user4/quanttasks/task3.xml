@@ -5,7 +5,7 @@
 	<outputtype></outputtype>
 	<outputTypeDescription></outputTypeDescription>
 	<answertype>options-fixed:::Yes::No</answertype>
-	<taskquestion>Does $1 and $2 belong to the same immediate parent?</taskquestion>
+	<taskquestion>Do $1 and $2 belong to the same immediate parent?</taskquestion>
 	<taskDescription>Need two parameters.</taskDescription>
 	<inputsize>2</inputsize>
 <hasCorrectAnswer>yes</hasCorrectAnswer>

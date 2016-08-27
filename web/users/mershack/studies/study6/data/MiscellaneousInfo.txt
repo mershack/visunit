@@ -1,0 +1,6 @@
+		OrderOfConditions		WindowWidth		WindowHeight		OffFocusTime		UserAccuracyInfo		UserTimeInfo		ColorBlindessTestAnswers		DateAndTime
+		treemap		1280		923		notRecorded		0.5		3.5		no color-blind-test		Wed Jul 20 2016 20:41:01 GMT-0400 (Eastern Daylight Time)
+		rect		1280		923		notRecorded		1.0		3.0		no color-blind-test		Wed Jul 20 2016 20:45:50 GMT-0400 (Eastern Daylight Time)
+		treemap		1600		760		notRecorded		1.0		4.5		no color-blind-test		Wed Jul 20 2016 20:47:28 GMT-0400 (Eastern Standard Time)
+		rect		1600		760		notRecorded		0.5		2.0		no color-blind-test		Wed Jul 20 2016 20:48:03 GMT-0400 (Eastern Standard Time)
+		treemap		1280		923		notRecorded		1.0,0.0		10.0,2.5		no color-blind-test		Wed Jul 20 2016 21:01:01 GMT-0400 (Eastern Daylight Time)

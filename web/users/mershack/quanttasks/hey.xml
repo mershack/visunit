@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<task_details>
+	<taskname>hey</taskname>
+	<accuracyCheckingInterface>checkAccuracy</accuracyCheckingInterface>
+	<outputtype></outputtype>
+	<outputTypeDescription></outputTypeDescription>
+	<answertype>Number</answertype>
+	<taskquestion>hey2</taskquestion>
+	<taskDescription>andoiae</taskDescription>
+	<inputsize>1</inputsize>
+<hasCorrectAnswer>yes</hasCorrectAnswer>
+	<input>
+		<inputtype>input</inputtype>
+		<inputdescription>input</inputdescription>
+		<inputmedium>by-typing</inputmedium>
+	</input>
+</task_details>

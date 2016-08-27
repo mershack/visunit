@@ -1,0 +1,5 @@
+Time_whichIsSmaller_treemap,
+Q1,Q2
+4,3
+6,3
+10,10 :: 5,3

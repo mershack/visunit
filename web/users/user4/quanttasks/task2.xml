@@ -5,7 +5,7 @@
 	<outputtype></outputtype>
 	<outputTypeDescription></outputTypeDescription>
 	<answertype>Number</answertype>
-	<taskquestion>How many children does $1 has?</taskquestion>
+	<taskquestion>How many children does $1 have?</taskquestion>
 	<taskDescription>Need one parameter to customize this task.</taskDescription>
 	<inputsize>1</inputsize>
 <hasCorrectAnswer>yes</hasCorrectAnswer>

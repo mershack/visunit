@@ -114,7 +114,7 @@ function setUserId(func) {
                 }
             }
             else{
-                window.open("login.html");
+                window.location = "login.html";
             }
 
 

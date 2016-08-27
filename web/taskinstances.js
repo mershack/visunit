@@ -22,6 +22,40 @@ var optionsAnswer = "";
 
 var doesTaskHaveCorrectAnswer = "";
 
+
+function preparePage() {
+    var div = document.getElementById("qnDiv");
+    // loadTasks(div, "Task Type");
+
+    loadTasks(div, "label", "1", "taskType");
+
+
+    loadDatasets("1");
+    getExistingDirectoryNamesAndHTMLFilenames();
+
+    //getNewTempName();
+}
+
+
+//function to get the new temp name
+/*function getNewTempName() {
+
+    var command = "getTempName";
+    var url = "TaskInstancesCreator?command=" + command;
+    var xmlHttpRequest = getXMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function()
+    {
+        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
+        {
+            document.getElementById("tempname").value = xmlHttpRequest.responseText;
+        }
+    };
+    xmlHttpRequest.open("GET", url, true);
+    xmlHttpRequest.send();
+}
+*/
+
+
 function startTaskInstances() {
 
     //get the viewer directory name
@@ -30,12 +64,12 @@ function startTaskInstances() {
     var viewerURL = document.getElementById("condition1").value;
 //get the dataset
     var dataset = document.getElementById("dataset1").value;
-    
+
     //get the datasetFormat
     var datasetFormat = document.getElementById("datasetFormat1").value;
-    
+
     //alert(datasetFormat);
-    
+
     //get the user id.
     var userid = document.getElementById("userid").value;
     //get the task also
@@ -53,7 +87,7 @@ function startTaskInstances() {
     var url = "TaskInstancesCreator?command=" + command
             + "&userid=" + userid
             + "&dataset=" + dataset
-            +"&datasetFormat=" + datasetFormat
+            + "&datasetFormat=" + datasetFormat
             + "&viewerDirectory=" + viewerdir
             + "&viewerURL=" + viewerURL
             + "&task=" + task;
@@ -235,7 +269,7 @@ function getInstanceAnswer() {
         answer = document.getElementById("selectedAnswer").value;
 
 
-      
+
 
     }
 
@@ -254,7 +288,7 @@ function saveInstance() {
 
 
     //alert("saving the instances");
-    
+
     //alert("yeaas");
 
     if (doesTaskHaveCorrectAnswer === "no") {
@@ -268,7 +302,7 @@ function saveInstance() {
             var inputmedium = getInputMediums()[inputsCnt];
             var currentInput = "";
 
-            
+
             alert(inputmedium);
 
             if (inputmedium === "from-visualization") {
@@ -286,7 +320,7 @@ function saveInstance() {
         }
     }
 
-   
+
 
     if (ianswer.trim() === "" && doesTaskHaveCorrectAnswer === "yes") {
         //there should be an answer for such ones.
@@ -301,7 +335,7 @@ function saveInstance() {
         // alert("about to save the dynamic answer types");
         allOptionsArr.push(allOptions);
     }
-    
+
     //unselect the previous answers and inputs
     if (getAnswerGroup().trim() === "interface") {
         var omutatorMethod = getOutputMutatorMethod();
@@ -759,7 +793,7 @@ function createInputDescriptions() {
             document.getElementById("input-from-typing").style.display = "block";
         }
 
-       // alert(inputsCnt + "___" + (Number(inputSize) - 1))
+        // alert(inputsCnt + "___" + (Number(inputSize) - 1))
         if (inputsCnt < (Number(inputSize))) {
             if (getInputTypes().length === 1 || inputsCnt === (Number(inputSize) - 1)) {
                 //show the button that will lead to providing answer
@@ -795,22 +829,22 @@ function getInputSize() {
         {
             //alert("input size is " + xmlHttpRequest.responseText);
             inputSize = xmlHttpRequest.responseText;
-            
+
             //alert("input-size is :: " +inputSize);
-            
-             document.getElementById("next-input-button").style.display = "none";
+
+            document.getElementById("next-input-button").style.display = "none";
 
             // alert("something--here");
-             
-             //alert(doesTaskHaveCorrectAnswer);
 
-                //show this button only if this task requires an answer.
-               /* if (doesTaskHaveCorrectAnswer === "yes") {
-                    document.getElementById("provide-answer-button").style.display = "block";
-                }
-                else {
-                    document.getElementById("nextInstance").disabled = false;
-                }*/
+            //alert(doesTaskHaveCorrectAnswer);
+
+            //show this button only if this task requires an answer.
+            /* if (doesTaskHaveCorrectAnswer === "yes") {
+             document.getElementById("provide-answer-button").style.display = "block";
+             }
+             else {
+             document.getElementById("nextInstance").disabled = false;
+             }*/
         }
     };
     xmlHttpRequest.open("GET", url, false);

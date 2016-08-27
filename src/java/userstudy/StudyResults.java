@@ -240,7 +240,7 @@ public class StudyResults extends HttpServlet {
             //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
             NodeList taskNode = doc.getElementsByTagName("task");
             NodeList datasetNode = doc.getElementsByTagName("dataset");
-            NodeList experimentTypeNode = doc.getElementsByTagName("experimenttype");
+            NodeList experimentTypeNode = doc.getElementsByTagName("experimenttype_vis");
             NodeList conditionNode = doc.getElementsByTagName("condition");
             NodeList studynameNode = doc.getElementsByTagName("studyname");
 
@@ -2255,12 +2255,18 @@ public class StudyResults extends HttpServlet {
             String[][] accColumnNames = new String[rpmts.numOfConditions][rpmts.numOfTasks];
             String[][] timeColumnNames = new String[rpmts.numOfConditions][rpmts.numOfTasks];
             for (int i = 0; i < rpmts.numOfConditions; i++) {
+                //System.out.println("hey");
+                
+                //System.out.println(getServletContext().getRealPath(rpmts.studydataurl + File.separator + rpmts.accuracyFilenames.get(i)));
+                
                 File AccuracyFile = new File(getServletContext().getRealPath(rpmts.studydataurl + File.separator + rpmts.accuracyFilenames.get(i)));
                 if (AccuracyFile.exists()) {
                     br = new BufferedReader(new FileReader(AccuracyFile));
                     while ((line = br.readLine()) != null) {
                         String split[] = line.split(",");
 
+                        System.out.println("---"+line);
+                        
                         for (int j = 0; j < split.length; j++) {
                             accColumnNames[i][j] = split[j];
                         }
@@ -2520,7 +2526,8 @@ public class StudyResults extends HttpServlet {
                     br = new BufferedReader(new FileReader(AccuracyFile));
                     while ((line = br.readLine()) != null) {
                         String split[] = line.split(",");
-
+                        
+                        
                         for (int j = 0; j < split.length; j++) {
                             accColumnNames[i][j] = split[j];
                         }
@@ -2578,7 +2585,7 @@ public class StudyResults extends HttpServlet {
                 for (int j = 0; j < rpmts.numOfConditions; j++) {
                     String dataName = "accuracy" + (j + 1);
                     pw.println("" + accColumnNames[j][i] + "= c(" + dataName + "[," + (i + 1) + "])");
-
+                    //System.out.println("" + accColumnNames[j][i] + "= c(" + dataName + "[," + (i + 1) + "])");
                     pw.println("" + "mean_" + accColumnNames[j][i] + "= mean(" + accColumnNames[j][i] + ")");
                     pw.println("" + "sd_" + accColumnNames[j][i] + "= sd(" + accColumnNames[j][i] + ")");
 

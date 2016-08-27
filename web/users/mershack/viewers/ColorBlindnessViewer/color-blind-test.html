@@ -65,7 +65,8 @@ and open the template in the editor.
             var allBlindTestAnswers = "";
             function getUserResults(){
                 var answer="";
-                for(var i=1; i<=15; i++){
+				var n=6;
+                for(var i=1; i<=n; i++){
                     answer = document.getElementById("btAnswer"+i).value;
                 
                 //alert(answer);
@@ -86,6 +87,7 @@ and open the template in the editor.
             }
             
             function getBlindTestAnswers(){
+			getUserResults();
                 return allBlindTestAnswers;
             }
 			
@@ -135,7 +137,12 @@ and open the template in the editor.
                   <hr/>
             </div>
                 
-                
+             
+
+        </div>
+
+        <div class="btQnblock" id="btQnblock2" > 
+				   
             <div class="bt-qn-and-ans">
                 <img class="blindTestImg" src="img4.gif" width="120" height="120"/>
                 <div class="btAnswer">
@@ -149,12 +156,8 @@ and open the template in the editor.
                 <div class="btAnswer">
                     5.   <input type="number" min="0"  id="btAnswer5" class="btAnswerbox" />    
                 </div>   
-                 
+                 <hr/>
             </div>
-
-        </div>
-
-        <div class="btQnblock" id="btQnblock2" >       
             <div class="bt-qn-and-ans">
                 <img class="blindTestImg" src="img6.gif" width="120" height="120"/>
                 <div class="btAnswer">
@@ -163,7 +166,7 @@ and open the template in the editor.
                   <hr/>
             </div>
 
-             <div class="bt-qn-and-ans">
+            <!-- <div class="bt-qn-and-ans">
                 <img class="blindTestImg" src="img7.gif" width="120" height="120"/>
                 <div class="btAnswer">
                     7.   <input type="number" min="0"  id="btAnswer7" class="btAnswerbox" />    
@@ -193,9 +196,9 @@ and open the template in the editor.
                     10.   <input type="number" min="0"  id="btAnswer10" class="btAnswerbox" />    
                 </div>   
                   
-            </div>
+            </div>  -->
         </div>
-
+<!--
         <div class="btQnblock" id="btQnblock3" >       
             <div class="bt-qn-and-ans">
                 <img class="blindTestImg" src="img11.gif" width="120" height="120"/>
@@ -235,6 +238,7 @@ and open the template in the editor.
                 
             </div>
         </div>
+		-->
             
             
         </div>   

@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <!-- <link href="style.css" rel="stylesheet" type="text/css" />  -->
+        <title>Instructions</title>
+
+        <script type='text/javascript'>
+            function showDiv(id) {
+            document.getElementById(id).style.display = "block";
+            }
+            function hideDiv(id) {
+            document.getElementById(id).style.display = "none";
+            }
+
+        </script>
+
+        <style type="text/css">
+
+            body{
+                border-top: 10px solid #663300;
+                border-bottom: 3px solid #663300;
+                margin: 0;
+                padding: 0;
+                background-color: #f2f2f2; 
+            }
+            #header{
+                background-color: white;
+                margin: 0px;
+                padding: 0px;
+                height: 100%;
+                border-bottom: 1px solid #663300;
+
+
+            }
+            #header h1{
+                margin:0 30%;
+                padding:0;
+                
+            }
+            #header h3{
+                margin:0 20%;
+                padding-top:5px;
+                padding-bottom:10px;
+               
+            }
+            #content-wrapper{
+                margin: 0px 200px;               
+
+            }
+            h1{
+                width: 300px;
+                height: 50px;
+                margin-top: 30px;
+                margin-left: 200px;
+                margin-right: 200px;   
+            }
+            li{
+                padding: 20px;
+                
+            }
+            .grayBackground{
+                background-color: lightGray;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+        <div id="header">
+            <h1>VisUnit</h1>
+            <h3>A framework that supports web-based evaluations of data visualizations </h3>
+        </div>
+        <div id="content-wrapper">
+
+          
+            <h4>Installation instructions</h4>
+            <ul>
+                <li>
+                    VisUnit uses Java Servlets and Java on the backend, as such it will run on 
+                    a webserver that supports Java such as Apache Tomcat Server. Download and install <a href="http://tomcat.apache.org/download-90.cgi">Apache Tomcat. </a>
+
+
+                </li>
+
+                <li>
+                    VisUnit uses "R" statistical package for the statistical analysis of the results. 
+                    Download and Install the 
+                    <a href="https://cloud.r-project.org/">"R" statistical package.</a>
+
+                </li>
+                <li>
+                    Ensure "R" can be accessed from the terminal. For example if you type R on a Unix terminal or on a Windows command prompt 
+                    , the version of R installed should be displayed.
+
+                    <br/>
+
+                    <br/>
+                    <strong><em>NB: Without R only the "Results analysis" functionality will be affected.</em></strong> 
+                </li>
+
+            </ul>
+            <hr/>
+            <h4>Examples of user studies</h4>
+
+            <ol>
+                <li>
+                    This study evaluates how people judge the size of shapes in rectangles and treemaps and is very similar 
+                    to a study  performed in <a href="http://dl.acm.org/citation.cfm?id=1753357">Crowdsourcing graphical perception: using mechanical turk to assess visualization design.</a>
+                    <strong><em>This study that does not use a dataset, but uses static images as stimuli. </em></strong>  
+
+
+                    <br/> <br/>  Click image below to see demo of the study
+                    <br/><br/>
+                    <a href="StudyManager?studyname=study6&userid=mershack" target="_blank">
+                        <img src="instructions/example.png"/></a>
+
+                    <br/><br/>  <a href="instructions/rect-and-treemap.html" target="_blank">See how this study was designed</a>
+                </li>
+
+                <li class="grayBackground">
+                    A study that uses a dataset.     <a href="StudyManager?studyname=study3&userid=mershack" target="_blank">See demo of the study.</a>
+
+                    <br/> <br/>
+                    This study compares nodelinks to matrices and is very similar to a study performed in
+                    <a href="http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=1382886&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D1382886"
+                       target="_blank">
+                        A Comparison of the Readability of Graphs Using Node-Link and Matrix-Based Representations
+                    </a>
+                    <br/><br/> Click image below to see demo of the study
+                    <br/><br/>
+                    <a href="StudyManager?studyname=study3&userid=mershack" target="_blank">
+                        <img src="instructions/nl-vs-mat.png" width="500"/></a>
+
+                    <br/><br/>
+
+                    <a href="instructions/nl-and-mat1.html" target="_blank">See how this study was designed</a>
+
+                    <!--We will use the following steps to design the study assuming we have the Nodelink visualization
+                    and Matrix visualizations. -->
+                </li>
+
+                <!-- <li>
+                     Another Study that uses a dataset.
+ 
+                 </li>  -->
+
+                <li>
+                    A study that uses a dataset and interactive answers
+                    <a href="StudyManager?studyname=group1&userid=mershack" target="_blank">See demo of the study.</a>
+
+                    <br/> <br/>
+                    This study compares nodelinks to matrices and its a variation of the 
+                    study performed in 
+                    <a href="http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=1382886&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D1382886"
+                       target="_blank">
+                        A Comparison of the Readability of Graphs Using Node-Link and Matrix-Based Representations
+                    </a>.
+                    <br/><br/>
+                    Here participants provide answers by interacting with the visualization.
+
+                    <br/><br/>
+                    We will use the following steps to design the study assuming we have the Nodelink and Matrix visualizations.
+
+
+                    <br/><br/>
+                    <a href="StudyManager?studyname=group1&userid=mershack" target="_blank">
+                        <img src="instructions/nl-vs-mat2.png" width="650"/></a>
+
+                    <br/><br/>
+
+                    <a href="instructions/nl-and-mat2.html" target="_blank">See how this study was designed</a>
+
+                </li>
+
+            </ol>
+        </div>  
+
+
+
+
+    </body>
+</html>

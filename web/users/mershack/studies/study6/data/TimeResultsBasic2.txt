@@ -1,0 +1,4 @@
+Time_whichIsSmaller_rect,
+Q1,Q2
+4,2
+3,1

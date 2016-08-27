@@ -69,7 +69,7 @@ function defaultLogin(){
                 document.getElementById("wrongPassword").style.display="block";
             }
             else{
-                window.open("managestudies.html");
+                window.location = "index.html";
             }
         }
     };

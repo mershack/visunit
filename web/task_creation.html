@@ -73,15 +73,16 @@ and open the template in the editor.
             window.onload = function() {
                 //try and load all the studies of the user. including the date it was created.
                 setUserId();
-                
-               
+
+
             };
 
         </script>
     </head>
     <body>
         <div id="controlBox">            
-            <h2> Create a New Task </h2>
+            <h2> Create a New Task</h2>
+            <p> <a href="uploadtaskxml.html">(Or Upload a new task XML file)</a></p>
             <div id="emptyFieldsNotice" style="display:none;">
                 <p style="color: red">
                     Some fields are empty. Please fill all fields before Saving task.
@@ -173,6 +174,17 @@ and open the template in the editor.
                             <input type="button" value="Add more answer options" onclick="addMoreAnsOptions();" class="center" />
                         </div>
 
+                        <div id="accuracyCheckingInterfaceDiv2">
+                            <p>
+                                Specify an interface for checking accuracy (if you have one)
+                                <input type="text" id="accuracyCheckingInterface2" size="40" class="right" />
+                            </p>
+
+                        </div>
+
+
+
+
                         <div id="outputTypeDiv" style="display:none;">
                             <div id="accuracyCheckingInterfaceDiv">
                                 <p>
@@ -203,6 +215,8 @@ and open the template in the editor.
                                 </em>
                             </p>
                         </div>
+
+
 
 
                     </div>
@@ -315,12 +329,12 @@ and open the template in the editor.
             </form>
         </div>
 
-       <input type="hidden" id="userid" value="user2" />
-    
-    <!--<input type="hidden" id="userid" value="user2" />
-    <input type="hidden" id="userid" value="user4" />
-    <input type="hidden" id="userid" value="user5" />
-    <input type="hidden" id="userid" value="user1" />  -->
+        <input type="hidden" id="userid" value="user2" />
+
+        <!--<input type="hidden" id="userid" value="user2" />
+        <input type="hidden" id="userid" value="user4" />
+        <input type="hidden" id="userid" value="user5" />
+        <input type="hidden" id="userid" value="user1" />  -->
 
     </body>
 </html>

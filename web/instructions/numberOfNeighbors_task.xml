@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<task_details>
+	<taskname>numberOfNeighbors</taskname>
+	<accuracyCheckingInterface></accuracyCheckingInterface>
+	<outputtype></outputtype>
+	<outputTypeDescription></outputTypeDescription>
+	<answertype>Number</answertype>
+	<taskquestion>How many nodes are directly connected to the highlighted node?</taskquestion>
+	<taskDescription>The user will determine the number of connections that a highlighted node has</taskDescription>
+	<inputsize>1</inputsize>
+       <hasCorrectAnswer>yes</hasCorrectAnswer>
+	<input>
+		<inputtype>node</inputtype>
+		<inputdescription>a single node that will be highlighted</inputdescription>
+		<inputmedium>by-typing</inputmedium>
+	</input>
+</task_details>

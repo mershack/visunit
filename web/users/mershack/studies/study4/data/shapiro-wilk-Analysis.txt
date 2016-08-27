@@ -1,0 +1,16 @@
+TaskName = Acc_withVisUnit
+condition  ,  pvalue
+------------------------------------
+Acc_withVisUnit_cond1 , 0.514785745560276
+Acc_withoutVisUnit_cond2 , 0.0478114360316647
+**********************************************************
+
+
+TaskName = Time_howdeepIsANode
+condition  ,  pvalue
+------------------------------------
+Time_howdeepIsANode_cond1 , 0.0127687382417587
+Time_howdeepIsANode_cond2 , 0.0478114360316647
+**********************************************************
+
+

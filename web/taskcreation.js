@@ -10,6 +10,7 @@ function answerOptionChanged(element) {
     if (element.value === "options-fixed" || element.value === "Color-options-fixed") {
         //show the options div
         document.getElementById("ansOptionsDiv").style.display = "block";
+        document.getElementById("accuracyCheckingInterfaceDiv2").style.display = "block";
         document.getElementById("outputTypeDiv").style.display = "none";
     }
     else if (element.value === "Interface") {
@@ -17,11 +18,13 @@ function answerOptionChanged(element) {
         // alert("selection selected");
         document.getElementById("outputTypeDiv").style.display = "block";
         document.getElementById("ansOptionsDiv").style.display = "none";
+        document.getElementById("accuracyCheckingInterfaceDiv2").style.display = "none";
     }
     else {
         //hide the options div
         document.getElementById("ansOptionsDiv").style.display = "none";
         document.getElementById("outputTypeDiv").style.display = "none";
+        document.getElementById("accuracyCheckingInterfaceDiv2").style.display = "block";
     }
 }
 
@@ -107,7 +110,6 @@ function removeDivChildren(div) {
 }
 
 function saveNewTask() {
-
     //first check if the form has been 
 //checkForInputParameters();
 
@@ -128,6 +130,14 @@ function saveNewTask() {
 
     var outputTypeDescription = document.getElementById("outputTypeDescription").value;
     var accuracyCheckingInterface = document.getElementById("accuracyCheckingInterface").value;
+    
+    var accuracyCheckingInterface2 = document.getElementById("accuracyCheckingInterface2").value;
+    //in case the answer type is not interface and the evaluator has custom interface for checking accuracy.
+    if(answerType !== "Interface"){
+        accuracyCheckingInterface = accuracyCheckingInterface2;
+    }
+    
+    
     var emptyFields = false;
     var hasCorrectAns = document.getElementById("hasCorrectAnswer").value;
 
@@ -447,6 +457,10 @@ function saveNewTask() {
 
 
     //  alert ("Im here last pos");
+}
+
+function saveNewTaskXMLFile(){
+    
 }
 
 

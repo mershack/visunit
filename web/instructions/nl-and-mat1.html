@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Nodelink vs Matrix I</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+
+        <style type="text/css">
+
+            body{
+                border-top: 10px solid #663300;
+                border-bottom: 3px solid #663300;
+                margin: 0;
+                padding: 0;
+            }
+            #header{
+                background-color: white;
+                margin: 0px;
+                padding: 0px;
+                height: 100%;
+                border-bottom: 1px solid #663300;
+
+
+            }
+            #header h1{
+                margin:0 30%;
+                padding:0;
+
+            }
+            #header h3{
+                margin:0 20%;
+                padding-top:5px;
+                padding-bottom:10px;
+
+            }
+            #content-wrapper{
+                margin: 0px 200px;               
+
+            }
+            #content-wrapper h2{
+                margin: 30px 20% 20px 20%;
+            }
+            h1{
+                width: 300px;
+                height: 50px;
+                margin-top: 30px;
+                margin-left: 200px;
+                margin-right: 200px;   
+            }
+            li{
+                padding-top: 10px;
+                padding-bottom: 20px;
+            }
+            .grayBackground{
+                background-color: lightGray;
+            }
+            pre{
+                background-color: white;
+                border-left: 2px solid #ccc;
+                margin-left: 20px;
+                padding-left: 20px;
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+
+        <div id="header">
+            <h1>VisUnit</h1>           
+        </div>
+        <div id="content-wrapper">
+
+            <br/><br/>
+            <h2>Node-link vs Matrix I</h2>
+            <img src="nl-vs-mat.png" width="600"/>  
+            <br/><br/>
+            We will follow the following steps to design the study assuming we have
+            the following <a href="graph_lesMiserables_original.html" target="_blank">node-link visualization</a> and 
+            <a href="matrix_original.html" target="_blank">matrix visualization</a>
+            that are based on the Les Miserables dataset <a href="lesmis.html">Les Miserables </a>
+
+
+
+
+
+            <ul>
+                <li><em>
+                        <strong>Creating viewers </strong>  
+                    </em>
+
+
+                    <ul>
+                        <li>
+                            First, we will modify the visualizations by including interface methods 
+                            that will allow VisUnit to manipulate the visualizations for the study.
+
+                            <br/> <br/>
+                            We will include the <em>setDataset(dataseturl) </em>interface method. The <em>setDataset</em>
+                            interface method takes the url of the dataset as a parameter, and 
+                            displays the visualization. 
+
+                            <br/> <br/>
+                            The task we will use in the study require
+                            an input to be passed to the visualization, so we will include
+                            a mutator interface method for that input 
+                            <em>setNode(input)</em>. NB: The name
+                            of the interface method is setNode because the type
+                            of the input is "node".
+                            <br/><br/>
+                            We also want the question of the task to be changed 
+                            slightly for the matrix. So we will
+                            include the <em>changeQuestion(question)</em>
+                            interface method to the matrix visualization. 
+                            The <em>changeQuestion(question)</em>
+                            interface method takes a question and returns 
+                            the modified question. As illustrated in the code below:
+
+                            <pre>
+                                <code>
+           function changeQuestion(question) {   
+                var newquestion = "";
+                if (question === "How many nodes can be reached in one step from the highlighted node?") {
+                    newquestion = "How many black boxes  are on the row highlighted red?";
+                }
+                return newquestion;
+            }
+                                </code>
+                            </pre>
+
+
+
+
+
+
+                            <br/><br/>
+                            The modified code for the node-link and matrix visualizations 
+                            may look like these respectively:  
+
+                            <a href="nodelink_viewer.html" target="_blank"> 
+                                modified-nodelink
+                            </a>, 
+                            <a href="matrix_viewer.html" target="_blank"> 
+                                modified-matrix
+                            </a>.
+                        </li>
+                        <li>
+                            Then we will use the <a href="../add-viewers.html" target="_blank">add new 
+                                viewer form</a> to create a viewer 
+                            directory for the nodelink visualization  and upload the modified nodelink 
+                            file and other supporting files for the visualization 
+                            (<a href="NLViewer.zip">NLViewer.zip</a>)). 
+                            <br/> <br/>
+                            Similarly, create a viewer directory for the matrix and upload the modified matrix file 
+                            and other supporting files (<a href="MATViewer.zip">MATViewer.zip</a>).
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <em><strong>Creating tasks: </strong></em> Use the <a href="../task_creation.html" target="_blank">
+                        new task form
+                    </a>
+                    to create the following task.
+                    Task#1: 
+                    How many nodes are directly connected to the highlighted node?
+
+                    <br /><br />This task can be created from scratch as demonstrated here 
+                    (<a href="instructions/number-of-neighbors.png">task</a>)
+
+                    <br/><br/>
+                    Or by uploading the following xml file
+                    for <a href="numberOfNeighbors_task.xml">task</a> using the upload link on the 
+                    new task form.
+                    <br/> <br/>
+                    <strong>Note: </strong> This task requires an input to be highlighted 
+                    for the task, the type of the input is "node", as such,
+                    the visualizations (i.e. the nodelink and matrix visualizations)
+                    need to include a <em>setNode</em> interface method that 
+                    VisUnit will use to pass the input of each task instance to the visualization.
+                    For example, the interface method for the nodelink can be as follows:                  
+
+                    <pre>
+<code>function setNode(nodeName) {
+		   
+            if (nodeName !== ""){
+		 d3.selectAll("circle")
+                   .style("fill", function(d, i) {
+                      
+                        if (d.name === nodeName) {
+                                return "red";
+                        }                       
+                 });
+	     }           
+        }
+</code>
+                    </pre>
+
+
+                </li>
+                <li>
+                    <em><strong>Upload the dataset </strong></em>
+                    Upload the "miserable.json" dataset 
+                    using the <a href="../add_dataset.html">new dataset form</a>. 
+                </li>                
+                <li>
+                    <em><strong>Creating task instances: </strong></em>
+
+                    Use the upload link on the <a href="../taskInstances_creation.html"> new task Instances form </a>
+                    to upload the following taskInstance xml file as demonstrated in the following image  
+                    (<a href="numberOfNeighbors_taskinstances.xml" target="_blank">xml-file.xml</a> |
+                    <a href="number-of-neighbors-xml-instances.png">image</a>)
+                    <br /><br />
+                    Or it can be created manually using the 
+
+                    <a href="../taskInstances_creation.html"> new task instances form</a>
+                    with the following steps:
+                    <ol>
+                        <li>
+                            Selecting the viewer,
+                            dataset, and task  (<a href="number-of-neighbors-taskinstances_p1.png" target="_blank">image</a>)
+                        </li>
+                        <li>
+                            Providing the sets of task inputs and correct answers 
+                            (<a href="number-of-neighbors-taskinstances_p2.png" target="_blank">image</a>)
+                        </li>
+                    </ol>                    
+                </li>
+                <li><em><strong>Design the study: </strong></em>
+                    Use the <a href="../userstudy_setup.html" target="_blank">study design</a> form to 
+                    design the study as demonstrated in the following images: <br/> <br />
+                    Specify the viewers, experimental design type, and the dataset                    
+                    (<a href="specify-viewers-example2.png" target="_blank">image</a>)
+                    <br/> Specify the introduction file (<a href="specify-intro-example2.png" target="_blank">image</a>)
+                    <br/> Specify the actual tasks (<a href="specify-tasks-example2.png" target="_blank">image</a>)                        
+                </li>
+            </ul>
+        </div>
+    </body>
+</html>

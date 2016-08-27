@@ -15,3 +15,7 @@ shn13	:::	How many adjacent nodes contain the letter B?	:::	Attribute-Based
 shn14	:::	Find the number of nodes on a given path starting with a letter	:::	Browsing-Based
 shn15	:::	Find the number of nodes starting with a letter on all paths between 2 nodes ::: Browsing-Based
 selectMoreInterconnectedCluster2Clusters	:::	Given the two highlighted clusters (red and blue), select the one that is more interconnected ::: Group-based
+selectAllNeighborsOf1Node	:::	Select all the neighbors of the highlighted node	::: Topology-Based
+selectNodeWithHighestDegree2	:::	Select the most connected node	::: Topology-Based 
+enter_turk_id	:::	Please enter your Mechanical Turk ID	::: noGroup
+feedback_comment_issues	:::	Do you have any feedback,comment or what issue did you had in this study?	::: noGroup

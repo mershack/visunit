@@ -21,24 +21,24 @@
 	<viewerheight>800</viewerheight>
 	<task>
 		<name>task1</name>
-		<question>Does $1 has more children than $2?</question>
+		<question>Does $1 have more children than $2?</question>
 		<size>2</size>
 		<time>15</time>
 	</task>
 	<task>
 		<name>task2</name>
-		<question>How many children does $1 has?</question>
+		<question>How many children does $1 have?</question>
 		<size>2</size>
 		<time>15</time>
 	</task>
 	<task>
 		<name>task3</name>
-		<question>Does $1 and $2 belong to the same immediate parent?</question>
+		<question>Do $1 and $2 belong to the same immediate parent?</question>
 		<size>2</size>
 		<time>15</time>
 	</task>
 	<introFile>
-		<introURL>abc</introURL>
+		<introURL>viewX/introduction.html</introURL>
 		<introCond>all</introCond>
 	</introFile>
 	<standardTest>
@@ -48,7 +48,7 @@
 	</standardTest>
 	<preStudyTask>
 		<name>age</name>
-		<question>please input your age, please</question>
+		<question>Please enter your age</question>
 	</preStudyTask>
 	<postStudyTask>
 		<name>experience</name>

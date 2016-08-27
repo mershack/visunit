@@ -1,0 +1,14 @@
+TaskName = Acc_withVisUnit
+condition , Mean , Standard-Deviation
+------------------------------------------------------
+Acc_withVisUnit_cond1 , 42.8 , 7.69415362466854
+Acc_withoutVisUnit_cond2 , 1232 , 1114.4548443073
+******************************************************************
+
+TaskName = Time_howdeepIsANode
+condition , Mean , Standard-Deviation
+------------------------------------------------------
+Time_howdeepIsANode_cond1 , 26.3333333333333 , 27.7031887454615
+Time_howdeepIsANode_cond2 , 1232 , 1114.4548443073
+******************************************************************
+
