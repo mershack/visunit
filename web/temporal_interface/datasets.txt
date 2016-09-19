@@ -1,0 +1,2 @@
+small graph || Undirected graph data, 75 nodes and 120 edges. Some other properties are listed here. || dir1 || file1
+large graph || Undirected graph data, 1000 nodes, 4000 edges. || dir1 || file1

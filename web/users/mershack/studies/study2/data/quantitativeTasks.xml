@@ -26,10 +26,14 @@
 		<time>12</time>
 	</task>
 	<introFile>
+		<name>circ_intro</name>
+		<description>A sample introduction description </description>
 		<introURL>circularDendrogram/introduction.html</introURL>
 		<introCond>all</introCond>
 	</introFile>
 	<standardTest>
+		<standardTestName>Color Blindness</standardTestName>
+		<standardTestDescription>This is a test for color blindness</standardTestDescription>
 		<standardTestURL>ColorBlindnessViewer/color-blind-test.html</standardTestURL>
 		<standardTestUserResponse>getBlindTestAnswers</standardTestUserResponse>
 		<standardTestUserPerformance>validateUserResponse</standardTestUserPerformance>

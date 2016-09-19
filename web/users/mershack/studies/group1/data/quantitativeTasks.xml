@@ -37,14 +37,17 @@
 		<time>25</time>
 	</task>
 	<introFile>
+		<name>group_intro2</name>
+		<description>A sample introduction description2 </description>
 		<introURL>group1_v1/intro_graph_interpLong.html</introURL>
 		<introCond>MAT</introCond>
 	</introFile>
 	<introFile>
+		<name>group_intro</name>
+		<description>A sample introduction description3 </description>
 		<introURL>group1_v1/intro_matrix_interpLong.html</introURL>
 		<introCond>NL</introCond>
-	</introFile>
-	
+	</introFile>	
 	<preStudyTask>
 		<name>enter_turk_id</name>
 		<question>Please enter your Mechanical Turk ID</question>

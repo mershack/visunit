@@ -26,14 +26,11 @@
 		<time>12</time>
 	</task>
 	<introFile>
+		<name>circ_intro</name>
+		<description>A sample introduction description2</description>
 		<introURL>circularDendrogram/introduction.html</introURL>
 		<introCond>all</introCond>
 	</introFile>
-	<standardTest>
-		<standardTestURL></standardTestURL>
-		<standardTestUserResponse></standardTestUserResponse>
-		<standardTestUserPerformance></standardTestUserPerformance>
-	</standardTest>
 	<preStudyTask>
 		<name>age</name>
 		<question>Please Enter your age</question>

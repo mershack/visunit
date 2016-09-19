@@ -1,0 +1,4 @@
+small graph || Graph connection 1 || node link || 5
+small graph || Graph connection 2 || node link || 2 
+large graph || Graph degree 1 || node link || 1
+lage graph || Graph degree 2 || node link || 10

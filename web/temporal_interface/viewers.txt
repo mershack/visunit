@@ -1,0 +1,3 @@
+node link || An interactive node link diagram drawn with D3. || dir1 || file1
+adj matrix || Adjecency matrix, interactive. || dir2 || file1
+flow vis || A flow visualization as in Laidlaw et al.'s study || dir2 || file1 

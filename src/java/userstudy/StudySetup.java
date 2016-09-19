@@ -74,14 +74,59 @@ public class StudySetup extends HttpServlet {
 
             String command = request.getParameter("command");
             String userid = request.getParameter("userid");
-            
-            System.out.println("user id is :: "+ userid);
 
-            System.out.println("command is :: " + command);
+            //System.out.println("user id is :: " + userid);
+            // System.out.println("command is :: " + command);
+            // printTheURL(request);
+            if (command.equalsIgnoreCase("loadDetailsOfAllStudies")) {
+                /**
+                 * We will load all the details of a study and send a JSON
+                 * object back. The format of the object we will send is as
+                 * follows: [{"name" : "study1", "viewers" : ["viewer1",
+                 * "viewer2"], "viewerDesign" : "Within", "datasets" :
+                 * ["dataset1", "dataset2"], "datasetDesign" : "Within", "tasks"
+                 * : [{"name" : "Degree", "count" : "5", "time" : "60",
+                 * "training" : "2"}, {...}], "intros" : [{"name" : "Intro1",
+                 * "match" : "viewer1"}], "tests" : [{"name" : "Test1",
+                 * "interface1" : "inter1", "interface2" : "inter2"}], "width" :
+                 * "100", "height" : "100"} {"name":..., "height": "100"} ]
+                 *
+                 */
 
-            printTheURL(request);
+                //use a default Login for now. 
+                //TODO: userid's should be taken from session ids.
+                // System.out.println("I'm here");
+                userid = "mershack";
 
-            if (command.equalsIgnoreCase("getManagementCommand")) {
+                //load all the study names.
+                String studiesURL = "users" + File.separator + userid + File.separator
+                        + "studies";
+
+                File f = new File(getServletContext().getRealPath(studiesURL));
+
+                File[] files = f.listFiles();
+
+                String jsonOfAllStudies = "[";  //beginning of the json array.
+
+                if (files != null) {
+                    for (int i = 0; i < files.length; i++) {
+                        if (i == 0) {
+                            jsonOfAllStudies += "\n\t" + loadExistingStudyDetails(files[i].getName(), userid);
+                        } else {
+                            jsonOfAllStudies += ",\n\t" + loadExistingStudyDetails(files[i].getName(), userid);
+                        }
+                    }
+                }
+                jsonOfAllStudies += "\n]";  //end of the json array.
+
+                System.out.println(jsonOfAllStudies);
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+
+                out2.print(jsonOfAllStudies);
+
+            } else if (command.equalsIgnoreCase("getManagementCommand")) {
                 String mc = spmts.getManagementCommand();
 
                 spmts.setManagementCommand("");
@@ -99,7 +144,6 @@ public class StudySetup extends HttpServlet {
                 //load all the study names.
                 String studiesURL = "users" + File.separator + userid + File.separator
                         + "studies";
-
                 File f = new File(getServletContext().getRealPath(studiesURL));
 
                 File[] files = f.listFiles();
@@ -108,7 +152,6 @@ public class StudySetup extends HttpServlet {
 
                 if (files != null) {
                     for (int i = 0; i < files.length; i++) {
-
                         if (i == 0) {
                             allNames = files[i].getName();
                         } else {
@@ -170,180 +213,31 @@ public class StudySetup extends HttpServlet {
                 view.forward(request, response);
 
             } else if (command.equalsIgnoreCase("loadExistingStudyDetails")) {
-               // out.print(spmts.studyname);
-
                 //load the xml file of the study, read it and convert it into 
-                // a json file and return.
+                // a json file and return the file name.
+
+                String jsonFilename = "users" + File.separator + userid + File.separator
+                        + "studies" + File.separator + spmts.studyname
+                        + File.separator + "data" + File.separator + "jsonFile.json";
+
+                File jsonFile = new File(
+                        getServletContext().getRealPath(jsonFilename));
+                FileWriter fw = new FileWriter(jsonFile);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter pw = new PrintWriter(bw);
+
                 try {
-
-                    String studyDetailsUrl = "users" + File.separator + userid + File.separator
-                            + "studies" + File.separator + spmts.studyname
-                            + File.separator + "data" + File.separator
-                            + "quantitativeTasks.xml";
-
-                    File xmlFile = new File(getServletContext().getRealPath(studyDetailsUrl));
-                    DocumentBuilderFactory dbFactory2 = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder dBuilder2 = dbFactory2.newDocumentBuilder();
-                    Document doc = dBuilder2.parse(xmlFile);
-                    doc.getDocumentElement().normalize();
-                    // NodeList taskNodes = doc.getElementsByTagName("task");
-
-                    ArrayList<TaskDetails> tds = new ArrayList<TaskDetails>();
-                    String experimentType_vis = "";
-                    String experimentType_ds = "";
-                    ArrayList<String> conditionurl = new ArrayList<String>();
-                    ArrayList<String> conditionShortNames = new ArrayList<String>();
-
-                    String viewerWidth = "";
-                    String viewerHeight = "";
-                    String dataset = "";
-                    String datasetFormat = "";
-                    String trainingSize = "";
-
-                    //get the dataset
-                    //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-                    NodeList taskNodes = doc.getElementsByTagName("task");
-                    NodeList datasetNode = doc.getElementsByTagName("dataset");
-                    NodeList datasetFormatNode = doc.getElementsByTagName("datasetFormat");
-                    // NodeList datasetTypeNode = doc.getElementsByTagName("datasetType");
-                    NodeList experimentTypeNode_vis = doc.getElementsByTagName("experimenttype_vis");
-                    NodeList experimentTypeNode_ds = doc.getElementsByTagName("experimenttype_ds");
-
-                    NodeList conditionNode = doc.getElementsByTagName("condition");
-                    NodeList viewerwidthNode = doc.getElementsByTagName("viewerwidth");
-                    NodeList viewerheightNode = doc.getElementsByTagName("viewerheight");
-                    NodeList trainingSizeNode = doc.getElementsByTagName("trainingsize");
-
-                    dataset = ((Element) datasetNode.item(0)).getTextContent();
-                    datasetFormat = ((Element) datasetFormatNode.item(0)).getTextContent();
-                    experimentType_vis = ((Element) experimentTypeNode_vis.item(0)).getTextContent();
-                    experimentType_ds = ((Element) experimentTypeNode_ds.item(0)).getTextContent();
-
-                    viewerWidth = ((Element) viewerwidthNode.item(0)).getTextContent();
-                    viewerHeight = ((Element) viewerheightNode.item(0)).getTextContent();
-                    trainingSize = ((Element) trainingSizeNode.item(0)).getTextContent();
-
-                    // dataset = eElement.getElementsByTagName("taskquestion").item(0).getTextContent();
-                    for (int i = 0; i < taskNodes.getLength(); i++) {
-                        Node tNode = taskNodes.item(i);
-
-                        String tname = "";
-                        String question = "";
-                        String size = "";
-                        String time = "";
-
-                        if (tNode.getNodeType() == Node.ELEMENT_NODE) {
-                            Element eElement = (Element) tNode;
-                            //get the details of the task.
-                            tname = eElement.getElementsByTagName("name").item(0).getTextContent();
-                            question = eElement.getElementsByTagName("question").item(0).getTextContent();
-                            size = eElement.getElementsByTagName("size").item(0).getTextContent();
-                            time = eElement.getElementsByTagName("time").item(0).getTextContent();
-                        }
-
-                        //create and add the tasks.                      
-                        TaskDetails td = new TaskDetails(tname, question, size, time);
-                        tds.add(td);
-
-                    }
-                    //conditions
-                    for (int i = 0; i < conditionNode.getLength(); i++) {
-                        Node cNode = conditionNode.item(i);
-
-                        String url = "";
-                        String shortname = "";
-
-                        if (cNode.getNodeType() == Node.ELEMENT_NODE) {
-                            Element eElement = (Element) cNode;
-
-                            System.out.println(eElement.getElementsByTagName("conditionurl").getLength());
-                            //get the details of the task.
-                            url = eElement.getElementsByTagName("conditionurl").item(0).getTextContent();
-
-                            shortname = eElement.getElementsByTagName("conditionshortname").item(0).getTextContent();
-                        }
-                        conditionurl.add(url);
-                        conditionShortNames.add(shortname);
-                    }
-                    //now compose a json object and send it to the viewer.
-
-                    String jsonFilename = "users" + File.separator + userid + File.separator
-                            + "studies" + File.separator + spmts.studyname
-                            + File.separator + "data" + File.separator + "jsonFile.json";
-
-                    File jsonFile = new File(
-                            getServletContext().getRealPath(jsonFilename));
-
-                    /*   if(!jsonFile.exists()){
-                     jsonFile.createNewFile();
-                     }*/
-                    FileWriter fw = new FileWriter(jsonFile);
-                    BufferedWriter bw = new BufferedWriter(fw);
-                    PrintWriter pw = new PrintWriter(bw);
-
-                    pw.print("{");
-                    pw.print("\"name\":\"" + spmts.studyname + "\"");
-                    pw.print(",\"dataset\":\"" + dataset + "\"");
-                    pw.print(",\"datasetFormat\":\"" + datasetFormat + "\"");
-                    pw.print(",\"experimentType_vis\":\"" + experimentType_vis + "\"");
-                    pw.print(",\"experimentType_ds\":\"" + experimentType_ds + "\"");
-                    pw.print(",\"viewerWidth\":\"" + viewerWidth + "\"");
-                    pw.print(",\"viewerHeight\":\"" + viewerHeight + "\"");
-                    pw.print(",\"trainingSize\":\"" + trainingSize + "\"");
-
-                    //get the conditions also
-                    pw.print(",\"conditions\": [");
-                    for (int i = 0; i < conditionurl.size(); i++) {
-                        if (i == 0) {
-                            pw.print("{\"url\": \"" + conditionurl.get(i) + "\""
-                                    + ",\"shortname\": \"" + conditionShortNames.get(i) + "\"}");
-
-                        } else {
-                            pw.print(",{\"url\": \"" + conditionurl.get(i) + "\""
-                                    + ",\"shortname\": \"" + conditionShortNames.get(i) + "\"}");
-
-                        }
-                    }
-                    pw.print("]");
-
-                    //get the tasks also
-                    pw.print(",\"tasks\": [");
-                    for (int i = 0; i < tds.size(); i++) {
-                        TaskDetails td = tds.get(i);
-                        if (i == 0) {
-                            //name, question, size, time
-                            pw.print("{\"name\": \"" + td.getTaskname() + "\""
-                                    + ",\"question\": \"" + td.getTaskQuestion() + "\""
-                                    + ",\"size\": \"" + td.getQuestionSize() + "\""
-                                    + ",\"time\": \"" + td.getTime() + "\""
-                                    + "}");
-
-                        } else {
-                            pw.print(",{\"name\": \"" + td.getTaskname() + "\""
-                                    + ",\"question\": \"" + td.getTaskQuestion() + "\""
-                                    + ",\"size\": \"" + td.getQuestionSize() + "\""
-                                    + ",\"time\": \"" + td.getTime() + "\""
-                                    + "}");
-
-                        }
-                    }
-                    pw.print("]");
-
-                    pw.print("}");
-
-                    //we will be sending the json along
-                    String jsonFileName2 = getServerUrl(request) + "/users/" + userid
-                            + "/studies/" + spmts.studyname
-                            + "/data/" + "jsonFile.json";
-
-                    //   System.out.println(getServletContext().getRealPath(jsonFileName2));
-                    pw.close();
-                    bw.close();
-                    out.print(jsonFileName2);
+                    //get the study details as a json string.
+                    String jsonString = loadExistingStudyDetails(spmts.studyname, userid);
+                    pw.print(jsonString);
 
                 } catch (Exception ex) {
                     ex.printStackTrace();
+                } finally {
+                    pw.close();
+                    fw.close();
                 }
+                out.print(jsonFile);
 
             } else if (command.equalsIgnoreCase("Demo") || command.equalsIgnoreCase("Submit")) {
                 //get the ViewerConditions
@@ -599,6 +493,304 @@ public class StudySetup extends HttpServlet {
         }
 
         return studyname;
+    }
+
+    public String loadExistingStudyDetails(String studyname, String userid) {
+
+        String jsonStr = "";
+        try {
+
+            String studyDetailsUrl = "users" + File.separator + userid + File.separator
+                    + "studies" + File.separator + studyname
+                    + File.separator + "data" + File.separator
+                    + "quantitativeTasks.xml";
+
+            File xmlFile = new File(getServletContext().getRealPath(studyDetailsUrl));
+            DocumentBuilderFactory dbFactory2 = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder2 = dbFactory2.newDocumentBuilder();
+            Document doc = dBuilder2.parse(xmlFile);
+            doc.getDocumentElement().normalize();
+            // NodeList taskNodes = doc.getElementsByTagName("task");
+
+            ArrayList<TaskDetails> tds = new ArrayList<TaskDetails>();
+            String experimentType_vis = "";
+            String experimentType_ds = "";
+            ArrayList<String> conditionurl = new ArrayList<String>();
+            ArrayList<String> conditionShortNames = new ArrayList<String>();
+            ArrayList<String> datasets = new ArrayList<String>();
+
+            String viewerWidth = "";
+            String viewerHeight = "";
+            // String dataset = "";
+            //String datasetFormat = "";
+            String trainingSize = "";
+
+            //get the dataset
+            //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+            NodeList taskNodes = doc.getElementsByTagName("task");
+            //NodeList datasetNode = doc.getElementsByTagName("dataset");
+            //NodeList datasetFormatNode = doc.getElementsByTagName("datasetFormat");
+            //NodeList datasetTypeNode = doc.getElementsByTagName("datasetType");
+            NodeList experimentTypeNode_vis = doc.getElementsByTagName("experimenttype_vis");
+            NodeList experimentTypeNode_ds = doc.getElementsByTagName("experimenttype_ds");
+
+            NodeList conditionNode = doc.getElementsByTagName("condition");
+            NodeList viewerwidthNode = doc.getElementsByTagName("viewerwidth");
+            NodeList viewerheightNode = doc.getElementsByTagName("viewerheight");
+            NodeList trainingSizeNode = doc.getElementsByTagName("trainingsize");
+            NodeList datasetConditionsNode = doc.getElementsByTagName("datasetCondition");
+            NodeList introFilesNode = doc.getElementsByTagName("introFile");
+            NodeList standardTestsNode = doc.getElementsByTagName("standardTest");
+
+            /* do the datasets */
+            ArrayList<String> datasetNames = new ArrayList<String>();
+            ArrayList<String> datasetFormats = new ArrayList<String>();
+
+            //if there are datasets do the following:
+            if (datasetConditionsNode != null) {
+                ArrayList<String> durl = new ArrayList<String>();
+                for (int i = 0; i < datasetConditionsNode.getLength(); i++) {
+                    Node nNode = datasetConditionsNode.item(i);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eElement = (Element) nNode;
+
+                        String datasetName = eElement.getElementsByTagName("dataset").item(0).getTextContent();
+                        String datasetFormat = eElement.getElementsByTagName("datasetFormat").item(0).getTextContent();
+                        String datasetType = eElement.getElementsByTagName("datasetType").item(0).getTextContent();
+
+                        datasetNames.add(datasetName);
+                        datasetFormats.add(datasetFormat);
+                    }
+                }
+            }
+
+            //do the intro Files.
+            ArrayList<String> introFiles = new ArrayList<String>();
+            ArrayList<String> introDirectories = new ArrayList<String>();
+
+            ArrayList<String> introConds = new ArrayList<String>();
+            ArrayList<String> introNames = new ArrayList<String>();
+            ArrayList<String> introDesc = new ArrayList<String>();
+            //if there are intro files do the following.
+            if (introFilesNode != null) {
+                for (int i = 0; i < introFilesNode.getLength(); i++) {
+
+                    Node nNode = introFilesNode.item(i);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eElement = (Element) nNode;
+
+                        String introName = eElement.getElementsByTagName("name").item(0).getTextContent();
+                        String introUrl = eElement.getElementsByTagName("introURL").item(0).getTextContent();
+
+                        String introDir = introUrl.split("/")[0];
+                        String introFile = introUrl.split("/")[1];
+
+                        String introCond = eElement.getElementsByTagName("introCond").item(0).getTextContent();
+                        String desc = eElement.getElementsByTagName("description").item(0).getTextContent();
+
+                        introNames.add(introName);
+                        introDirectories.add(introDir);
+                        introFiles.add(introFile);
+                        introConds.add(introCond);
+                        introDesc.add(desc);
+
+                    }
+
+                }
+            }
+
+            //do the standard tests
+            ArrayList<String> testNames = new ArrayList<String>();
+            ArrayList<String> testDescriptions = new ArrayList<String>();
+            ArrayList<String> testDirectories = new ArrayList<String>();
+            ArrayList<String> testFiles = new ArrayList<String>();
+            if (standardTestsNode != null) {
+                for (int i = 0; i < standardTestsNode.getLength(); i++) {
+
+                    Node nNode = standardTestsNode.item(i);
+                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eElement = (Element) nNode;
+
+                        String testName = eElement.getElementsByTagName("standardTestName").item(0).getTextContent();
+                        String testDescription = eElement.getElementsByTagName("standardTestDescription").item(0).getTextContent();
+
+                        String url = eElement.getElementsByTagName("standardTestURL").item(0).getTextContent();
+
+                        String testDirectory = url.split("/")[0];
+                        String testFile = url.split("/")[1];
+
+                        testNames.add(testName);
+                        testDescriptions.add(testDescription);
+                        testDirectories.add(testDirectory);
+                        testFiles.add(testFile);
+                    }
+                }
+            }
+
+            experimentType_vis = ((Element) experimentTypeNode_vis.item(0)).getTextContent();
+            experimentType_ds = ((Element) experimentTypeNode_ds.item(0)).getTextContent();
+
+            viewerWidth = ((Element) viewerwidthNode.item(0)).getTextContent();
+            viewerHeight = ((Element) viewerheightNode.item(0)).getTextContent();
+            trainingSize = ((Element) trainingSizeNode.item(0)).getTextContent();
+
+            // dataset = eElement.getElementsByTagName("taskquestion").item(0).getTextContent();
+            for (int i = 0; i < taskNodes.getLength(); i++) {
+                Node tNode = taskNodes.item(i);
+                String tname = "";
+                String question = "";
+                String size = "";
+                String time = "";
+                if (tNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) tNode;
+                    //get the details of the task.
+                    tname = eElement.getElementsByTagName("name").item(0).getTextContent();
+                    question = eElement.getElementsByTagName("question").item(0).getTextContent();
+                    size = eElement.getElementsByTagName("size").item(0).getTextContent();
+                    time = eElement.getElementsByTagName("time").item(0).getTextContent();
+                }
+
+                //create and add the tasks.                      
+                TaskDetails td = new TaskDetails(tname, question, size, time);
+                tds.add(td);
+
+            }
+            //conditions
+            for (int i = 0; i < conditionNode.getLength(); i++) {
+                Node cNode = conditionNode.item(i);
+
+                String url = "";
+                String shortname = "";
+
+                if (cNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) cNode;
+
+                    // System.out.println(eElement.getElementsByTagName("conditionurl").getLength());
+                    //get the details of the task.
+                    url = eElement.getElementsByTagName("conditionurl").item(0).getTextContent();
+
+                    shortname = eElement.getElementsByTagName("conditionshortname").item(0).getTextContent();
+                }
+                conditionurl.add(url);
+                conditionShortNames.add(shortname);
+            }
+
+            //now compose a json object and send it to the viewer.
+            jsonStr = "{";
+            jsonStr += "\"name\":\"" + studyname + "\"";
+            /*  jsonStr += ",\"dataset\":\"" + dataset + "\"";
+             jsonStr += ",\"datasetFormat\":\"" + datasetFormat + "\"";   */
+            jsonStr += ",\"viewerDesign\":\"" + experimentType_vis + "\"";
+            jsonStr += ",\"dataDesign\":\"" + experimentType_ds + "\"";
+            jsonStr += ",\"viewerWidth\":\"" + viewerWidth + "\"";
+            jsonStr += ",\"viewerHeight\":\"" + viewerHeight + "\"";
+            jsonStr += ",\"trainingSize\":\"" + trainingSize + "\"";
+
+            //get the conditions also
+            jsonStr += ",\"conditions\": [";
+            for (int i = 0; i < conditionurl.size(); i++) {
+                if (i == 0) {
+                    jsonStr += "{\"url\": \"" + conditionurl.get(i) + "\""
+                            + ",\"shortname\": \"" + conditionShortNames.get(i) + "\"}";
+
+                } else {
+                    jsonStr += ",{\"url\": \"" + conditionurl.get(i) + "\""
+                            + ",\"shortname\": \"" + conditionShortNames.get(i) + "\"}";
+
+                }
+            }
+            jsonStr += "]";
+
+            //get the datasets also
+            jsonStr += ",\"datasets\": [";
+            for (int i = 0; i < datasetNames.size(); i++) {
+
+                if (i == 0) {
+                    jsonStr += "{\"name\": \"" + datasetNames.get(i) + "\""
+                            + ",\"format\": \"" + datasetFormats.get(i) + "\"}";
+                } else {
+                    jsonStr += ",{\"name\": \"" + datasetNames.get(i) + "\""
+                            + ",\"format\": \"" + datasetFormats.get(i) + "\"}";
+                }
+            }
+            jsonStr += "]";
+
+            //get the introductions also
+           jsonStr += ",\"intros\": [";
+           System.out.println(introNames.size());
+           System.out.println(introDesc.size());
+           
+            for (int i = 0; i < introNames.size(); i++) {
+                if (i == 0) {
+                    jsonStr += "{\"name\": \"" + introNames.get(i) + "\""
+                            + ",\"directory\": \"" + introDirectories.get(i) + "\""
+                            + ",\"file\": \"" + introFiles.get(i) + "\""
+                            + ",\"cond\": \"" + introConds.get(i) + "\""
+                            + ", \"description\": \"" + introDesc.get(i).trim() + "\"}";
+                } else {
+                    jsonStr += ",{\"name\": \"" + introNames.get(i) + "\""
+                            + ",\"directory\": \"" + introDirectories.get(i) + "\""
+                            + ",\"file\": \"" + introFiles.get(i) + "\""
+                            + ",\"cond\": \"" + introConds.get(i) + "\""
+                            + ", \"description\": \"" + introDesc.get(i).trim() + "\"}";
+                }
+            }
+            jsonStr += "]"; 
+
+            //get standardTest 
+          jsonStr += ",\"standardTests\": [";
+            for (int i = 0; i < testNames.size(); i++) {
+                if (i == 0) {
+                    jsonStr += "{\"name\": \"" + testNames.get(i) + "\""
+                            + ",\"description\": \"" + testDescriptions.get(i) + "\""
+                            + ",\"directory\": \"" + testDirectories.get(i) + "\""
+                            + ",\"file\": \"" + testFiles.get(i) + "\"}";
+                } else {
+                    jsonStr += ",{\"name\": \"" + testNames.get(i) + "\""
+                            + ",\"description\": \"" + testDescriptions.get(i) + "\""
+                            + ",\"directory\": \"" + testDirectories.get(i) + "\""
+                            + ",\"file\": \"" + testFiles.get(i) + "\"}";
+                }
+            }
+            jsonStr += "]"; 
+
+            //get the tasks also
+            jsonStr += ",\"tasks\": [";
+            for (int i = 0; i < tds.size(); i++) {
+                TaskDetails td = tds.get(i);
+                if (i == 0) {
+                    //name, question, size, time
+                    jsonStr += "{\"name\": \"" + td.getTaskname() + "\""
+                            + ",\"question\": \"" + td.getTaskQuestion() + "\""
+                            + ",\"size\": \"" + td.getQuestionSize() + "\""
+                            + ",\"time\": \"" + td.getTime() + "\""
+                            + "}";
+
+                } else {
+                    jsonStr += ",{\"name\": \"" + td.getTaskname() + "\""
+                            + ",\"question\": \"" + td.getTaskQuestion() + "\""
+                            + ",\"size\": \"" + td.getQuestionSize() + "\""
+                            + ",\"time\": \"" + td.getTime() + "\""
+                            + "}";
+
+                }
+            }
+            jsonStr += "]";
+
+            jsonStr += "}";
+
+                    //we will be sending the json along
+                   /* String jsonFileName2 = getServerUrl(request) + "/users/" + userid
+             + "/studies/" + spmts.studyname
+             + "/data/" + "jsonFile.json";   */
+            //   System.out.println(getServletContext().getRealPath(jsonFileName2));
+                   /* pw.close();
+             bw.close();  */
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return jsonStr;
     }
 
     public void writeTasksToFile(StudySetupParameters spmts, String userid) {

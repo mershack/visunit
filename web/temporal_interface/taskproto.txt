@@ -1,0 +1,2 @@
+Graph connection 1 || Description of graph connection 1 || Are two named nodes in a graph connected? || 1 || node || description of input 1 || no || no || Options(fixed) || 2 || option1 || option2 || yes
+Graph connection 2 || Description of graph connection 2 || Are two highlighted nodes in a graph visualization connected? || 1 || screenrect || description of input 1 || no || no || Interface/Custom || node || no
