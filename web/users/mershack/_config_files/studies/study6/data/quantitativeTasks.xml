@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+	<study_specification>
+	<studyname>study6</studyname>
+	<experimenttype_vis>Between</experimenttype_vis>
+	<experimenttype_ds></experimenttype_ds>
+	<trainingsize>2</trainingsize>
+	<condition>
+		<conditionurl>tree_map/treemap.html</conditionurl>
+		<conditionshortname>treemap</conditionshortname>
+	</condition>
+	<condition>
+		<conditionurl>rectangle/rectangle.html</conditionurl>
+		<conditionshortname>rect</conditionshortname>
+	</condition>
+	<viewerwidth>860</viewerwidth>
+	<viewerheight>800</viewerheight>
+	<task>
+		<name>whichIsSmaller</name>
+		<question>Which of the two rectangles (marked A or B) is smaller?</question>
+		<size>4</size>
+		<time>10</time>
+		<trainingsize>2</trainingsize>
+		
+	</task>
+	<task>
+		<name>estimatePercentage</name>
+		<question>Estimate the percentage of the smaller rectangle to the larger one</question>
+		<size>4</size>
+		<time>10</time>
+		<trainingsize>2</trainingsize>
+	</task>
+	<introFile>
+		<name>circ_intro</name>
+		<description>A sample introduction description </description>
+		<introURL>rectangle/introduction.html</introURL>
+		<introCond>all</introCond>
+	</introFile>	
+</study_specification>

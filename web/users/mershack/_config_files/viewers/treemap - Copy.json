@@ -1,0 +1,8 @@
+{
+  "name": "treemap",
+  "description": "A treemap viewer",
+  "sourceDirectory": "tree_map",
+  "sourceFile": "treemap.html"  
+}
+
+

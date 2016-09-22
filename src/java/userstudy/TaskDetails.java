@@ -5,6 +5,7 @@ package userstudy;
  * @author Mershack
  */
 public class TaskDetails {
+
     private String taskname;
     private String taskQuestion;
     private String accuracyCheckingInterface;
@@ -16,37 +17,40 @@ public class TaskDetails {
     private String inputSize;
     private String hasCorrectAnswer;
     private String questionSize;
-    
+    private String trainingSize;
+
     private String time;
-      
-    public TaskDetails(String tname, String question, String size, String time ){
+
+    public TaskDetails(String tname, String question, String size, String time, String trainingSize) {
         taskname = tname;
         taskQuestion = question;
         questionSize = size;
-        this.time =time;
-        
+        this.time = time;
+        this.trainingSize = trainingSize;
     }
-    
-    public void setQuestionSize(String qs){
+
+    public void setQuestionSize(String qs) {
         questionSize = qs;
     }
-    public String getQuestionSize(){
+
+    public String getQuestionSize() {
         return questionSize;
     }
-    
-    public void setTime(String t){
+
+    public void setTime(String t) {
         time = t;
     }
-    public String getTime(){
+
+    public String getTime() {
         return time;
     }
-    
+
     public TaskDetails(String taskname, String taskQuestion, String accuracyCheckingInterface,
             String outputType, String outputTypeDescription, String inputTypes,
-            String taskDescription, String answerType, String inputSize, String hasCorrectAnswer){
-        
+            String taskDescription, String answerType, String inputSize, String hasCorrectAnswer) {
+
         this.taskname = taskname;
-        this. taskQuestion = taskQuestion;
+        this.taskQuestion = taskQuestion;
         this.accuracyCheckingInterface = accuracyCheckingInterface;
         this.outputType = outputType;
         this.outputTypeDescription = outputTypeDescription;
@@ -54,7 +58,7 @@ public class TaskDetails {
         this.taskDescription = taskDescription;
         this.answerType = answerType;
         this.inputSize = inputSize;
-        this.hasCorrectAnswer = hasCorrectAnswer;        
+        this.hasCorrectAnswer = hasCorrectAnswer;
     }
 
     public String getTaskname() {
@@ -107,6 +111,7 @@ public class TaskDetails {
 
     /**
      * getting the task description
+     *
      * @return the task description value
      */
     public String getTaskDescription() {
@@ -115,6 +120,7 @@ public class TaskDetails {
 
     /**
      * setting the task Description of the file
+     *
      * @param taskDescription the description
      */
     public void setTaskDescription(String taskDescription) {
@@ -140,17 +146,28 @@ public class TaskDetails {
     public void setInputSize(String inputSize) {
         this.inputSize = inputSize;
     }
+
     //setting the task type
-    public void setHasCorrectAnswer(String ttype){
+    public void setHasCorrectAnswer(String ttype) {
         hasCorrectAnswer = ttype;
     }
-    
+
     //getting the task type
-    public String getHasCorrectAnswer(){
+    public String getHasCorrectAnswer() {
         return hasCorrectAnswer;
     }
+
+    public boolean hasCorrectAnswer() {
+        return hasCorrectAnswer.equalsIgnoreCase("yes");
+    }
+
+    public String getTrainingSize() {
+        return trainingSize;
+    }
+
+    public void setTrainingSize(String trainingSize) {
+        this.trainingSize = trainingSize;
+    }
     
-    public boolean hasCorrectAnswer(){        
-        return hasCorrectAnswer.equalsIgnoreCase("yes");        
-    }    
+    
 }

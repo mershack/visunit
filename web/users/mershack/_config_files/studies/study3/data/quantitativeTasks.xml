@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<study_specification>
+<datasetCondition>
+		<dataset>miserables</dataset>
+		<datasetType>System_Datasets</datasetType>
+		<datasetFormat>.json</datasetFormat>
+</datasetCondition>	
+<studyname>study3</studyname>
+<experimenttype_vis>Between</experimenttype_vis>
+<experimenttype_ds>Between</experimenttype_ds>
+<trainingsize>2</trainingsize>
+<condition>
+	<conditionurl>s1_v1/graph_lesMiserables.html</conditionurl>
+	<conditionshortname>graph</conditionshortname>
+</condition>
+<condition>
+	<conditionurl>s1_v1/matrix.html</conditionurl>
+	<conditionshortname>matrix</conditionshortname>
+</condition>
+<viewerwidth>860</viewerwidth>
+<viewerheight>800</viewerheight>
+<task>
+	<name>neighborCount</name>
+	<question>How many nodes can be reached in one step from the highlighted node?</question>
+	<size>20</size>
+	<time>10</time>
+	<trainingsize>2</trainingsize>
+</task>
+<introFile>
+    <name>intro1</name>
+	<description>A sample introduction description2</description>
+	<introURL>s1_v1/introduction2.html</introURL>
+	<introCond>all</introCond>
+</introFile>
+
+</study_specification>

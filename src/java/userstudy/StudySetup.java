@@ -100,7 +100,7 @@ public class StudySetup extends HttpServlet {
 
                 //load all the study names.
                 String studiesURL = "users" + File.separator + userid + File.separator
-                        + "studies";
+                        + "_config_files" + File.separator + "studies";
 
                 File f = new File(getServletContext().getRealPath(studiesURL));
 
@@ -125,6 +125,54 @@ public class StudySetup extends HttpServlet {
                 PrintWriter out2 = response.getWriter();
 
                 out2.print(jsonOfAllStudies);
+
+            } else if (command.equalsIgnoreCase("loadDirectories")) {
+                /*We will load all the directories of the user, and return a JSON
+                 file that contains all the existing directories.
+                 */
+                userid = "mershack";
+
+                //load all the directories the user has created.
+                String userDirsURL = "users" + File.separator + userid;
+
+                File f = new File(getServletContext().getRealPath(userDirsURL));
+
+                File[] files = f.listFiles();
+
+                int dirCount = 0;
+
+                String jsonOfAllDirectories = "[";  //beginning of the json array.
+
+                if (files != null) {
+                    for (int i = 0; i < files.length; i++) {
+                        String jsonOfADir = "";
+                        //check if it is a directory and not the _config_files directory.
+                        if (files[i].isDirectory() && !files[i].getName().equalsIgnoreCase("_config_files")) {
+                            //System.out.println(loadDirectories(files[i].getName(), userid));
+
+                        //    System.out.println("*** "+ loadDirectories(files[i].getName(), userid));
+                            
+                            if (dirCount == 0) { //if this is the first directory we've found
+                                jsonOfAllDirectories += "\n\t" + loadDirectories(files[i].getName(), userid);
+                                
+                                
+                            } else {
+                                jsonOfAllDirectories += ",\n\t" + loadDirectories(files[i].getName(), userid);
+                            }
+
+                            dirCount++;
+                        }
+
+                    }
+                }
+
+                jsonOfAllDirectories += "\n]";  //end of the json array.
+
+                System.out.println(jsonOfAllDirectories);
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+
+                out2.print(jsonOfAllDirectories);
 
             } else if (command.equalsIgnoreCase("getManagementCommand")) {
                 String mc = spmts.getManagementCommand();
@@ -501,6 +549,7 @@ public class StudySetup extends HttpServlet {
         try {
 
             String studyDetailsUrl = "users" + File.separator + userid + File.separator
+                    + "_config_files" + File.separator
                     + "studies" + File.separator + studyname
                     + File.separator + "data" + File.separator
                     + "quantitativeTasks.xml";
@@ -515,7 +564,10 @@ public class StudySetup extends HttpServlet {
             ArrayList<TaskDetails> tds = new ArrayList<TaskDetails>();
             String experimentType_vis = "";
             String experimentType_ds = "";
-            ArrayList<String> conditionurl = new ArrayList<String>();
+            //ArrayList<String> conditionurl = new ArrayList<String>();
+            ArrayList<String> conditionDirs = new ArrayList<String>();
+            ArrayList<String> conditionFiles = new ArrayList<String>();
+
             ArrayList<String> conditionShortNames = new ArrayList<String>();
             ArrayList<String> datasets = new ArrayList<String>();
 
@@ -523,7 +575,7 @@ public class StudySetup extends HttpServlet {
             String viewerHeight = "";
             // String dataset = "";
             //String datasetFormat = "";
-            String trainingSize = "";
+            //String trainingSize = "";
 
             //get the dataset
             //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
@@ -537,7 +589,7 @@ public class StudySetup extends HttpServlet {
             NodeList conditionNode = doc.getElementsByTagName("condition");
             NodeList viewerwidthNode = doc.getElementsByTagName("viewerwidth");
             NodeList viewerheightNode = doc.getElementsByTagName("viewerheight");
-            NodeList trainingSizeNode = doc.getElementsByTagName("trainingsize");
+            //NodeList trainingSizeNode = doc.getElementsByTagName("trainingsize");
             NodeList datasetConditionsNode = doc.getElementsByTagName("datasetCondition");
             NodeList introFilesNode = doc.getElementsByTagName("introFile");
             NodeList standardTestsNode = doc.getElementsByTagName("standardTest");
@@ -604,6 +656,12 @@ public class StudySetup extends HttpServlet {
             ArrayList<String> testDescriptions = new ArrayList<String>();
             ArrayList<String> testDirectories = new ArrayList<String>();
             ArrayList<String> testFiles = new ArrayList<String>();
+            ArrayList<String> testResponses = new ArrayList<String>();
+            ArrayList<String> testResponseValidations = new ArrayList<String>();
+
+            /*         <standardTestUserResponse>getBlindTestAnswers</standardTestUserResponse>
+             <standardTestUserPerformance>validateUserResponse</standardTestUserPerformance>
+             */
             if (standardTestsNode != null) {
                 for (int i = 0; i < standardTestsNode.getLength(); i++) {
 
@@ -613,8 +671,10 @@ public class StudySetup extends HttpServlet {
 
                         String testName = eElement.getElementsByTagName("standardTestName").item(0).getTextContent();
                         String testDescription = eElement.getElementsByTagName("standardTestDescription").item(0).getTextContent();
-
                         String url = eElement.getElementsByTagName("standardTestURL").item(0).getTextContent();
+
+                        String testResponse = eElement.getElementsByTagName("standardTestUserResponse").item(0).getTextContent();
+                        String testValidation = eElement.getElementsByTagName("standardTestUserPerformance").item(0).getTextContent();
 
                         String testDirectory = url.split("/")[0];
                         String testFile = url.split("/")[1];
@@ -623,6 +683,8 @@ public class StudySetup extends HttpServlet {
                         testDescriptions.add(testDescription);
                         testDirectories.add(testDirectory);
                         testFiles.add(testFile);
+                        testResponses.add(testResponse);
+                        testResponseValidations.add(testValidation);
                     }
                 }
             }
@@ -632,7 +694,7 @@ public class StudySetup extends HttpServlet {
 
             viewerWidth = ((Element) viewerwidthNode.item(0)).getTextContent();
             viewerHeight = ((Element) viewerheightNode.item(0)).getTextContent();
-            trainingSize = ((Element) trainingSizeNode.item(0)).getTextContent();
+//            trainingSize = ((Element) trainingSizeNode.item(0)).getTextContent();
 
             // dataset = eElement.getElementsByTagName("taskquestion").item(0).getTextContent();
             for (int i = 0; i < taskNodes.getLength(); i++) {
@@ -641,6 +703,8 @@ public class StudySetup extends HttpServlet {
                 String question = "";
                 String size = "";
                 String time = "";
+                String trainingSize = "";
+
                 if (tNode.getNodeType() == Node.ELEMENT_NODE) {
                     Element eElement = (Element) tNode;
                     //get the details of the task.
@@ -648,10 +712,11 @@ public class StudySetup extends HttpServlet {
                     question = eElement.getElementsByTagName("question").item(0).getTextContent();
                     size = eElement.getElementsByTagName("size").item(0).getTextContent();
                     time = eElement.getElementsByTagName("time").item(0).getTextContent();
+                    trainingSize = eElement.getElementsByTagName("trainingsize").item(0).getTextContent();
                 }
 
                 //create and add the tasks.                      
-                TaskDetails td = new TaskDetails(tname, question, size, time);
+                TaskDetails td = new TaskDetails(tname, question, size, time, trainingSize);
                 tds.add(td);
 
             }
@@ -670,107 +735,121 @@ public class StudySetup extends HttpServlet {
                     url = eElement.getElementsByTagName("conditionurl").item(0).getTextContent();
 
                     shortname = eElement.getElementsByTagName("conditionshortname").item(0).getTextContent();
+
+                    String dir = url.split("/")[0];
+                    String file = url.split("/")[1];
+
+                    conditionDirs.add(dir);
+                    conditionFiles.add(file);
+                    // conditionurl.add(url);
+                    conditionShortNames.add(shortname);
+
                 }
-                conditionurl.add(url);
-                conditionShortNames.add(shortname);
+
             }
 
             //now compose a json object and send it to the viewer.
             jsonStr = "{";
-            jsonStr += "\"name\":\"" + studyname + "\"";
+            jsonStr += " \"name\":\"" + studyname + "\"";
             /*  jsonStr += ",\"dataset\":\"" + dataset + "\"";
              jsonStr += ",\"datasetFormat\":\"" + datasetFormat + "\"";   */
-            jsonStr += ",\"viewerDesign\":\"" + experimentType_vis + "\"";
-            jsonStr += ",\"dataDesign\":\"" + experimentType_ds + "\"";
-            jsonStr += ",\"viewerWidth\":\"" + viewerWidth + "\"";
-            jsonStr += ",\"viewerHeight\":\"" + viewerHeight + "\"";
-            jsonStr += ",\"trainingSize\":\"" + trainingSize + "\"";
+            jsonStr += ", \"viewerDesign\":\"" + experimentType_vis + "\"";
+            jsonStr += ", \"dataDesign\":\"" + experimentType_ds + "\"";
+            jsonStr += ", \"viewerWidth\":\"" + viewerWidth + "\"";
+            jsonStr += ", \"viewerHeight\":\"" + viewerHeight + "\"";
 
-            //get the conditions also
-            jsonStr += ",\"conditions\": [";
-            for (int i = 0; i < conditionurl.size(); i++) {
+            // get the conditions also
+            jsonStr += ", \"viewers\": [";
+            for (int i = 0; i < conditionDirs.size(); i++) {
                 if (i == 0) {
-                    jsonStr += "{\"url\": \"" + conditionurl.get(i) + "\""
-                            + ",\"shortname\": \"" + conditionShortNames.get(i) + "\"}";
+                    jsonStr += " {\"sourceDirectory\": \"" + conditionDirs.get(i) + "\""
+                            + ", \"sourceFile\": \"" + conditionFiles.get(i) + "\""
+                            + ", \"name\": \"" + conditionShortNames.get(i) + "\"}";
 
                 } else {
-                    jsonStr += ",{\"url\": \"" + conditionurl.get(i) + "\""
-                            + ",\"shortname\": \"" + conditionShortNames.get(i) + "\"}";
-
+                    jsonStr += ", {\"sourceDirectory\": \"" + conditionDirs.get(i) + "\""
+                            + ", \"sourceFile\": \"" + conditionFiles.get(i) + "\""
+                            + ", \"name\": \"" + conditionShortNames.get(i) + "\"}";
                 }
             }
             jsonStr += "]";
 
             //get the datasets also
-            jsonStr += ",\"datasets\": [";
+            jsonStr += ", \"datasets\": [";
             for (int i = 0; i < datasetNames.size(); i++) {
 
                 if (i == 0) {
-                    jsonStr += "{\"name\": \"" + datasetNames.get(i) + "\""
-                            + ",\"format\": \"" + datasetFormats.get(i) + "\"}";
+                    jsonStr += " {\"name\": \"" + datasetNames.get(i) + "\""
+                            + ", \"format\": \"" + datasetFormats.get(i) + "\"}";
                 } else {
-                    jsonStr += ",{\"name\": \"" + datasetNames.get(i) + "\""
-                            + ",\"format\": \"" + datasetFormats.get(i) + "\"}";
+                    jsonStr += ", {\"name\": \"" + datasetNames.get(i) + "\""
+                            + ", \"format\": \"" + datasetFormats.get(i) + "\"}";
                 }
             }
             jsonStr += "]";
 
             //get the introductions also
-           jsonStr += ",\"intros\": [";
-           System.out.println(introNames.size());
-           System.out.println(introDesc.size());
-           
+            jsonStr += ", \"intros\": [";
+            //System.out.println(introNames.size());
+            // System.out.println(introDesc.size());
+
             for (int i = 0; i < introNames.size(); i++) {
                 if (i == 0) {
-                    jsonStr += "{\"name\": \"" + introNames.get(i) + "\""
-                            + ",\"directory\": \"" + introDirectories.get(i) + "\""
-                            + ",\"file\": \"" + introFiles.get(i) + "\""
-                            + ",\"cond\": \"" + introConds.get(i) + "\""
+                    jsonStr += " {\"name\": \"" + introNames.get(i) + "\""
+                            + ", \"directory\": \"" + introDirectories.get(i) + "\""
+                            + ", \"file\": \"" + introFiles.get(i) + "\""
+                            + ", \"match\": \"" + introConds.get(i) + "\""
                             + ", \"description\": \"" + introDesc.get(i).trim() + "\"}";
                 } else {
-                    jsonStr += ",{\"name\": \"" + introNames.get(i) + "\""
-                            + ",\"directory\": \"" + introDirectories.get(i) + "\""
-                            + ",\"file\": \"" + introFiles.get(i) + "\""
-                            + ",\"cond\": \"" + introConds.get(i) + "\""
+                    jsonStr += ", {\"name\": \"" + introNames.get(i) + "\""
+                            + ", \"directory\": \"" + introDirectories.get(i) + "\""
+                            + ", \"file\": \"" + introFiles.get(i) + "\""
+                            + ", \"match\": \"" + introConds.get(i) + "\""
                             + ", \"description\": \"" + introDesc.get(i).trim() + "\"}";
                 }
             }
-            jsonStr += "]"; 
+            jsonStr += "]";
 
             //get standardTest 
-          jsonStr += ",\"standardTests\": [";
+            jsonStr += ", \"standardTests\": [";
             for (int i = 0; i < testNames.size(); i++) {
                 if (i == 0) {
-                    jsonStr += "{\"name\": \"" + testNames.get(i) + "\""
-                            + ",\"description\": \"" + testDescriptions.get(i) + "\""
-                            + ",\"directory\": \"" + testDirectories.get(i) + "\""
-                            + ",\"file\": \"" + testFiles.get(i) + "\"}";
+                    jsonStr += " {\"name\": \"" + testNames.get(i) + "\""
+                            + ", \"description\": \"" + testDescriptions.get(i) + "\""
+                            + ", \"directory\": \"" + testDirectories.get(i) + "\""
+                            + ", \"file\": \"" + testFiles.get(i) + "\""
+                            + ", \"responseInterface\": \"" + testResponses.get(i) + "\""
+                            + ", \"responseValidationInterface\": \"" + testResponseValidations.get(i) + "\"}";
                 } else {
-                    jsonStr += ",{\"name\": \"" + testNames.get(i) + "\""
-                            + ",\"description\": \"" + testDescriptions.get(i) + "\""
-                            + ",\"directory\": \"" + testDirectories.get(i) + "\""
-                            + ",\"file\": \"" + testFiles.get(i) + "\"}";
+                    jsonStr += ", {\"name\": \"" + testNames.get(i) + "\""
+                            + ", \"description\": \"" + testDescriptions.get(i) + "\""
+                            + ", \"directory\": \"" + testDirectories.get(i) + "\""
+                            + ", \"file\": \"" + testFiles.get(i) + "\""
+                            + ", \"responseInterface\": \"" + testResponses.get(i) + "\""
+                            + ", \"responseValidationInterface\": \"" + testResponseValidations.get(i) + "\"}";
                 }
             }
-            jsonStr += "]"; 
+            jsonStr += "]";
 
             //get the tasks also
-            jsonStr += ",\"tasks\": [";
+            jsonStr += ", \"tasks\": [";
             for (int i = 0; i < tds.size(); i++) {
                 TaskDetails td = tds.get(i);
                 if (i == 0) {
                     //name, question, size, time
-                    jsonStr += "{\"name\": \"" + td.getTaskname() + "\""
-                            + ",\"question\": \"" + td.getTaskQuestion() + "\""
-                            + ",\"size\": \"" + td.getQuestionSize() + "\""
-                            + ",\"time\": \"" + td.getTime() + "\""
+                    jsonStr += " {\"name\": \"" + td.getTaskname() + "\""
+                            + ", \"question\": \"" + td.getTaskQuestion() + "\""
+                            + ", \"count\": \"" + td.getQuestionSize() + "\""
+                            + ", \"time\": \"" + td.getTime() + "\""
+                            + ", \"trainingSize\": \"" + td.getTrainingSize() + "\""
                             + "}";
 
                 } else {
-                    jsonStr += ",{\"name\": \"" + td.getTaskname() + "\""
-                            + ",\"question\": \"" + td.getTaskQuestion() + "\""
-                            + ",\"size\": \"" + td.getQuestionSize() + "\""
-                            + ",\"time\": \"" + td.getTime() + "\""
+                    jsonStr += ", {\"name\": \"" + td.getTaskname() + "\""
+                            + ", \"question\": \"" + td.getTaskQuestion() + "\""
+                            + ", \"count\": \"" + td.getQuestionSize() + "\""
+                            + ", \"time\": \"" + td.getTime() + "\""
+                            + ", \"trainingSize\": \"" + td.getTrainingSize() + "\""
                             + "}";
 
                 }
@@ -791,6 +870,46 @@ public class StudySetup extends HttpServlet {
         }
 
         return jsonStr;
+    }
+
+    public String loadDirectories(String dirname, String userid) {
+
+        //now check if there are files in that directory.
+        //load all the directories the user has created.
+        String dirURL = "users" + File.separator + userid + File.separator
+                + dirname;
+
+        File file = new File(getServletContext().getRealPath(dirURL));
+
+        File[] dirFiles = file.listFiles();
+
+        ///  int fileCount = 0;
+        ArrayList<String> files = new ArrayList<String>();
+
+        for (int i = 0; i < dirFiles.length; i++) {
+            //make sure it is not a directory.                                
+            if (!dirFiles[i].isDirectory()) {
+                files.add(dirFiles[i].getName());
+            }
+        }
+
+        //compose the json for this directory
+        String jsonOfADir = " { \"name\": \"" + dirname + "\"";
+        jsonOfADir += ", \"files\":[";
+
+        for (int i = 0; i < files.size(); i++) {
+            if (i == 0) {
+                jsonOfADir += " {\"name\": \"" + files.get(i) + "\"}";
+            } else {
+                jsonOfADir += ", {\"name\": \"" + files.get(i) + "\"}";
+            }
+        }
+        //now append the ]}
+
+        jsonOfADir += "]}";
+
+        return jsonOfADir;
+
     }
 
     public void writeTasksToFile(StudySetupParameters spmts, String userid) {

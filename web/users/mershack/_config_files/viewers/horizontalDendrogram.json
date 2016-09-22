@@ -1,0 +1,8 @@
+{
+  "name": "horizontalDendrogram",
+  "description": "A viewer for displaying a horizontal dendrogram",
+  "sourceDirectory": "horizontalDendrogram",
+  "sourceFile": "horizontal.html"  
+}
+
+

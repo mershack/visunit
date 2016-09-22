@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+	<study_specification>
+	<studyname>study1</studyname>
+	<experimenttype_vis>Between</experimenttype_vis>
+	<experimenttype_ds>Between</experimenttype_ds>
+	<trainingsize>2</trainingsize>
+	<condition>
+		<conditionurl>circularDendrogram/circular.html</conditionurl>
+		<conditionshortname>cond1</conditionshortname>
+	</condition>
+	<condition>
+		<conditionurl>horizontalDedrogram/horizontal.html</conditionurl>
+		<conditionshortname>cond2</conditionshortname>
+	</condition>
+	<datasetCondition>
+		<dataset>life</dataset>
+		<datasetType>mershack_Datasets</datasetType>
+		<datasetFormat>.txt</datasetFormat>
+	</datasetCondition>
+	<viewerwidth>860</viewerwidth>
+	<viewerheight>800</viewerheight>
+	<task>
+		<name>howdeepIsANode</name>
+		<question>How many levels deep is the highlighted node</question>
+		<size>2</size>
+		<time>12</time>
+		<trainingsize>2</trainingsize>
+	</task>
+	<introFile>
+		<name>circ_intro</name>
+		<description>A sample introduction description2</description>
+		<introURL>circularDendrogram/introduction.html</introURL>
+		<introCond>all</introCond>
+	</introFile>
+	<preStudyTask>
+		<name>age</name>
+		<question>Please Enter your age</question>
+	</preStudyTask>
+	<postStudyTask>
+		<name>rateIntuitiveness</name>
+		<question>How will you rate the Intuitiveness of the visualization?</question>
+	</postStudyTask>
+</study_specification>

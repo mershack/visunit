@@ -1,0 +1,8 @@
+{
+  "name": "rectangle",
+  "description": "A rectangle viewer used to display images of rectangles",
+  "sourceDirectory": "rectangle",
+  "sourceFile": "rectangle.html"  
+}
+
+

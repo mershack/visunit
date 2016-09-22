@@ -185,7 +185,7 @@
             var viewers = [];
             var datasets = [];
             var taskprotos = [];
-            var taskinstances = [];
+            var taskinstances =[];
             var intros = [];
             var tests = [];
             var directories = [];
@@ -199,1209 +199,1174 @@
             var uniqueInputId = 0;
             var uniqueAnswerOptionId = 0;
 
-            $(document).ready(function() {
+            $(document).ready(function(){
 
-                loadAllData(function() {
-                    $("#studyform").hide();
-                    $("#viewerform").hide();
-                    $("#datasetform").hide();
-                    $("#taskprotoform").hide();
-                    $("#taskinstanceform").hide();
-                    $("#resultsform").hide();
-                    $("#introform").hide();
-                    $("#testform").hide();
-
-
-                    addHometileHandlers();
-
-                    $(".help").hide();
-                    $(".questionmark").mouseenter(function() {
-                        $(this).addClass("questionmarkover");
-                        var id = $(this).attr("id");
-                        $("#" + id + "_").show();
-                    });
-                    $(".questionmark").mouseleave(function() {
-                        $(this).removeClass("questionmarkover");
-                        var id = $(this).attr("id");
-                        $("#" + id + "_").hide();
-                    });
+            loadAllData(function(){
+            $("#studyform").hide();
+            $("#viewerform").hide();
+            $("#datasetform").hide();
+            $("#taskprotoform").hide();
+            $("#taskinstanceform").hide();
+            $("#resultsform").hide();
+            $("#introform").hide();
+            $("#testform").hide();
 
 
-                    $("#studydiv").hide();
 
-                    addButtonHandlers();
+            addHometileHandlers();
 
-                    addFormHandlers("viewerform");
-                    addFormHandlers("introform");
-                    addFormHandlers("testform");
+            $(".help").hide();		
+            $(".questionmark").mouseenter(function(){
+            $(this).addClass("questionmarkover");
+            var id = $(this).attr("id");
+            $("#" + id + "_").show();
+            });
+            $(".questionmark").mouseleave(function(){
+            $(this).removeClass("questionmarkover");
+            var id = $(this).attr("id");
+            $("#" + id + "_").hide();
+            });
 
-                });
+
+            $("#studydiv").hide();
+
+            addButtonHandlers();
+
+            addFormHandlers("viewerform");
+            addFormHandlers("introform");
+            addFormHandlers("testform");
+
+            });    
 
             });
 
 
-            function addHometileHandlers() {
-                $(".hometile").mouseenter(function() {
-                    $(this).addClass("hometilehov");
-                });
-                $(".hometile").mouseleave(function() {
-                    $(this).removeClass("hometilehov");
-                });
+            function addHometileHandlers(){
+            $(".hometile").mouseenter(function(){
+            $(this).addClass("hometilehov");
+            });
+            $(".hometile").mouseleave(function(){
+            $(this).removeClass("hometilehov");
+            });
 
-                $(".hometile").click(function() {
-                    var study = $(this)[0].data;
-                    var tileType = $(this)[0].tileType;
-                    $("#homediv").slideUp(200, function() {
-                        $("#homedivheader").animate({opacity: '0.5'}, 300, function() {
-                            $("#homedivheader").animate({opacity: '1'}, 300, function() {
-                                if (tileType == "study") {
-                                    $("#studyform").show(300);
-                                }
-                                else if (tileType == "viewer")
-                                    $("#viewerform").show(300);
-                                else if (tileType == "dataset")
-                                    $("#datasetform").show(300);
-                                else if (tileType == "taskproto")
-                                    $("#taskprotoform").show(300);
-                                else if (tileType == "taskinstance")
-                                    $("#taskinstanceform").show(300);
-                                else if (tileType == "intro")
-                                    $("#introform").show(300);
-                                else if (tileType == "test")
-                                    $("#testform").show(300);
-                            })
-                        })
+            $(".hometile").click(function(){
+            var study = $(this)[0].data;
+            var tileType = $(this)[0].tileType;
+            $("#homediv").slideUp(200, function(){
+            $("#homedivheader").animate({opacity: '0.5'}, 300, function(){
+            $("#homedivheader").animate({opacity: '1'}, 300, function(){
+            if (tileType == "study"){
+            $("#studyform").show(300);}
+            else if (tileType == "viewer")
+            $("#viewerform").show(300);
+            else if (tileType == "dataset")
+            $("#datasetform").show(300);
+            else if (tileType == "taskproto")
+            $("#taskprotoform").show(300);
+            else if (tileType == "taskinstance")
+            $("#taskinstanceform").show(300);
+            else if (tileType == "intro")
+            $("#introform").show(300);
+            else if (tileType == "test")
+            $("#testform").show(300);
+            })    			
+            })
 
-                    });
+            });
 
 
-                    if (tileType == "study") {
-                        putStudyDataInForm(study);
-                        currentStudy = $(this)[0];
-                    }
-                    else if (tileType == "viewer") {
-                        putDataInForm("viewerform", study);
-                        currentViewer = $(this)[0];
-                    }
-                    else if (tileType == "dataset") {
-                        putDataInForm("datasetform", study);
-                        currentDataset = $(this)[0];
-                    }
-                    else if (tileType == "taskproto") {
-                        putTaskprotoDataInForm(study);
-                        currentTaskproto = $(this)[0];
-                    }
-                    else if (tileType == "taskinstance") {
-                        alert("here");
-                        putTaskinstanceDataInForm(study);
-                        currentTaskinstance = $(this)[0];
-                    }
-                    else if (tileType == "intro") {
-                        putDataInForm("introform", study);
-                        currentIntro = $(this)[0];
-                    }
-                    else if (tileType == "test") {
-                        putDataInForm("testform", study);
-                        currentTest = $(this)[0];
-                    }
-
-                });
+            if (tileType == "study"){
+            putStudyDataInForm(study);
+            currentStudy = $(this)[0];
             }
-            function addButtonHandlers() {
-                $(".button").mouseenter(function() {
-                    $(this).addClass("buttonover");
-                });
-                $(".button").mouseleave(function() {
-                    $(this).removeClass("buttonover");
-                });
-
-                $(".button").click(function(evt) {
-                    $(this).addClass("buttonclick");
-                    $(this).animate({opacity: '1'}, 100, function() {
-                        $(this).removeClass("buttonclick");
-                        processButtonClick($(this).attr("id"));
-                    });
-                    evt.stopImmediatePropagation();
-                });
+            else if (tileType == "viewer"){
+            putDataInForm("viewerform", study);
+            currentViewer = $(this)[0];
+            }
+            else if (tileType == "dataset"){
+            putDataInForm("datasetform", study);
+            currentDataset = $(this)[0];
+            }
+            else if (tileType == "taskproto"){
+            putTaskprotoDataInForm(study);
+            currentTaskproto = $(this)[0];
+            }
+            else if (tileType == "taskinstance"){
+            alert("here");
+            putTaskinstanceDataInForm(study);
+            currentTaskinstance = $(this)[0];
+            }
+            else if (tileType == "intro"){
+            putDataInForm("introform", study);
+            currentIntro = $(this)[0];
+            }
+            else if (tileType == "test"){
+            putDataInForm("testform", study);
+            currentTest = $(this)[0];
             }
 
+            });
+            }
+            function addButtonHandlers(){
+            $(".button").mouseenter(function(){
+            $(this).addClass("buttonover");
+            });
+            $(".button").mouseleave(function(){
+            $(this).removeClass("buttonover");
+            });
 
-            function processButtonClick(which) {
-                split = which.split("_||_");
-
-                if (split[0] == "home") //a button in the main, home, panel was clicked
-                    homeAction(split);
-                else if (split[0] == "studyform") //a button in the studyform was clicked
-                    studyFormAction(split);
-                else if (split[0] == "viewerform") //a button in the studyform was clicked
-                    formAction(split);
-                else if (split[0] == "datasetform") //a button in the studyform was clicked
-                    formAction(split);
-                else if (split[0] == "taskprotoform") //a button in the studyform was clicked
-                    taskprotoFormAction(split);
-                else if (split[0] == "taskinstanceform") //a button in the studyform was clicked
-                    taskinstanceFormAction(split);
-                else if (split[0] == "resultform") //a button in the studyform was clicked
-                    resultFormAction(split);
-                else if (split[0] == "introform")
-                    formAction(split);
-                else if (split[0] == "testform")
-                    formAction(split);
-                else if (split[0] == "adddirform")
-                    formAction(split);
+            $(".button").click(function(evt){
+            $(this).addClass("buttonclick");
+            $(this).animate({opacity: '1'}, 100, function(){
+            $(this).removeClass("buttonclick");
+            processButtonClick($(this).attr("id"));
+            });
+            evt.stopImmediatePropagation();
+            });
             }
 
-            function homeAction(split) {
-                if (split[1] == "delstudy")
-                    removeStudy(split[2]);
-                else if (split[1] == "copystudy")
-                    copyStudy(split[2]);
-                else if (split[1] == "addstudy")
-                    addNewStudy();
-                else if (split[1] == "addviewer")
-                    addNewViewer();
-                else if (split[1] == "adddataset")
-                    addNewDataset();
-                else if (split[1] == "addtaskproto")
-                    addNewTaskproto();
-                else if (split[1] == "addtaskinstance")
-                    addNewTaskinstance();
-                else if (split[1] == "addintro")
-                    addNewIntro();
-                else if (split[1] == "addtest")
-                    addNewTest();
+
+            function processButtonClick(which){
+            split = which.split("_||_");
+
+            if (split[0] == "home") //a button in the main, home, panel was clicked
+            homeAction(split);
+            else if (split[0] == "studyform") //a button in the studyform was clicked
+            studyFormAction(split);
+            else if (split[0] == "viewerform") //a button in the studyform was clicked
+            formAction(split);
+            else if (split[0] == "datasetform") //a button in the studyform was clicked
+            formAction(split);
+            else if (split[0] == "taskprotoform") //a button in the studyform was clicked
+            taskprotoFormAction(split);
+            else if (split[0] == "taskinstanceform") //a button in the studyform was clicked
+            taskinstanceFormAction(split);
+            else if (split[0] == "resultform") //a button in the studyform was clicked
+            resultFormAction(split);
+            else if (split[0] == "introform")
+            formAction(split);
+            else if (split[0] == "testform")
+            formAction(split);
+            else if (split[0] == "adddirform")
+            formAction(split);
+            }
+
+            function homeAction(split){
+            if (split[1] == "delstudy")
+            removeStudy(split[2]);
+            else if (split[1] == "copystudy")
+            copyStudy(split[2]);
+            else if (split[1] == "addstudy")
+            addNewStudy();
+            else if (split[1] == "addviewer")
+            addNewViewer();
+            else if (split[1] == "adddataset")
+            addNewDataset();
+            else if (split[1] == "addtaskproto")
+            addNewTaskproto();
+            else if (split[1] == "addtaskinstance")
+            addNewTaskinstance();
+            else if (split[1] == "addintro")
+            addNewIntro();
+            else if (split[1] == "addtest")
+            addNewTest();
             }
 
             //Loads all data associated with the user's account. This includes
             //studies, datasets, viewers, etc. Call the whendone callback function at the end.
-            function loadAllData(whendone) {
+            function loadAllData(whendone){
 
-                loadDirectories(function(success, msg, _directories) {
-                    if (success) {
-                        directories = _directories;
-                        loadStudies(function(success, msg, _studies) {
-                            if (success) {
-                                alert(_studies);
-                                for (var i = 0; i < _studies.length; i++) {
-                                    var icon = createStudyIcon(_studies[i]);
-                                    $("#homediv_studysection").append(icon);
-                                    studies.push(icon);
-                                }
-                                loadViewers(function(success, msg, _viewers) {
-                                    if (success) {
-                                        //viewers are loaded
-                                        for (var i = 0; i < _viewers.length; i++) {
-                                            var icon = createViewerIcon(_viewers[i]);
-                                            $("#homediv_viewersection").append(icon);
-                                            viewers.push(icon);
-                                        }
-                                        loadDatasets(function(success, msg, _datasets) {
-                                            if (success) {
-                                                for (var i = 0; i < _datasets.length; i++) {
-                                                    var icon = createDatasetIcon(_datasets[i]);
-                                                    $("#homediv_datasetsection").append(icon);
-                                                    datasets.push(icon);
-                                                }
-                                                loadTaskprotos(function(success, msg, _taskprotos) {
-                                                    if (success) {
-                                                        for (var i = 0; i < _taskprotos.length; i++) {
-                                                            var icon = createTaskprotoIcon(_taskprotos[i]);
-                                                            $("#homediv_taskprotosection").append(icon);
-                                                            taskprotos.push(icon);
-                                                        }
-                                                        loadTaskinstances(function(success, msg, _taskinstances) {
-                                                            if (success) {
-                                                                for (var i = 0; i < _taskinstances.length; i++) {
-                                                                    var icon = createTaskinstanceIcon(_taskinstances[i]);
-                                                                    $("#homediv_taskinstancesection").append(icon);
-                                                                    taskinstances.push(icon);
-                                                                }
-                                                                loadIntros(function(success, msg, _intros) {
-                                                                    if (success) {
-                                                                        for (var i = 0; i < _intros.length; i++) {
-                                                                            var icon = createIntroIcon(_intros[i]);
-                                                                            $("#homediv_introsection").append(icon);
-                                                                            intros.push(icon);
-                                                                        }
-                                                                        loadTests(function(success, msg, _tests) {
-                                                                            if (success) {
-                                                                                for (var i = 0; i < _tests.length; i++) {
-                                                                                    var icon = createTestIcon(_tests[i]);
-                                                                                    $("#homediv_testsection").append(icon);
-                                                                                    tests.push(icon);
-                                                                                }
-                                                                                whendone(true, "");
-                                                                            }
-                                                                            else
-                                                                                whendone(false, msg);
-                                                                        });
-                                                                    }
-                                                                    else
-                                                                        whendone(false, msg);
-                                                                });
-                                                            }
-                                                            else
-                                                                whendone(false, msg);
-                                                        });
-                                                    }
-                                                    else
-                                                        whendone(false, msg);
-                                                });
-                                            }
-                                            else
-                                                whendone(false, msg);
-                                        });
-                                    }
-                                    else
-                                        whendone(false, msg);
-                                });
-                            }
-                            else
-                                whendone(false, msg);
-                        });
-                    }
-                    else
-                        whendone(false, msg);
-                });
+            loadDirectories(function(success, msg, _directories){
+            if (success){
+            directories = _directories;
+            loadStudies(function(success, msg, _studies){
+            if (success){
+            alert(_studies);
+            for (var i=0; i<_studies.length; i++){
+            var icon = createStudyIcon(_studies[i]);
+            $("#homediv_studysection").append(icon);
+            studies.push(icon);	}
+            loadViewers(function(success, msg, _viewers){
+            if (success){
+            //viewers are loaded
+            for (var i=0; i<_viewers.length; i++){
+            var icon = createViewerIcon(_viewers[i]);
+            $("#homediv_viewersection").append(icon);
+            viewers.push(icon);}
+            loadDatasets(function(success, msg, _datasets){
+            if (success){
+            for (var i=0; i<_datasets.length; i++){
+            var icon = createDatasetIcon(_datasets[i]);
+            $("#homediv_datasetsection").append(icon);
+            datasets.push(icon);}
+            loadTaskprotos(function(success, msg, _taskprotos){
+            if (success){
+            for (var i=0; i<_taskprotos.length; i++){
+            var icon = createTaskprotoIcon(_taskprotos[i]);
+            $("#homediv_taskprotosection").append(icon);
+            taskprotos.push(icon);}
+            loadTaskinstances(function(success, msg, _taskinstances){
+            if (success){
+            for (var i=0; i<_taskinstances.length; i++){
+            var icon = createTaskinstanceIcon(_taskinstances[i]);
+            $("#homediv_taskinstancesection").append(icon);
+            taskinstances.push(icon);
+            }
+            loadIntros(function(success, msg, _intros){
+            if (success){
+            for (var i=0; i<_intros.length; i++){
+            var icon = createIntroIcon(_intros[i]);
+            $("#homediv_introsection").append(icon);
+            intros.push(icon);}
+            loadTests(function(success, msg, _tests){
+            if (success){
+            for (var i=0; i<_tests.length; i++){
+            var icon = createTestIcon(_tests[i]);
+            $("#homediv_testsection").append(icon);
+            tests.push(icon);
+            }
+            whendone(true, "");
+            }
+            else whendone(false, msg);
+            });
+            }
+            else whendone(false, msg);
+            });
+            }
+            else whendone(false, msg);
+            });
+            }
+            else whendone(false, msg);
+            });									
+            }
+            else whendone(false, msg);
+            });
+            }
+            else whendone(false,msg);
+            });
+            }
+            else whendone(false,msg);
+            });
+            }
+            else whendone(false,msg);
+            });
             }
 
 
 
 
-            function createStudyIcon(studydata) {
-                var studyicon = document.createElement("div");
-                studyicon.data = studydata;
-                studyicon.tileType = "study";
+            function createStudyIcon(studydata){
 
-                studyicon.innerHTML = createStudyIconContent(studydata);
-                studyicon.className = "hometile studytile";
+            var studyicon = document.createElement("div");
+            studyicon.data = studydata;
+            studyicon.tileType = "study";
 
-                return studyicon;
+            studyicon.innerHTML = createStudyIconContent(studydata);
+            studyicon.className = "hometile studytile";
+
+            return studyicon;
             }
 
-            function updateStudyIcon(icon, studydata) {
-                icon.innerHTML = createStudyIconContent(studydata);
-                addButtonHandlers();
+            function updateStudyIcon(icon, studydata){
+            icon.innerHTML = createStudyIconContent(studydata);
+            addButtonHandlers();
             }
 
-            function createStudyIconContent(studydata) {
-                var html = studydata.name + "<br><span style='font-size:12px'> Viewers:";
-                for (var i = 0; i < studydata.viewers.length; i++) {
-                    html += studydata.viewers[i];
-                    if (i != studydata.viewers.length - 1)
-                        html += ", ";
-                }
-                html += "</span>";
+            function createStudyIconContent(studydata){
+            var html = studydata.name + "<br><span style='font-size:12px'> Viewers:";
+            for (var i=0; i<studydata.viewers.length; i++){
+            html += studydata.viewers[i].name;
+            if (i != studydata.viewers.length-1) html += ", ";
+            }
+            html += "</span>";
 
-                //create buttons
-                html += "<div style='text-align:right'>";
-                html += "<span class=button id=home_||_delstudy_||_" + studydata.name + "><img src='x-icon.png' height=12 width=12></span>";
-                html += "<span class=button id=home_||_copystudy_||_" + studydata.name + "><img src='duplicate-icon.png' height=12 width=12></span></div>";
-                return html;
+            //create buttons
+            html += "<div style='text-align:right'>";
+            html += "<span class=button id=home_||_delstudy_||_" + studydata.name + "><img src='x-icon.png' height=12 width=12></span>";
+            html += "<span class=button id=home_||_copystudy_||_" + studydata.name + "><img src='duplicate-icon.png' height=12 width=12></span></div>";
+            return html;
             }
 
-            function removeStudy(which) {
-                alert("(not implemented) Remove study " + which);
+            function removeStudy(which){
+            alert("(not implemented) Remove study " + which);
             }
 
-            function copyStudy(which) {
+            function copyStudy(which){
 
-                for (var i = 0; i < studies.length; i++)
-                    if (studies[i].data.name === which) {
+            for (var i=0; i<studies.length; i++)
+            if (studies[i].data.name === which){
 
-                        //copy all the data, alter the name
-                        var newstudy = new Object();
-                        newstudy.name = studies[i].data.name + "_copy" + new Date().getTime();
-                        newstudy.viewers = [];
-                        for (var j = 0; j < studies[i].data.viewers.length; j++)
-                            newstudy.viewers.push(studies[i].data.viewers[j]);
-                        newstudy.viewerdesign = studies[i].data.viewerdesign;
-                        newstudy.datasets = [];
-                        for (var j = 0; j < studies[i].data.datasets.length; j++)
-                            newstudy.datasets.push(studies[i].data.datasets[j]);
-                        newstudy.datadesign = studies[i].data.datadesign;
-                        newstudy.tasks = [];
-                        newstudy.tasksnr = [];
-                        newstudy.taskstime = [];
-                        newstudy.taskstraining = [];
-                        for (var j = 0; j < studies[i].data.tasks.length; j++) {
-                            newstudy.tasks.push(studies[i].data.tasks[j]);
-                            newstudy.tasksnr.push(studies[i].data.tasksnr[j]);
-                            newstudy.taskstime.push(studies[i].data.taskstime[j]);
-                            newstudy.taskstraining.push(studies[i].data.taskstraining[j]);
-                        }
-                        newstudy.intros = [];
-                        newstudy.introsmatch = [];
-                        for (var j = 0; j < studies[i].data.intros.length; j++) {
-                            newstudy.intros.push(studies[i].data.intros[j]);
-                            newstudy.introsmatch.push(studies[i].data.introsmatch[j]);
-                        }
-                        newstudy.tests = [];
-                        newstudy.testsinterface1 = [];
-                        newstudy.testsinterface2 = [];
-                        for (var j = 0; j < studies[i].data.tests.length; j++) {
-                            newstudy.tests.push(studies[i].data.tests[j]);
-                            newstudy.testsinterface1.push(studies[i].data.testsinterface1[j]);
-                            newstudy.testsinterface2.push(studies[i].data.testsinterface2[j]);
-                        }
-                        newstudy.width = studies[i].data.width;
-                        newstudy.height = studies[i].data.height;
+            //copy all the data, alter the name
+            var newstudy = new Object();
+            newstudy.name = studies[i].data.name + "_copy" + new Date().getTime();
+            newstudy.viewers = [];
+            for (var j=0; j<studies[i].data.viewers.length; j++)
+            newstudy.viewers.push(studies[i].data.viewers[j]);
+            newstudy.viewerdesign = studies[i].data.viewerdesign;
+            newstudy.datasets = [];
+            for (var j=0; j<studies[i].data.datasets.length; j++)
+            newstudy.datasets.push(studies[i].data.datasets[j]);
+            newstudy.datadesign = studies[i].data.datadesign;
+            newstudy.tasks = []; newstudy.tasksnr = []; newstudy.taskstime = []; newstudy.taskstraining = [];
+            for (var j=0; j<studies[i].data.tasks.length; j++){
+            newstudy.tasks.push(studies[i].data.tasks[j]);
+            newstudy.tasksnr.push(studies[i].data.tasksnr[j]);
+            newstudy.taskstime.push(studies[i].data.taskstime[j]);
+            newstudy.taskstraining.push(studies[i].data.taskstraining[j]);
+            }
+            newstudy.intros = []; newstudy.introsmatch = [];
+            for (var j=0; j<studies[i].data.intros.length; j++){
+            newstudy.intros.push(studies[i].data.intros[j]);
+            newstudy.introsmatch.push(studies[i].data.introsmatch[j]);
+            }
+            newstudy.tests = []; newstudy.testsinterface1 = []; newstudy.testsinterface2 = [];
+            for (var j=0; j<studies[i].data.tests.length; j++){
+            newstudy.tests.push(studies[i].data.tests[j]);
+            newstudy.testsinterface1.push(studies[i].data.testsinterface1[j]);
+            newstudy.testsinterface2.push(studies[i].data.testsinterface2[j]);
+            }
+            newstudy.width = studies[i].data.width;
+            newstudy.height = studies[i].data.height;
 
-                        updateStudyDataOnServer(true, newstudy, function(success, errorMsg) {
-                            alert("gaf");
-                            if (success) {
-                                var icon = createStudyIcon(newstudy);
-                                $("#homediv_studysection").append(icon);
-                                studies.push(icon);
-                                addButtonHandlers();
-                                addHometileHandlers();
-                            }
-                            else
-                                alert("Something went wrong: " + errorMsg);
-                        });
+            updateStudyDataOnServer(true, newstudy, function(success, errorMsg){
+            alert("gaf");
+            if (success){
+            var icon = createStudyIcon(newstudy);
+            $("#homediv_studysection").append(icon);
+            studies.push(icon);
+            addButtonHandlers();
+            addHometileHandlers();
+            }
+            else
+            alert("Something went wrong: " + errorMsg);
+            });
 
-                    }
+            }
             }
 
-            function addNewStudy() {
-                //create a new empty study obj
-                var newstudy = new Object();
-                newstudy.name = "newstudy_" + new Date().getTime();
-                newstudy.viewers = [];
-                newstudy.viewerdesign = "Select";
-                newstudy.datasets = [];
-                newstudy.datadesign = "Select";
-                newstudy.tasks = [];
-                newstudy.tasksnr = [];
-                newstudy.taskstime = [];
-                newstudy.taskstraining = [];
-                newstudy.intros = [];
-                newstudy.introsmatch = [];
-                newstudy.tests = [];
-                newstudy.testsinterface1 = [];
-                newstudy.testsinterface2 = [];
-                newstudy.width = "800";
-                newstudy.height = "600";
+            function addNewStudy(){
+            //create a new empty study obj
+            var newstudy = new Object();
+            newstudy.name = "newstudy_" + new Date().getTime();
+            newstudy.viewers = [];
+            newstudy.viewerdesign = "Select";
+            newstudy.datasets = [];
+            newstudy.datadesign = "Select";
+            newstudy.tasks = []; newstudy.tasksnr = []; newstudy.taskstime = []; newstudy.taskstraining = [];
+            newstudy.intros = []; newstudy.introsmatch = [];
+            newstudy.tests = []; newstudy.testsinterface1 = []; newstudy.testsinterface2 = [];
+            newstudy.width = "800";
+            newstudy.height = "600";
 
-                updateStudyDataOnServer(true, newstudy, function(success, errorMsg) {
-                    if (success) {
-                        var icon = createStudyIcon(newstudy);
-                        $("#homediv_studysection").append(icon);
-                        studies.push(icon);
-                        addButtonHandlers();
-                        addHometileHandlers();
-                    }
-                    else
-                        alert("Something went wrong: " + errorMsg);
-                });
+            updateStudyDataOnServer(true, newstudy, function(success, errorMsg){
+            if (success){
+            var icon = createStudyIcon(newstudy);
+            $("#homediv_studysection").append(icon);
+            studies.push(icon);
+            addButtonHandlers();
+            addHometileHandlers();
+            }
+            else
+            alert("Something went wrong: " + errorMsg);
+            });	
             }
 
 
-            function createViewerIcon(data) {
+            function createViewerIcon(data){
 
-                var icon = document.createElement("div");
-                icon.data = data;
-                icon.tileType = "viewer";
+            var icon = document.createElement("div");
+            icon.data = data;
+            icon.tileType = "viewer";
 
-                icon.innerHTML = createViewerIconContent(data);
-                icon.className = "hometile viewertile";
+            icon.innerHTML = createViewerIconContent(data);
+            icon.className = "hometile viewertile";
 
-                return icon;
+            return icon;
             }
 
-            function updateViewerIcon(icon, data) {
-                icon.innerHTML = createViewerIconContent(data);
-                addButtonHandlers();
+            function updateViewerIcon(icon, data){
+            icon.innerHTML = createViewerIconContent(data);
+            addButtonHandlers();
             }
 
-            function createViewerIconContent(data) {
-                var html = data.name + "<br>" + "<div class='smalltext'>" + data.description + "</div>";
-                //create buttons
-                html += "<div style='text-align:right'>";
-                html += "<span class=button id=home_||_delviewer_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
-                return html;
+            function createViewerIconContent(data){
+            var html = data.name + "<br>" + "<div class='smalltext'>" + data.description + "</div>";	
+            //create buttons
+            html += "<div style='text-align:right'>";
+            html += "<span class=button id=home_||_delviewer_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
+            return html;
             }
 
-            function removeViewer(which) {
-                alert("(not implemented) Remove viewer " + which);
-            }
-
-
-            function addNewViewer() {
-                //create a new empty viewer obj
-                var newviewer = new Object();
-                newviewer.name = "newviewer_" + new Date().getTime();
-                newviewer.description = "";
-                newviewer.sourceDirectory = "Select";
-                newviewer.sourceFile = "Select";
-
-                updateViewerDataOnServer(true, newviewer, function(success, errorMsg) {
-                    if (success) {
-                        var icon = createViewerIcon(newviewer);
-                        $("#homediv_viewersection").append(icon);
-                        viewers.push(icon);
-                        addButtonHandlers();
-                        addHometileHandlers();
-                    }
-                    else
-                        alert("Something went wrong: " + errorMsg);
-                });
-            }
-
-            function createDatasetIcon(data) {
-
-                var icon = document.createElement("div");
-                icon.data = data;
-                icon.tileType = "dataset";
-
-                icon.innerHTML = createDatasetIconContent(data);
-                icon.className = "hometile datasettile";
-
-                return icon;
-            }
-
-            function updateDatasetIcon(icon, data) {
-                icon.innerHTML = createDatasetIconContent(data);
-                addButtonHandlers();
-            }
-
-            function createDatasetIconContent(data) {
-                var html = data.name + "<br>" + "<div class='smalltext'>" + data.description + "</div>";
-                //create buttons
-                html += "<div style='text-align:right'>";
-                html += "<span class=button id=home_||_deldataset_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
-                return html;
-            }
-
-            function removeDataset(which) {
-                alert("(not implemented) Remove dataset " + which);
-            }
-
-            function addNewDataset() {
-                //create a new empty data obj
-                var newdata = new Object();
-                newdata.name = "newdata_" + new Date().getTime();
-                newdata.description = "";
-                newdata.sourceDirectory = "Select";
-                newdata.sourceFile = "Select";
-
-                updateDatasetDataOnServer(true, newdata, function(success, errorMsg) {
-                    if (success) {
-                        var icon = createDatasetIcon(newdata);
-                        $("#homediv_datasetsection").append(icon);
-                        datasets.push(icon);
-                        addButtonHandlers();
-                        addHometileHandlers();
-                    }
-                    else
-                        alert("Something went wrong: " + errorMsg);
-                });
+            function removeViewer(which){
+            alert("(not implemented) Remove viewer " + which);
             }
 
 
-            function createTaskprotoIcon(data) {
+            function addNewViewer(){
+            //create a new empty viewer obj
+            var newviewer = new Object();
+            newviewer.name = "newviewer_" + new Date().getTime();
+            newviewer.description = "";
+            newviewer.sourceDirectory = "Select";
+            newviewer.sourceFile = "Select";
 
-                var icon = document.createElement("div");
-                icon.data = data;
-                icon.tileType = "taskproto";
-
-                icon.innerHTML = createTaskprotoIconContent(data);
-                icon.className = "hometile taskprototile";
-
-                return icon;
+            updateViewerDataOnServer(true, newviewer, function(success, errorMsg){
+            if (success){
+            var icon = createViewerIcon(newviewer);
+            $("#homediv_viewersection").append(icon);
+            viewers.push(icon);
+            addButtonHandlers();
+            addHometileHandlers();
+            }
+            else
+            alert("Something went wrong: " + errorMsg);
+            });
             }
 
-            function updateTaskprotoIcon(icon, data) {
-                icon.innerHTML = createTaskprotoIconContent(data);
-                addButtonHandlers();
+            function createDatasetIcon(data){
+
+            var icon = document.createElement("div");
+            icon.data = data;
+            icon.tileType = "dataset";
+
+            icon.innerHTML = createDatasetIconContent(data);
+            icon.className = "hometile datasettile";
+
+            return icon;
             }
 
-            function createTaskprotoIconContent(data) {
-                var html = data.name + "<br>" + "<div class='smalltext'>" + data.description + "</div>";
-                //create buttons
-                html += "<div style='text-align:right'>";
-                html += "<span class=button id=home_||_deltaskproto_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
-                return html;
+            function updateDatasetIcon(icon, data){
+            icon.innerHTML = createDatasetIconContent(data);
+            addButtonHandlers();
             }
 
-            function removeTaskproto(which) {
-                alert("(not implemented) Remove taskproto " + which);
-            }
-            function addNewTaskproto() {
-                //create a new empty task obj
-                var newtask = new Object();
-                newtask.name = "newtask_" + new Date().getTime();
-                newtask.description = "";
-                newtask.question = "";
-                newtask.inputs = [];
-                newtask.answer = {type: "Number", correctness: "no"};
-
-                updateTaskprotoDataOnServer(true, newtask, function(success, errorMsg) {
-                    if (success) {
-                        var icon = createTaskprotoIcon(newtask);
-                        $("#homediv_taskprotosection").append(icon);
-                        taskprotos.push(icon);
-                        addButtonHandlers();
-                        addHometileHandlers();
-                    }
-                    else
-                        alert("Something went wrong: " + errorMsg);
-                });
+            function createDatasetIconContent(data){
+            var html = data.name + "<br>" + "<div class='smalltext'>" + data.description + "</div>";	
+            //create buttons
+            html += "<div style='text-align:right'>";
+            html += "<span class=button id=home_||_deldataset_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
+            return html;
             }
 
-
-            function createTaskinstanceIcon(data) {
-
-                var icon = document.createElement("div");
-                icon.data = data;
-                icon.tileType = "taskinstance";
-
-                icon.innerHTML = createTaskinstanceIconContent(data);
-                icon.className = "hometile taskinstancetile";
-
-                return icon;
+            function removeDataset(which){
+            alert("(not implemented) Remove dataset " + which);
             }
 
-            function updateTaskinstanceIcon(icon, data) {
-                icon.innerHTML = createTaskinstanceIconContent(data);
-                addButtonHandlers();
+            function addNewDataset(){
+            //create a new empty data obj
+            var newdata = new Object();
+            newdata.name = "newdata_" + new Date().getTime();
+            newdata.description = "";
+            newdata.sourceDirectory = "Select";
+            newdata.sourceFile = "Select";
+
+            updateDatasetDataOnServer(true, newdata, function(success, errorMsg){
+            if (success){
+            var icon = createDatasetIcon(newdata);
+            $("#homediv_datasetsection").append(icon);
+            datasets.push(icon);
+            addButtonHandlers();
+            addHometileHandlers();
+            }
+            else
+            alert("Something went wrong: " + errorMsg);
+            });
             }
 
-            function createTaskinstanceIconContent(data) {
 
-                var html = "Task:" + data.taskproto + "<br>" + "Dataset:" + data.dataset + "<br>" + data.instances + " instances";
-                html += "<div style='text-align:right'>";
-                html += "<span class=button id=home_||_deltaskinstance_||_" + data.taskproto + "_||_" + data.dataset + "><img src='x-icon.png' height=12 width=12></span>";
+            function createTaskprotoIcon(data){
 
-                return html;
+            var icon = document.createElement("div");
+            icon.data = data;
+            icon.tileType = "taskproto";
+
+            icon.innerHTML = createTaskprotoIconContent(data);
+            icon.className = "hometile taskprototile";
+
+            return icon;
             }
 
-            function removeTaskInstance(which) {
-                alert("(not implemented) Remove taskinstanec " + which);
+            function updateTaskprotoIcon(icon, data){
+            icon.innerHTML = createTaskprotoIconContent(data);
+            addButtonHandlers();
             }
 
-            function addNewTaskinstance() {
-
-                //this is a little different; a task instance icon in the home view should only exist if task instances of
-                //this type (i.e. dataset x task) exist. So, we first allow the user to create such instances, but when they click
-                //done in the task instance form, we check, and if they didn't create any instances we dont create an icon.
-
-                var newtasks = new Object();
-                newtasks.dataset = "no data";
-                newtasks.taskproto = "Select";
-                newtasks.viewer = "no viewer";
-                newtasks.instances = 0;
-
-                $("#homediv").slideUp(200, function() {
-                    $("#homedivheader").animate({opacity: '0.5'}, 300, function() {
-                        $("#homedivheader").animate({opacity: '1'}, 300, function() {
-                            $("#taskinstanceform").show(300);
-                        })
-                    })
-                });
-
-                currentTaskinstance = createTaskinstanceIcon(newtasks);
-                currentTaskinstance.data = newtasks;
-                putTaskinstanceDataInForm(newtasks);
+            function createTaskprotoIconContent(data){
+            var html = data.name + "<br>" + "<div class='smalltext'>" + data.description + "</div>";	
+            //create buttons
+            html += "<div style='text-align:right'>";
+            html += "<span class=button id=home_||_deltaskproto_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
+            return html;
             }
 
-            function createIntroIcon(data) {
+            function removeTaskproto(which){
+            alert("(not implemented) Remove taskproto " + which);
+            }
+            function addNewTaskproto(){
+            //create a new empty task obj
+            var newtask = new Object();
+            newtask.name = "newtask_" + new Date().getTime();
+            newtask.description = "";
+            newtask.question = "";
+            newtask.inputs = [];
+            newtask.answer = {type:"Number", correctness:"no"};
 
-                var icon = document.createElement("div");
-                icon.data = data;
-                icon.tileType = "intro";
-
-                icon.innerHTML = createIntroIconContent(data);
-                icon.className = "hometile introtile";
-
-                return icon;
+            updateTaskprotoDataOnServer(true, newtask, function(success, errorMsg){
+            if (success){
+            var icon = createTaskprotoIcon(newtask);
+            $("#homediv_taskprotosection").append(icon);
+            taskprotos.push(icon);
+            addButtonHandlers();
+            addHometileHandlers();
+            }
+            else
+            alert("Something went wrong: " + errorMsg);
+            });
             }
 
-            function updateIntroIcon(icon, data) {
-                icon.innerHTML = createIntroIconContent(data);
-                addButtonHandlers();
+
+            function createTaskinstanceIcon(data){
+
+            var icon = document.createElement("div");
+            icon.data = data;
+            icon.tileType = "taskinstance";
+
+            icon.innerHTML = createTaskinstanceIconContent(data);
+            icon.className = "hometile taskinstancetile";
+
+            return icon;
             }
 
-            function createIntroIconContent(data) {
-                var html = data.name;
-                //create buttons
-                html += "<div style='text-align:right'>";
-                html += "<span class=button id=home_||_delintro_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
-                return html;
+            function updateTaskinstanceIcon(icon, data){
+            icon.innerHTML = createTaskinstanceIconContent(data);
+            addButtonHandlers();
             }
 
-            function removeIntro(which) {
-                alert("(not implemented) Remove intro " + which);
-            }
-            function addNewIntro() {
-                //create a new empty test obj
-                var newintro = new Object();
-                newintro.name = "newintro_" + new Date().getTime();
-                newintro.description = "";
-                newintro.sourceDirectory = "Select";
-                newintro.sourceFile = "Select";
+            function createTaskinstanceIconContent(data){
 
-                updateIntroDataOnServer(true, newintro, function(success, errorMsg) {
-                    if (success) {
-                        var icon = createIntroIcon(newintro);
-                        $("#homediv_introsection").append(icon);
-                        intros.push(icon);
-                        addButtonHandlers();
-                        addHometileHandlers();
-                    }
-                    else
-                        alert("Something went wrong: " + errorMsg);
-                });
+            var html = "Task:" + data.taskproto + "<br>" + "Dataset:" + data.dataset + "<br>" + data.instances + " instances";
+            html += "<div style='text-align:right'>";
+            html += "<span class=button id=home_||_deltaskinstance_||_" + data.taskproto + "_||_" + data.dataset + "><img src='x-icon.png' height=12 width=12></span>";
+
+            return html;
             }
 
-            function createTestIcon(data) {
-
-                var icon = document.createElement("div");
-                icon.data = data;
-                icon.tileType = "test";
-
-                icon.innerHTML = createViewerIconContent(data);
-                icon.className = "hometile testtile";
-
-                return icon;
+            function removeTaskInstance(which){
+            alert("(not implemented) Remove taskinstanec " + which);
             }
 
-            function updateTestIcon(icon, data) {
-                icon.innerHTML = createTestIconContent(data);
-                addButtonHandlers();
+            function addNewTaskinstance(){
+
+            //this is a little different; a task instance icon in the home view should only exist if task instances of
+            //this type (i.e. dataset x task) exist. So, we first allow the user to create such instances, but when they click
+            //done in the task instance form, we check, and if they didn't create any instances we dont create an icon.
+
+            var newtasks = new Object();
+            newtasks.dataset = "no data";
+            newtasks.taskproto = "Select";
+            newtasks.viewer = "no viewer";
+            newtasks.instances = 0;
+
+            $("#homediv").slideUp(200, function(){
+            $("#homedivheader").animate({opacity: '0.5'}, 300, function(){
+            $("#homedivheader").animate({opacity: '1'}, 300, function(){
+            $("#taskinstanceform").show(300);
+            })    			
+            })
+            });	
+
+            currentTaskinstance = createTaskinstanceIcon(newtasks);
+            currentTaskinstance.data = newtasks;
+            putTaskinstanceDataInForm(newtasks);
             }
 
-            function createTestIconContent(data) {
-                var html = data.name;
-                //create buttons
-                html += "<div style='text-align:right'>";
-                html += "<span class=button id=home_||_deltest_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
-                return html;
+            function createIntroIcon(data){
+
+            var icon = document.createElement("div");
+            icon.data = data;
+            icon.tileType = "intro";
+
+            icon.innerHTML = createIntroIconContent(data);
+            icon.className = "hometile introtile";
+
+            return icon;
             }
 
-            function removeTest(which) {
-                alert("(not implemented) Remove test " + which);
+            function updateIntroIcon(icon, data){
+            icon.innerHTML = createIntroIconContent(data);
+            addButtonHandlers();
             }
-            function addNewTest() {
-                //create a new empty test obj
-                var newtest = new Object();
-                newtest.name = "newtest_" + new Date().getTime();
-                newtest.description = "";
-                newtest.sourceDirectory = "Select";
-                newtest.sourceFile = "Select";
 
-                updateTestDataOnServer(true, newtest, function(success, errorMsg) {
-                    if (success) {
-                        var icon = createTestIcon(newtest);
-                        $("#homediv_testsection").append(icon);
-                        tests.push(icon);
-                        addButtonHandlers();
-                        addHometileHandlers();
-                    }
-                    else
-                        alert("Something went wrong: " + errorMsg);
-                });
+            function createIntroIconContent(data){
+            var html = data.name;	
+            //create buttons
+            html += "<div style='text-align:right'>";
+            html += "<span class=button id=home_||_delintro_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
+            return html;
+            }
+
+            function removeIntro(which){
+            alert("(not implemented) Remove intro " + which);
+            }
+            function addNewIntro(){
+            //create a new empty test obj
+            var newintro = new Object();
+            newintro.name = "newintro_" + new Date().getTime();
+            newintro.description = "";
+            newintro.sourceDirectory = "Select";
+            newintro.sourceFile = "Select";
+
+            updateIntroDataOnServer(true, newintro, function(success, errorMsg){
+            if (success){
+            var icon = createIntroIcon(newintro);
+            $("#homediv_introsection").append(icon);
+            intros.push(icon);
+            addButtonHandlers();
+            addHometileHandlers();
+            }
+            else
+            alert("Something went wrong: " + errorMsg);
+            });
+            }
+
+            function createTestIcon(data){
+
+            var icon = document.createElement("div");
+            icon.data = data;
+            icon.tileType = "test";
+
+            icon.innerHTML = createViewerIconContent(data);
+            icon.className = "hometile testtile";
+
+            return icon;
+            }
+
+            function updateTestIcon(icon, data){
+            icon.innerHTML = createTestIconContent(data);
+            addButtonHandlers();
+            }
+
+            function createTestIconContent(data){
+            var html = data.name;	
+            //create buttons
+            html += "<div style='text-align:right'>";
+            html += "<span class=button id=home_||_deltest_||_" + data.name + "><img src='x-icon.png' height=12 width=12></span>";
+            return html;
+            }
+
+            function removeTest(which){
+            alert("(not implemented) Remove test " + which);
+            }
+            function addNewTest(){
+            //create a new empty test obj
+            var newtest = new Object();
+            newtest.name = "newtest_" + new Date().getTime();
+            newtest.description = "";
+            newtest.sourceDirectory = "Select";
+            newtest.sourceFile = "Select";
+
+            updateTestDataOnServer(true, newtest, function(success, errorMsg){
+            if (success){
+            var icon = createTestIcon(newtest);
+            $("#homediv_testsection").append(icon);
+            tests.push(icon);
+            addButtonHandlers();
+            addHometileHandlers();
+            }
+            else
+            alert("Something went wrong: " + errorMsg);
+            });
             }
 
 
 
             ////////////////////////////////       STUDY FORM   /////////////////////////////////////////////////////
 
-            function putStudyDataInForm(which) {
+            function putStudyDataInForm(which){
 
-                $("#studyform_name").val(which.name);
+            $("#studyform_name").val(which.name);
 
 
-                $("#studyform_viewers").html("");
-                for (var i = 0; i < which.viewers.length; i++) {
-                    var viewerId = createEmptyViewerRow();
-                    $("#studyform_viewerselect_" + viewerId).val(which.viewers[i]);
-                }
+            $("#studyform_viewers").html("");
+            for (var i=0; i<which.viewers.length; i++){
+            var viewerId = createEmptyViewerRow();
+            $("#studyform_viewerselect_" + viewerId).val(which.viewers[i]);
+            }
 
-                $("#studyform_viewerdesign").val(which.viewerdesign);
+            $("#studyform_viewerdesign").val(which.viewerdesign);
 
-                $("#studyform_datasets").html("");
-                for (var i = 0; i < which.datasets.length; i++) {
-                    var dataId = createEmptyDatasetRow();
-                    $("#studyform_datasetselect_" + dataId).val(which.datasets[i]);
-                }
+            $("#studyform_datasets").html("");
+            for (var i=0; i<which.datasets.length; i++){
+            var dataId = createEmptyDatasetRow();
+            $("#studyform_datasetselect_" + dataId).val(which.datasets[i]);
+            }
 
-                $("#studyform_datadesign").val(which.datadesign);
+            $("#studyform_datadesign").val(which.datadesign);
 
-                // create the task list
-                $("#studyform_tasks").html("");
-                for (var i = 0; i < which.tasks.length; i++) {
-                    var taskId = createEmptyTaskRow();
+            // create the task list
+            $("#studyform_tasks").html("");
+            for (var i=0; i<which.tasks.length; i++){
+            var taskId = createEmptyTaskRow();
 
-                    $("#studyform_taskselect_" + taskId).val(which.tasks[i].name);
-                    $("#studyform_tasknrquestions_" + taskId).val(which.tasks[i].count);
-                    $("#studyform_tasktime_" + taskId).val(which.tasks[i].time);
-                    $("#studyform_tasktraining_" + taskId).val(which.tasks[i].training);
-                }
+            $("#studyform_taskselect_" + taskId).val(which.tasks[i].name);
+            $("#studyform_tasknrquestions_" + taskId).val(which.tasks[i].count);
+            $("#studyform_tasktime_" + taskId).val(which.tasks[i].time);
+            $("#studyform_tasktraining_" + taskId).val(which.tasks[i].training);
+            }
 
-                //create the intro list
-                $("#studyform_intros").html("");
-                for (var i = 0; i < which.intros.length; i++) {
-                    var introId = createEmptyIntroRow();
+            //create the intro list
+            $("#studyform_intros").html("");
+            for (var i=0; i<which.intros.length; i++){
+            var introId = createEmptyIntroRow();
 
-                    $("#studyform_introselect_" + introId).val(which.intros[i].name);
-                    $("#studyform_intromatch_" + introId).val(which.intros[i].match);
-                }
+            $("#studyform_introselect_" + introId).val(which.intros[i].name);
+            $("#studyform_intromatch_" + introId).val(which.intros[i].match);
+            }
 
-                //create the tests list
-                $("#studyform_tests").html("");
-                for (var i = 0; i < which.tests.length; i++) {
-                    var testId = createEmptyTestRow();
-                    $("#studyform_testselect_" + testId).val(which.tests[i].name);
-                    $("#studyform_testinterface1_" + testId).val(which.tests[i].interface1);
-                    $("#studyform_testinterface2_" + testId).val(which.tests[i].interface2);
-                }
+            //create the tests list
+            $("#studyform_tests").html("");
+            for (var i=0; i<which.tests.length; i++){
+            var testId = createEmptyTestRow();
+            $("#studyform_testselect_" + testId).val(which.tests[i].name);
+            $("#studyform_testinterface1_" + testId).val(which.tests[i].interface1);
+            $("#studyform_testinterface2_" + testId).val(which.tests[i].interface2);
+            }
 
-                //put the height and width
-                $("#studyform_width").val(which.width);
-                $("#studyform_height").val(which.height);
+            //put the height and width
+            $("#studyform_width").val(which.width);
+            $("#studyform_height").val(which.height);
 
-                addButtonHandlers();
+            addButtonHandlers();
             }
 
 
 
             //saves the information from the study form onto the server
-            function saveStudyUpdates() {
+            function saveStudyUpdates(){
 
-                var studyObject = putFormIntoStudyObject();
+            var studyObject = putFormIntoStudyObject();
 
-                updateStudyDataOnServer(false, studyObject, function(success, errorMsg) {
-                    if (success) {
-                        currentStudy.data = studyObject; //update the actual study data item (currentStudy.data)
-                        updateStudyIcon(currentStudy, studyObject);//update the icon in home (currentStudy)
-                        $("#studyform").hide(200, function() {
-                            $("#homediv").slideDown(200);
-                            currentStudy = null;
-                        });
-                    }
-                    else
-                        alert("Something went wrong: " + errorMsg);
-                });
+            updateStudyDataOnServer(false, studyObject, function(success, errorMsg){
+            if (success){
+            currentStudy.data = studyObject; //update the actual study data item (currentStudy.data)
+            updateStudyIcon(currentStudy,studyObject);//update the icon in home (currentStudy)
+            $("#studyform").hide(200, function(){
+            $("#homediv").slideDown(200);
+            currentStudy = null;
+            });
+            }
+            else
+            alert("Something went wrong: " + errorMsg);
+            });
             }
 
 
 
 
-            function validateStudyForm() {
+            function validateStudyForm(){
 
-                if ($("#studyform_name").val().trim() == "") {
-                    alert("Please provide a name for your study");
-                    return false;
-                }
-
-                return true;
+            if ($("#studyform_name").val().trim() == ""){
+            alert("Please provide a name for your study");
+            return false;
             }
 
-            function putFormIntoStudyObject() {
-                var study = new Object();
-
-                study.name = $("#studyform_name").val();
-
-                study.viewers = [];
-                $("#studyform_viewers").children().each(function() {
-                    study.viewers.push($(this).find('select').val());
-                });
-
-                study.viewerdesign = $("#studyform_viewerdesign").val();
-
-                study.datasets = [];
-                $("#studyform_datasets").children().each(function() {
-                    study.datasets.push($(this).find('select').val());
-                });
-
-                study.datadesign = $("#studyform_datadesign").val();
-
-                study.tasks = [];
-                $("#studyform_tasks").children().each(function() {
-                    var id = $(this).attr("id").split("_")[2];
-                    var taskobj = new Object();
-                    taskobj.name = $(this).find("#studyform_taskselect_" + id).val();
-                    taskobj.count = $(this).find("#studyform_tasknrquestions_" + id).val();
-                    taskobj.time = $(this).find("#studyform_tasktime_" + id).val();
-                    taskobj.training = $(this).find("#studyform_tasktraining_" + id).val();
-                    study.tasks.push(taskobj);
-                });
-
-                study.intros = [];
-                $("#studyform_intros").children().each(function() {
-                    var id = $(this).attr("id").split("_")[2];
-                    var introobj = new Object();
-                    introobj.name = $(this).find("#studyform_introselect_" + id).val();
-                    introobj.match = $(this).find("#studyform_intromatch_" + id).val();
-                    study.intros.push(introobj);
-                });
-
-
-                study.tests = [];
-                $("#studyform_tests").children().each(function() {
-                    var id = $(this).attr("id").split("_")[2];
-                    var obj = new Object();
-                    obj.name = $(this).find("#studyform_testselect_" + id).val();
-                    obj.interface1 = $(this).find("#studyform_testinterface1_" + id).val();
-                    obj.interface2 = $(this).find("#studyform_testinterface2_" + id).val();
-                });
-
-                study.width = $("#studyform_width").val();
-                study.height = $("#studyform_height").val();
-
-                return study;
+            return true;
             }
 
-            function studyObjectToString(obj) {
-                var s = obj.name;
+            function putFormIntoStudyObject(){
+            var study = new Object();
 
-                s += " || " + obj.viewers.length;
-                for (var i = 0; i < obj.viewers.length; i++)
-                    s += " || " + obj.viewers[i];
+            study.name = $("#studyform_name").val();
 
-                s += " || " + obj.viewerdesign;
+            study.viewers = [];
+            $("#studyform_viewers").children().each(function(){
+            study.viewers.push($(this).find('select').val());
+            });
 
-                s += " || " + obj.datasets.length;
-                for (var i = 0; i < obj.datasets.length; i++)
-                    s += " || " + obj.datasets[i];
+            study.viewerdesign = $("#studyform_viewerdesign").val();
 
-                s += " || " + obj.datadesign;
+            study.datasets = [];
+            $("#studyform_datasets").children().each(function(){
+            study.datasets.push($(this).find('select').val());
+            });
 
-                s += " || " + obj.tasks.length;
-                for (var i = 0; i < obj.tasks.length; i++)
-                    s += " || " + obj.tasks[i] + " || " + obj.tasksnr[i] + " || " + obj.taskstime[i] + " || " + obj.taskstraining[i];
+            study.datadesign = $("#studyform_datadesign").val();	
 
-                s += " || " + obj.intros.length;
-                for (var i = 0; i < obj.intros.length; i++)
-                    s += " || " + obj.intros[i] + " || " + obj.introsmatch[i];
+            study.tasks = [];
+            $("#studyform_tasks").children().each(function(){
+            var id = $(this).attr("id").split("_")[2];
+            var taskobj = new Object();
+            taskobj.name = $(this).find("#studyform_taskselect_"+id).val();
+            taskobj.count = $(this).find("#studyform_tasknrquestions_"+id).val();
+            taskobj.time = $(this).find("#studyform_tasktime_"+id).val();
+            taskobj.training = $(this).find("#studyform_tasktraining_"+id).val();
+            study.tasks.push(taskobj);
+            });
 
-                s += " || " + obj.tests.length;
-                for (var i = 0; i < obj.tests.length; i++)
-                    s += " || " + obj.tests[i] + " || " + obj.testsinterface1[i] + " || " + obj.testsinterface2[i];
+            study.intros = [];
+            $("#studyform_intros").children().each(function(){
+            var id = $(this).attr("id").split("_")[2];
+            var introobj = new Object();
+            introobj.name = $(this).find("#studyform_introselect_"+id).val();
+            introobj.match= $(this).find("#studyform_intromatch_"+id).val();
+            study.intros.push(introobj);
+            });
 
-                s += " || " + obj.width;
-                s += " || " + obj.height;
 
-                return s;
+            study.tests = [];
+            $("#studyform_tests").children().each(function(){
+            var id = $(this).attr("id").split("_")[2];
+            var obj = new Object();
+            obj.name = $(this).find("#studyform_testselect_"+id).val();
+            obj.interface1 = $(this).find("#studyform_testinterface1_"+id).val();
+            obj.interface2 = $(this).find("#studyform_testinterface2_"+id).val();
+            });
+
+            study.width = $("#studyform_width").val();
+            study.height = $("#studyform_height").val();
+
+            return study;
             }
 
-            function studyFormAction(split) {
-                if (split[1] == "done") {
-                    if (validateStudyForm()) {
-                        saveStudyUpdates();  //save changes to server; update study icon in home; hide study form
-                    }
-                    ;
-                }
-                else if (split[1] == "taskup") {
-                    var taskToMove = $("#studyform_task_" + split[2]);
-                    var allButtons = $(".button");
+            function studyObjectToString(obj){
+            var s=obj.name;
 
-                    if (taskToMove.prevAll().length == 0)  //task already at the top
-                        return;
+            s += " || " + obj.viewers.length;
+            for (var i=0; i<obj.viewers.length; i++)
+            s += " || " + obj.viewers[i];
 
-                    taskToMove.css("background-color", "rgba(100,100,100,0.5"); //highlight the moving task a bit
+            s += " || " + obj.viewerdesign;
 
-                    taskToMove.slideUp(250, function() {			//remove it from its current position visually
+            s += " || " + obj.datasets.length;
+            for (var i=0; i<obj.datasets.length; i++)
+            s += " || " + obj.datasets[i];
 
-                        var prev = taskToMove.prev();
-                        allButtons.removeClass("buttonover");			//buttons were accidentaly marked as hovered...
+            s += " || " + obj.datadesign;
 
-                        taskToMove.detach(); 						//remove it from its currrent position acutally				
-                        prev.before(taskToMove[0]);					//insert it into the new position (before it's previous sibling)
+            s += " || " + obj.tasks.length;
+            for (var i=0; i<obj.tasks.length; i++)
+            s += " || " + obj.tasks[i] + " || " + obj.tasksnr[i] + " || " + obj.taskstime[i] + " || " + obj.taskstraining[i];
 
-                        taskToMove.slideDown(250, function() {		//add it back to the DOM
-                            allButtons.removeClass("buttonover");
+            s += " || " + obj.intros.length;
+            for (var i=0; i<obj.intros.length; i++)
+            s += " || " + obj.intros[i] + " || " + obj.introsmatch[i];
 
-                            window.setTimeout(function() {			//finally, a little later remove the highlighting
-                                $("#studyform_task_" + split[2]).css("background-color", "");
-                            }, 500);
-                        });
-                    });
+            s += " || " + obj.tests.length;
+            for (var i=0; i<obj.tests.length; i++)
+            s += " || " + obj.tests[i] + " || " + obj.testsinterface1[i] + " || " + obj.testsinterface2[i];
 
+            s += " || " + obj.width;
+            s += " || " + obj.height;
 
-                }
-                else if (split[1] == "taskdown") {
-
-                    var taskToMove = $("#studyform_task_" + split[2]);
-                    var allButtons = $(".button");
-
-                    if (taskToMove.nextAll().length == 0)  //task already at the top
-                        return;
-
-                    taskToMove.css("background-color", "rgba(100,100,100,0.5"); //highlight the moving task a bit
-
-                    taskToMove.slideUp(250, function() {			//remove it from its current position visually
-
-                        var next = taskToMove.next();
-                        allButtons.removeClass("buttonover");			//buttons were accidentaly marked as hovered...
-
-                        taskToMove.detach(); 						//remove it from its currrent position acutally				
-                        next.after(taskToMove[0]);					//insert it into the new position (after it's next sibling)
-
-                        taskToMove.slideDown(250, function() {		//add it back to the DOM
-                            allButtons.removeClass("buttonover");
-
-                            window.setTimeout(function() {			//finally, a little later remove the highlighting
-                                $("#studyform_task_" + split[2]).css("background-color", "");
-                            }, 500);
-                        });
-                    });
-                }
-
-                else if (split[1] == "addviewer") {
-                    createEmptyViewerRow();
-                    addButtonHandlers();
-                }
-                else if (split[1] == "adddataset") {
-                    createEmptyDatasetRow();
-                    addButtonHandlers();
-                }
-                else if (split[1] == "addtask") {
-                    createEmptyTaskRow();
-                    addButtonHandlers();
-                }
-                else if (split[1] == "addintro") {
-                    createEmptyIntroRow();
-                    addButtonHandlers();
-                }
-                else if (split[1] == "addtest") {
-                    createEmptyTestRow();
-                    addButtonHandlers();
-                }
-                else if (split[1] == "delviewer") {
-                    if ($("#studyform_viewers").children().length == 1)
-                        return;
-                    var viewerId = split[2];
-                    $("#studyform_viewerrow_" + viewerId).remove();
-                    updateIntroSelects();
-                }
-                else if (split[1] == "deldataset") {
-                    if ($("#studyform_datasets").children().length == 1)
-                        return;
-                    var datasetId = split[2];
-                    $("#studyform_datasetrow_" + datasetId).remove();
-                }
-                else if (split[1] == "deltask") {
-                    if ($("#studyform_tasks").children().length == 1)
-                        return;
-                    var taskId = split[2];
-                    $("#studyform_taskrow_" + taskId).remove();
-                }
+            return s;
             }
 
-            function createEmptyViewerRow() {
-                uniqueViewerId++;
-                var html = "<div id='studyform_viewerrow_" + uniqueViewerId + "' style='margin-bottom:5px'>Viewer: <select id='studyform_viewerselect_" + uniqueViewerId + "'>";
-                html += "<option selected> Select </option>";
-                for (var j = 0; j < viewers.length; j++)
-                    html += "<option val='" + viewers[j].data.name + "'>" + viewers[j].data.name + "</option>";
-                html += "</select><span class='button' id='studyform_||_delviewer_||_" + uniqueViewerId + "'> <img src='x-icon.png' height=12 width=12> </span> </div>";
-                $("#studyform_viewers").append(html);
-
-                //add event handler for selection change
-                $("#studyform_viewerselect_" + uniqueViewerId).change(function() {
-                    updateIntroSelects();
-                });
-                return uniqueViewerId;
+            function studyFormAction(split){
+            if (split[1] == "done"){
+            if (validateStudyForm()){
+            saveStudyUpdates();  //save changes to server; update study icon in home; hide study form
+            };
             }
-            function createEmptyDatasetRow() {
-                uniqueDatasetId++;
-                var html = "<div id='studyform_datasetrow_" + uniqueDatasetId + "' style='margin-bottom:5px'>Dataset: <select id='studyform_datasetselect_" + uniqueDatasetId + "'>";
-                html += "<option selected> Select </option>";
-                for (var j = 0; j < datasets.length; j++)
-                    html += "<option>" + datasets[j].data.name + "</option>";
-                html += "</select><span class='button' id='studyform_||_deldataset_||_" + uniqueDatasetId + "'> <img src='x-icon.png' height=12 width=12> </span> </div>";
-                $("#studyform_datasets").append(html);
-                return uniqueDatasetId;
+            else if (split[1] == "taskup"){
+            var taskToMove = $("#studyform_task_"+split[2]);
+            var allButtons = $(".button");
+
+            if (taskToMove.prevAll().length == 0)  //task already at the top
+            return;			
+
+            taskToMove.css("background-color","rgba(100,100,100,0.5"); //highlight the moving task a bit
+
+            taskToMove.slideUp(250, function(){			//remove it from its current position visually
+
+            var prev = taskToMove.prev();
+            allButtons.removeClass("buttonover");			//buttons were accidentaly marked as hovered...
+
+            taskToMove.detach(); 						//remove it from its currrent position acutally				
+            prev.before(taskToMove[0]);					//insert it into the new position (before it's previous sibling)
+
+            taskToMove.slideDown(250,function(){		//add it back to the DOM
+            allButtons.removeClass("buttonover");
+
+            window.setTimeout(function(){			//finally, a little later remove the highlighting
+            $("#studyform_task_"+split[2]).css("background-color","");
+            },500);
+            });
+            });
+
+
             }
-            function createEmptyTaskRow() {
-                uniqueTaskId++;
+            else if (split[1] == "taskdown"){
 
-                var html = "<div style='margin-bottom:10px; padding: 10px 5px 10px 5px' id='studyform_task_" + uniqueTaskId + "'>";
+            var taskToMove = $("#studyform_task_"+split[2]);
+            var allButtons = $(".button");
 
-                //create the up and down buttons
-                html += "<span class='button' id='studyform_||_taskup_||_" + uniqueTaskId + "' padding: 0px 0px 0px 0px><img src='up-icon.png' width=12 height=12></img></span>";
-                html += "<span class='button' id='studyform_||_taskdown_||_" + uniqueTaskId + "' padding: 0px 0px 0px 0px><img src='down-icon.png' width=12 height=12></img></span>";
+            if (taskToMove.nextAll().length ==0 )  //task already at the top
+            return;			
 
-                //create the selection box with the correct task selected
-                html += "&nbsp&nbsp&nbsp&nbsp<select id='studyform_taskselect_" + uniqueTaskId + "'><option>Select</option>";
+            taskToMove.css("background-color","rgba(100,100,100,0.5"); //highlight the moving task a bit
 
-                for (var j = 0; j < taskprotos.length; j++)
-                    html += "<option>" + taskprotos[j].data.name + "</option>";
+            taskToMove.slideUp(250, function(){			//remove it from its current position visually
 
-                html += "</select>";
+            var next = taskToMove.next();
+            allButtons.removeClass("buttonover");			//buttons were accidentaly marked as hovered...
 
-                //create the number of questions box
-                html += "&nbsp&nbspHow many?&nbsp<input type='number' min=1 value='1' style='width:25px' id='studyform_tasknrquestions_" + uniqueTaskId + "'></input>";
+            taskToMove.detach(); 						//remove it from its currrent position acutally				
+            next.after(taskToMove[0]);					//insert it into the new position (after it's next sibling)
 
-                //create the number of seconds box
-                html += "&nbsp&nbspMax time (sec):&nbsp<input type='number' min=1 value='60' style='width:40px' id='studyform_tasktime_" + uniqueTaskId + "'></input>";
+            taskToMove.slideDown(250,function(){		//add it back to the DOM
+            allButtons.removeClass("buttonover");
 
-                //create the number of questions box
-                html += "&nbsp&nbspTraining tasks: &nbsp<input type='number' min=0 value='1' style='width:25px' id='studyform_tasktraining_" + uniqueTaskId + "'></input>";
-
-                //create the delete task button
-                html += "&nbsp&nbsp&nbsp&nbsp<span class='button' id='studyform_||_deltask_||_" + uniqueTaskId + "'> <img src='x-icon.png' height=12 width=12> </span>";
-
-                html += "</div>";
-                $("#studyform_tasks").append(html);
-                addButtonHandlers();
-
-                return uniqueTaskId;
-            }
-
-            function createEmptyIntroRow() {
-                uniqueIntroId++;
-
-                var html = "<div style='margin-bottom:10px; padding: 10px 5px 10px 5px' id='studyform_intro_" + uniqueIntroId + "'>";
-
-                //create the selection box
-                html += "&nbsp&nbsp&nbsp&nbsp<select id='studyform_introselect_" + uniqueIntroId + "'><option>Select</option>";
-
-                for (var j = 0; j < intros.length; j++)
-                    html += "<option>" + intros[j].data.name + "</option>";
-
-                html += "</select>";
-
-                //create the condition match selection
-                html += "&nbsp&nbsp";
-                html += "<select id='studyform_intromatch_" + uniqueIntroId + "' class='intromatchselect'><option val='Select' selected>Select</option><option val='All'>All</option>";
-                //get as options whatever the viewers are
-                var sv = getSelectedViewers();
-                for (var i = 0; i < sv.length; i++)
-                    html += "<option val='" + sv[i] + "'>" + sv[i] + "</option>";
-
-                html += "</select>";
-
-                //create the delete task button
-                html += "&nbsp&nbsp&nbsp&nbsp<span class='button' id='studyform_||_delintro_||_" + uniqueIntroId + "'> <img src='x-icon.png' height=12 width=12> </span>";
-
-                html += "</div>";
-                $("#studyform_intros").append(html);
-                addButtonHandlers();
-
-                return uniqueIntroId;
-            }
-            function getSelectedViewers() {
-                var result = [];
-                $("#studyform_viewers").children().each(function(i) {
-                    var val = $(this).find("select").val();
-                    if (val != "Select")
-                        result.push(val);
-                });
-                return result;
-            }
-            function updateIntroSelects() {
-                var sv = getSelectedViewers();
-                var html = "<option val='Select' selected>Select</option><option val='All'>All</option>";
-                for (var i = 0; i < sv.length; i++)
-                    html += "<option val='" + sv[i] + "'>" + sv[i] + "</option>";
-                $(".intromatchselect").each(function() {
-                    var currentSel = $(this).val();
-                    $(this).html(html);
-                    $(this).val(currentSel);
-                    if ($(this).val() == null)
-                        $(this).val("Select");
-
-                });
+            window.setTimeout(function(){			//finally, a little later remove the highlighting
+            $("#studyform_task_"+split[2]).css("background-color","");
+            },500);
+            });
+            });
             }
 
-            function createEmptyTestRow() {
-                uniqueTestId++;
+            else if (split[1] == "addviewer"){
+            createEmptyViewerRow();
+            addButtonHandlers();
+            }
+            else if (split[1] == "adddataset"){
+            createEmptyDatasetRow();
+            addButtonHandlers();
+            }
+            else if (split[1] == "addtask"){
+            createEmptyTaskRow();
+            addButtonHandlers();
+            }
+            else if (split[1] == "addintro"){
+            createEmptyIntroRow();
+            addButtonHandlers();
+            }
+            else if (split[1] == "addtest"){
+            createEmptyTestRow();
+            addButtonHandlers();
+            }
+            else if (split[1] == "delviewer"){
+            if ($("#studyform_viewers").children().length == 1) return;
+            var viewerId = split[2];
+            $("#studyform_viewerrow_" + viewerId).remove();	
+            updateIntroSelects();
+            }
+            else if (split[1] == "deldataset"){
+            if ($("#studyform_datasets").children().length == 1) return;
+            var datasetId = split[2];
+            $("#studyform_datasetrow_" + datasetId).remove();	
+            }
+            else if (split[1] == "deltask"){
+            if ($("#studyform_tasks").children().length == 1) return;
+            var taskId = split[2];
+            $("#studyform_taskrow_" + taskId).remove();	
+            }
+            }
 
-                var html = "<div style='margin-bottom:10px; padding: 10px 5px 10px 5px' id='studyform_test_" + uniqueTestId + "'>";
+            function createEmptyViewerRow(){
+            uniqueViewerId++;
+            var html = "<div id='studyform_viewerrow_" + uniqueViewerId + "' style='margin-bottom:5px'>Viewer: <select id='studyform_viewerselect_" + uniqueViewerId + "'>";
+            html += "<option selected> Select </option>";
+            for (var j=0; j<viewers.length; j++)
+            html += "<option val='" +  viewers[j].data.name + "'>" + viewers[j].data.name + "</option>";
+            html += "</select><span class='button' id='studyform_||_delviewer_||_" + uniqueViewerId + "'> <img src='x-icon.png' height=12 width=12> </span> </div>";
+            $("#studyform_viewers").append(html);
 
-                //create the selection box
-                html += "&nbsp&nbsp&nbsp&nbsp<select id='studyform_testselect_" + uniqueTestId + "'><option value='Select'>Select</option>";
+            //add event handler for selection change
+            $("#studyform_viewerselect_" + uniqueViewerId).change(function(){
+            updateIntroSelects();
+            });
+            return uniqueViewerId;
+            }
+            function createEmptyDatasetRow(){
+            uniqueDatasetId++;
+            var html = "<div id='studyform_datasetrow_" + uniqueDatasetId + "' style='margin-bottom:5px'>Dataset: <select id='studyform_datasetselect_" + uniqueDatasetId + "'>";
+            html += "<option selected> Select </option>";
+            for (var j=0; j<datasets.length; j++)
+            html += "<option>" + datasets[j].data.name + "</option>";
+            html += "</select><span class='button' id='studyform_||_deldataset_||_" + uniqueDatasetId + "'> <img src='x-icon.png' height=12 width=12> </span> </div>";
+            $("#studyform_datasets").append(html);
+            return uniqueDatasetId;
+            }
+            function createEmptyTaskRow(){
+            uniqueTaskId++;
 
-                for (var j = 0; j < tests.length; j++)
-                    html += "<option value='" + tests[j].data.name + "'>" + tests[j].data.name + "</option>";
+            var html = 	"<div style='margin-bottom:10px; padding: 10px 5px 10px 5px' id='studyform_task_" + uniqueTaskId + "'>";
 
-                html += "</select>";
+            //create the up and down buttons
+            html +=      "<span class='button' id='studyform_||_taskup_||_" + uniqueTaskId + "' padding: 0px 0px 0px 0px><img src='up-icon.png' width=12 height=12></img></span>";
+            html +=      "<span class='button' id='studyform_||_taskdown_||_" + uniqueTaskId + "' padding: 0px 0px 0px 0px><img src='down-icon.png' width=12 height=12></img></span>";
 
-                //create the first interface box
-                html += "&nbsp&nbsp&nbspF1 <span class='help' title='The name of a public javascript function in your visualization that will return user responses'>?</span>:&nbsp<input type='text' min=0 value='' style='width:100px' id='studyform_testinterface1_" + uniqueTestId + "'></input>";
+            //create the selection box with the correct task selected
+            html +=         "&nbsp&nbsp&nbsp&nbsp<select id='studyform_taskselect_" + uniqueTaskId + "'><option>Select</option>";
 
-                //create the second interface box
-                html += "&nbsp&nbsp&nbspF2 <span class='help' title='The name of a public javascript function in your visualization that can convert user responses in an accuracy score between 0. and 1.'>?</span>:&nbsp<input type='text' min=0 value='' style='width:100px' id='studyform_testinterface2_" + uniqueTestId + "'></input>";
+            for (var j=0; j<taskprotos.length; j++)
+            html += "<option>" + taskprotos[j].data.name + "</option>";
+
+            html += 		"</select>";
+
+            //create the number of questions box
+            html += "&nbsp&nbspHow many?&nbsp<input type='number' min=1 value='1' style='width:25px' id='studyform_tasknrquestions_" + uniqueTaskId + "'></input>";
+
+            //create the number of seconds box
+            html += "&nbsp&nbspMax time (sec):&nbsp<input type='number' min=1 value='60' style='width:40px' id='studyform_tasktime_" + uniqueTaskId + "'></input>";
+
+            //create the number of questions box
+            html += "&nbsp&nbspTraining tasks: &nbsp<input type='number' min=0 value='1' style='width:25px' id='studyform_tasktraining_" + uniqueTaskId + "'></input>";
+
+            //create the delete task button
+            html +=         "&nbsp&nbsp&nbsp&nbsp<span class='button' id='studyform_||_deltask_||_"+ uniqueTaskId +"'> <img src='x-icon.png' height=12 width=12> </span>";
+
+            html +=         "</div>";
+            $("#studyform_tasks").append(html);
+            addButtonHandlers();
+
+            return uniqueTaskId;	
+            }
+
+            function createEmptyIntroRow(){
+            uniqueIntroId++;
+
+            var html = 	"<div style='margin-bottom:10px; padding: 10px 5px 10px 5px' id='studyform_intro_" + uniqueIntroId + "'>";
+
+            //create the selection box
+            html +=         "&nbsp&nbsp&nbsp&nbsp<select id='studyform_introselect_" + uniqueIntroId + "'><option>Select</option>";
+
+            for (var j=0; j<intros.length; j++)
+            html += "<option>" + intros[j].data.name + "</option>";
+
+            html += 		"</select>";
+
+            //create the condition match selection
+            html += "&nbsp&nbsp";
+            html += "<select id='studyform_intromatch_" + uniqueIntroId + "' class='intromatchselect'><option val='Select' selected>Select</option><option val='All'>All</option>";
+            //get as options whatever the viewers are
+            var sv = getSelectedViewers();
+            for (var i=0; i<sv.length; i++)
+            html += "<option val='" + sv[i] + "'>" + sv[i] + "</option>"; 
+
+            html += "</select>";
+
+            //create the delete task button
+            html +=         "&nbsp&nbsp&nbsp&nbsp<span class='button' id='studyform_||_delintro_||_"+ uniqueIntroId +"'> <img src='x-icon.png' height=12 width=12> </span>";
+
+            html +=         "</div>";
+            $("#studyform_intros").append(html);
+            addButtonHandlers();
+
+            return uniqueIntroId;	
+            }
+            function getSelectedViewers(){
+            var result=[];
+            $("#studyform_viewers").children().each(function(i){
+            var val = $(this).find("select").val();
+            if (val != "Select")
+            result.push(val);
+            });
+            return result;
+            }
+            function updateIntroSelects(){
+            var sv = getSelectedViewers();
+            var html = "<option val='Select' selected>Select</option><option val='All'>All</option>";
+            for (var i=0; i<sv.length; i++)
+            html += "<option val='" + sv[i] + "'>" + sv[i] + "</option>"; 
+            $(".intromatchselect").each(function(){
+            var currentSel = $(this).val();
+            $(this).html(html);
+            $(this).val(currentSel);
+            if ($(this).val() == null) $(this).val("Select");
+
+            });
+            }
+
+            function createEmptyTestRow(){
+            uniqueTestId++;
+
+            var html = 	"<div style='margin-bottom:10px; padding: 10px 5px 10px 5px' id='studyform_test_" + uniqueTestId + "'>";
+
+            //create the selection box
+            html +=         "&nbsp&nbsp&nbsp&nbsp<select id='studyform_testselect_" + uniqueTestId + "'><option value='Select'>Select</option>";
+
+            for (var j=0; j<tests.length; j++)
+            html += "<option value='" + tests[j].data.name + "'>" + tests[j].data.name + "</option>";
+
+            html += 		"</select>";
+
+            //create the first interface box
+            html += "&nbsp&nbsp&nbspF1 <span class='help' title='The name of a public javascript function in your visualization that will return user responses'>?</span>:&nbsp<input type='text' min=0 value='' style='width:100px' id='studyform_testinterface1_" + uniqueTestId + "'></input>";
+
+            //create the second interface box
+            html += "&nbsp&nbsp&nbspF2 <span class='help' title='The name of a public javascript function in your visualization that can convert user responses in an accuracy score between 0. and 1.'>?</span>:&nbsp<input type='text' min=0 value='' style='width:100px' id='studyform_testinterface2_" + uniqueTestId + "'></input>";
 
 
-                //create the delete task button
-                html += "&nbsp&nbsp&nbsp&nbsp<span class='button' id='studyform_delintro_" + uniqueIntroId + "'> <img src='x-icon.png' height=12 width=12> </span>";
+            //create the delete task button
+            html +=         "&nbsp&nbsp&nbsp&nbsp<span class='button' id='studyform_delintro_"+ uniqueIntroId +"'> <img src='x-icon.png' height=12 width=12> </span>";
 
-                html += "</div>";
-                $("#studyform_tests").append(html);
-                addButtonHandlers();
+            html +=         "</div>";
+            $("#studyform_tests").append(html);
+            addButtonHandlers();
 
-                return uniqueTestId;
+            return uniqueTestId;
             }
 
 
 
             ////////////////////////////////   VIEWER, DATASET, INTRO, TESTS FORM   /////////////////////////////////////////////////////
-            function addFormHandlers(which) {
-                $("#" + which + "_sourcedirectory").change(function() {
-                    var d = $("#" + which + "_sourcedirectory").val();
-                    var index = -1;
-                    for (var i = 0; i < directories.length; i++)
-                        if (directories[i].name === d)
-                            index = i;
+            function addFormHandlers(which){
+            $("#" + which + "_sourcedirectory").change(function(){
+            var d = $("#"  + which + "_sourcedirectory").val();
+            var index = -1;
+            for (var i=0; i<directories.length; i++)
+            if (directories[i].name === d) index = i;
 
-                    if (index >= 0)
-                        updateFilesSelect($("#" + which + "_sourcefile"), directories[index]);
-                });
+            if (index >= 0)
+            updateFilesSelect($("#" + which + "_sourcefile"),directories[index]);
+            });
             }
 
-            function updateDirectoriesSelect(selection) {
-                var savedsel = selection.val();
-                //populate the directory select; all available directory are stored in the directories variable
-                selection.html("<option value='Select'>Select</option>");
-                for (var i = 0; i < directories.length; i++)
-                    selection.append($('<option/>', {value: directories[i].name, text: directories[i].name}));
-                selection.val(savedsel);
-                if (selection.val() == null)
-                    selection.val("Select");
+            function updateDirectoriesSelect(selection){
+            var savedsel = selection.val();
+            //populate the directory select; all available directory are stored in the directories variable
+            selection.html("<option value='Select'>Select</option>");
+            for (var i=0; i<directories.length; i++)
+            selection.append($('<option/>', {value: directories[i].name, text : directories[i].name}));
+            selection.val(savedsel);
+            if (selection.val() == null) selection.val("Select");
             }
-            function updateFilesSelect(selection, directory) {
-                var savedsel = selection.val();
-                selection.html("<option value='Select'>Select</option>");
-                for (var i = 0; i < directory.files.length; i++)
-                    selection.append($('<option/>', {value: directory.files[i], text: directory.files[i]}));
-                selection.val(savedsel);
-                if (selection.val() == null)
-                    selection.val("Select");
+            function updateFilesSelect(selection, directory){
+            var savedsel = selection.val();
+            selection.html("<option value='Select'>Select</option>");
+            for (var i=0; i<directory.files.length; i++)
+            selection.append($('<option/>', {value: directory.files[i], text : directory.files[i]}));
+            selection.val(savedsel);
+            if (selection.val() == null) selection.val("Select");
             }
 
-            function putDataInForm(form, which) {
-                alert("#" + form + "_name");
+            function putDataInForm(form, which){
+            alert("#" +form + "_name");
 
-                $("#" + form + "_name").val(which.name);
-                $("#" + form + "_description").val(which.description);
+            $("#" +form + "_name").val(which.name);
+            $("#" +form + "_description").val(which.description);
 
-                updateDirectoriesSelect($("#" + form + "_sourcedirectory"));
-                $("#" + form + "_sourcedirectory").val(which.sourceDirectory);
+            updateDirectoriesSelect($("#" +form + "_sourcedirectory"));
+            $("#" +form + "_sourcedirectory").val(which.sourceDirectory);
 
-                var index = -1;
-                for (var i = 0; i < directories.length; i++)
-                    if (directories[i].name === which.sourcedirectory)
-                        index = i;
-                if (index >= 0)
-                    updateFilesSelect($("#" + form + "_sourcefile"), directories[index]);
-                $("#" + form + "_sourcefile").val(which.sourceFile);
+            var index = -1;
+            for (var i=0; i<directories.length; i++)
+            if (directories[i].name === which.sourcedirectory) index = i;
+            if (index >= 0) updateFilesSelect($("#" + form + "_sourcefile"), directories[index]);
+            $("#" +form + "_sourcefile").val(which.sourceFile);
 
-                //populat the directory select in the add resource section
-                $("#" + form + "_availabledirs").html("<option value='Select'>Select</option>");
-                for (var i = 0; i < directories.length; i++)
-                    $("#" + form + "_availabledirs").append($('<option/>', {value: directories[i].name, text: directories[i].name}));
+            //populat the directory select in the add resource section
+            $("#" +form + "_availabledirs").html("<option value='Select'>Select</option>");
+            for (var i=0; i<directories.length; i++)
+            $("#" +form + "_availabledirs").append($('<option/>', {value: directories[i].name, text : directories[i].name})); 
 
-                //take the create directories and files form, from where it is, and put it in THIS form
-                var adddirform = $("#adddirform")[0];
-                $("#adddirform").detach();
-                $("#" + form).append(adddirform);
+            //take the create directories and files form, from where it is, and put it in THIS form
+            var adddirform = $("#adddirform")[0];
+            $("#adddirform").detach();
+            $("#" + form).append(adddirform);
 
-                //also, populate the dir select in there
-                updateDirectoriesSelect($("#adddirform_availabledirs"));
+            //also, populate the dir select in there
+            updateDirectoriesSelect($("#adddirform_availabledirs"));
 
 
             }
@@ -1410,170 +1375,135 @@
 
 
             //saves the information from the study form onto the server
-            function saveUpdates(which) {
+            function saveUpdates(which){
 
-                var object = putFormIntoObject(which);
+            var object = putFormIntoObject(which);
 
-                if (which == "viewerform")
-                    updateViewerDataOnServer(false, object, function(success, errorMsg) {
-                        if (success) {
-                            currentViewer.data = object; //update the actual viewer data item (currentViewer.data)
-                            updateViewerIcon(currentViewer, object);//update the icon in home (currentViewer)
-                            $("#viewerform").hide(200, function() {
-                                $("#homediv").slideDown(200);
-                                currentViewer = null;
-                            });
-                        }
-                        else
-                            alert("Something went wrong: " + errorMsg);
-                    });
-                if (which == "datasetform")
-                    updateDatasetDataOnServer(false, object, function(success, errorMsg) {
-                        if (success) {
-                            currentDataset.data = object;
-                            updateDatasetIcon(currentDataset, object);
-                            $("#datasetform").hide(200, function() {
-                                $("#homediv").slideDown(200);
-                                currentInfo = null;
-                            });
-                        }
-                        else
-                            alert("Something went wrong: " + errorMsg);
-                    });
-                if (which == "introform")
-                    updateIntroDataOnServer(false, object, function(success, errorMsg) {
-                        if (success) {
-                            currentIntro.data = object;
-                            updateViewerIcon(currentIntro, object);
-                            $("#introform").hide(200, function() {
-                                $("#homediv").slideDown(200);
-                                currentInfo = null;
-                            });
-                        }
-                        else
-                            alert("Something went wrong: " + errorMsg);
-                    });
-                if (which == "testform")
-                    updateTestDataOnServer(false, object, function(success, errorMsg) {
-                        if (success) {
-                            currentTest.data = object;
-                            updateTestIcon(currentTest, object);
-                            $("#testform").hide(200, function() {
-                                $("#homediv").slideDown(200);
-                                currentTest = null;
-                            });
-                        }
-                        else
-                            alert("Something went wrong: " + errorMsg);
-                    });
+            if (which == "viewerform")
+            updateViewerDataOnServer(false, object, function(success, errorMsg){
+            if (success){
+            currentViewer.data = object; //update the actual viewer data item (currentViewer.data)
+            updateViewerIcon(currentViewer,object);//update the icon in home (currentViewer)
+            $("#viewerform").hide(200, function(){ 	$("#homediv").slideDown(200); 	currentViewer = null;   });
+            }
+            else	alert("Something went wrong: " + errorMsg);});
+            if (which == "datasetform")
+            updateDatasetDataOnServer(false, object, function(success, errorMsg){
+            if (success){
+            currentDataset.data = object; 
+            updateDatasetIcon(currentDataset,object);
+            $("#datasetform").hide(200, function(){ $("#homediv").slideDown(200);  	currentInfo = null;  });
+            }
+            else	alert("Something went wrong: " + errorMsg);});
+            if (which == "introform")
+            updateIntroDataOnServer(false, object, function(success, errorMsg){
+            if (success){
+            currentIntro.data = object; 
+            updateViewerIcon(currentIntro,object);
+            $("#introform").hide(200, function(){ $("#homediv").slideDown(200);  	currentInfo = null;  });
+            }
+            else alert("Something went wrong: " + errorMsg);});
+            if (which == "testform")
+            updateTestDataOnServer(false, object, function(success, errorMsg){
+            if (success){
+            currentTest.data = object; 
+            updateTestIcon(currentTest,object);
+            $("#testform").hide(200, function(){ $("#homediv").slideDown(200);  	currentTest = null;  });
+            }
+            else	alert("Something went wrong: " + errorMsg);});
             }
 
 
 
 
-            function validateForm(which) {
+            function validateForm(which){
 
-                if ($("#" + which + "_name").val().trim() == "") {
-                    alert("Please provide a name for your study");
-                    return false;
-                }
-
-                return true;
+            if ($("#"+which+ "_name").val().trim() == ""){
+            alert("Please provide a name for your study");
+            return false;
             }
 
-            function putFormIntoObject(which) {
-                var obj = new Object();
-
-                obj.name = $("#" + which + "_name").val();
-
-                obj.sourceDirectory = $("#" + which + "_sourcedirectory").val();
-                obj.sourceFile = $("#" + which + "_sourcefile").val();
-                obj.description = $("#" + which + "_description").val();
-
-                return obj;
+            return true;
             }
 
-            function objectToString(obj) {
-                var s = obj.name;
+            function putFormIntoObject(which){
+            var obj = new Object();
 
-                s += " || " + obj.sourcedirectory;
-                s += " || " + obj.sourcefile;
+            obj.name = $("#" + which + "_name").val();
 
-                return s;
+            obj.sourceDirectory = $("#" + which + "_sourcedirectory").val();
+            obj.sourceFile = $("#" + which + "_sourcefile").val();
+            obj.description = $("#" + which + "_description").val();
+
+            return obj;
             }
 
-            function formAction(split) {
-                if (split[1] == "done") {
-                    if (validateForm(split[0])) {
-                        saveUpdates(split[0]);  //save changes to server; update study icon in home; hide study form
-                    }
-                }
-                if (split[1] == "adddir") {
-                    var val = $("#adddirform_newdirectory").val();
-                    var error = false;
-                    if (val.trim() == "") {
-                        alert("Please provide a valid directory name");
-                        error = true;
-                    }
-                    for (var i = 0; i < directories.length; i++)
-                        if (directories[i].name === val) {
-                            alert("You already have a directory named that");
-                            error = true;
-                        }
-                    if (!error)
-                        createNewDirectoryOnServer(val, function(success, errorMsg) {
-                            if (success) {
-                                var dir = new Object();
-                                dir.name = val;
-                                dir.files = [];
-                                directories.push(dir);
-                                updateDirectoriesSelect($("#adddirform_availabledirs"));
-                                if (currentViewer != null)
-                                    updateDirectoriesSelect($("#viewerform_sourcedirectory"));
-                                if (currentIntro != null)
-                                    updateDirectoriesSelect($("#introform_sourcedirectory"));
-                                if (currentTest != null)
-                                    updateDirectoriesSelect($("#testform_sourcedirectory"));
-                                if (currentDataset != null)
-                                    updateDirectoriesSelect($("#datasetform_sourcedirectory"));
-                            }
-                            else
-                                alert("Something went wrong: " + errorMsg);
-                        });
-                }
-                if (split[1] == "addfiles") {
-                    var error = false;
-                    var files = $("#adddirform_newfiles")[0].files;
-                    if (files.length == 0) {
-                        alert("Please choose at least one file to upload");
-                        error = true;
-                    }
-                    var dir = $("#adddirform_availabledirs").val();
-                    if (dir === "Select") {
-                        alert("Please select one of your user directories to upload the files to");
-                        error = true;
-                    }
-                    if (!error) {
-                        addNewFilesOnServer(dir, files, function(success, errorMsg) {
-                            if (success) {
-                                for (var i = 0; i < directories.length; i++)
-                                    if (directories[i].name === dir) {
-                                        for (var j = 0; j < files.length; j++)
-                                            directories[i].files.push(files[j].name);
-                                        if (currentViewer != null && $("#viewerform_sourcedirectory").val() === dir)
-                                            updateFilesSelect($("#viewerform_sourcefile"), directories[i]);
-                                        if (currentIntro != null && $("#introform_sourcedirectory").val() === dir)
-                                            updateFilesSelect($("#introform_sourcefile"), directories[i]);
-                                        if (currentTest != null && $("#testform_sourcedirectory").val() === dir)
-                                            updateFilesSelect($("#testform_sourcefile"), directories[i]);
-                                    }
-                            }
-                            else
-                                alert("Something went wrong: " + errorMsg);
-                        });
-                    }
+            function objectToString(obj){
+            var s=obj.name;
 
-                }
+            s += " || " + obj.sourcedirectory;
+            s += " || " + obj.sourcefile;
+
+            return s;
+            }
+
+            function formAction(split){
+            if (split[1] == "done"){
+            if (validateForm(split[0])){
+            saveUpdates(split[0]);  //save changes to server; update study icon in home; hide study form
+            }
+            }
+            if (split[1] == "adddir"){
+            var val = $("#adddirform_newdirectory").val();
+            var error = false;
+            if (val.trim() == ""){
+            alert("Please provide a valid directory name");
+            error = true;
+            }
+            for (var i=0; i<directories.length; i++)
+            if (directories[i].name === val){
+            alert("You already have a directory named that");
+            error = true;
+            }
+            if  (!error) 
+            createNewDirectoryOnServer(val, function(success, errorMsg){
+            if (success){
+            var dir = new Object();
+            dir.name = val;
+            dir.files = [];
+            directories.push(dir);
+            updateDirectoriesSelect($("#adddirform_availabledirs"));
+            if (currentViewer != null) updateDirectoriesSelect($("#viewerform_sourcedirectory"));
+            if (currentIntro != null) updateDirectoriesSelect($("#introform_sourcedirectory"));
+            if (currentTest != null) updateDirectoriesSelect($("#testform_sourcedirectory"));
+            if (currentDataset != null) updateDirectoriesSelect($("#datasetform_sourcedirectory"));
+            }
+            else alert("Something went wrong: " + errorMsg);
+            });
+            }
+            if (split[1] == "addfiles"){
+            var error = false;
+            var files = $("#adddirform_newfiles")[0].files;
+            if (files.length == 0){ alert("Please choose at least one file to upload"); error = true;}
+            var dir = $("#adddirform_availabledirs").val();
+            if (dir === "Select") {alert("Please select one of your user directories to upload the files to"); error = true;}
+            if (!error){
+            addNewFilesOnServer(dir, files, function(success, errorMsg){
+            if (success){
+            for (var i=0; i<directories.length; i++)
+            if (directories[i].name === dir){
+            for (var j=0; j<files.length; j++)
+            directories[i].files.push(files[j].name);
+            if (currentViewer != null && $("#viewerform_sourcedirectory").val() === dir) updateFilesSelect($("#viewerform_sourcefile"), directories[i]);
+            if (currentIntro != null && $("#introform_sourcedirectory").val() === dir) updateFilesSelect($("#introform_sourcefile"), directories[i]);
+            if (currentTest != null && $("#testform_sourcedirectory").val() === dir) updateFilesSelect($("#testform_sourcefile"), directories[i]);
+            }
+            }
+            else alert("Something went wrong: " + errorMsg);
+            });
+            }
+
+            }
             }
 
 
@@ -1581,96 +1511,94 @@
 
 
             ////////////////////////////////   TASK PROTO FORM   /////////////////////////////////////////////////////
-            function addTaskprotoFormHandlers() {
-                $("#taskprotoform_answertype").change(function() {
-                    var d = $("#taskprotoform_answertype").val();
-                    alert(d);
-                    if (d !== "Interface/Custom") {
-                        $("#taskprotoform_answerinterfaces").hide();
-                        if (d == "Options(fixed)")
-                            $("#taskprotoform_answeroptionssection").show();
-                        else
-                            $("#taskprotoform_answeroptionssection").hide();
+            function addTaskprotoFormHandlers(){
+            $("#taskprotoform_answertype").change(function(){
+            var d = $("#taskprotoform_answertype").val();
+            alert(d);
+            if (d !== "Interface/Custom"){
+            $("#taskprotoform_answerinterfaces").hide();
+            if (d == "Options(fixed)")	$("#taskprotoform_answeroptionssection").show();
+            else $("#taskprotoform_answeroptionssection").hide();
 
-                        if ($("#taskprotoform_answercorrect").val() === "yes") {
-                            $("#taskprotoform_answercomputeaccuracy").hide();
-                            $("#taskprotoform_answercustomizeaccuracy").show();
-                        }
-                    }
-                    else {
-                        $("#taskprotoform_answeroptionssection").hide();
-                        $("#taskprotoform_answerinterfaces").show();
-                        if ($("#taskprotoform_answercorrect").val() === "yes") {
-                            $("#taskprotoform_answercustomizeaccuracy").hide();
-                            $("#taskprotoform_answercomputeaccuracy").show();
-                        }
-                    }
-                });
+            if ($("#taskprotoform_answercorrect").val() === "yes"){
+            $("#taskprotoform_answercomputeaccuracy").hide();
+            $("#taskprotoform_answercustomizeaccuracy").show();
+            }
+            }
+            else{
+            $("#taskprotoform_answeroptionssection").hide();
+            $("#taskprotoform_answerinterfaces").show();
+            if ($("#taskprotoform_answercorrect").val() === "yes"){
+            $("#taskprotoform_answercustomizeaccuracy").hide();
+            $("#taskprotoform_answercomputeaccuracy").show();
+            }
+            }
+            });
 
-                $("#taskprotoform_answercorrect").change(function() {
-                    var d = $("#taskprotoform_answercorrect").val();
+            $("#taskprotoform_answercorrect").change(function(){
+            var d = $("#taskprotoform_answercorrect").val();
 
-                    if (d == "yes") {
-                        if ($("#taskprotoform_answertype").val() !== "Interface/Custom") {
-                            $("#taskprotoform_answercomputeaccuracy").hide();
-                            $("#taskprotoform_answercustomizeaccuracy").show();
-                        }
-                        else {
-                            $("#taskprotoform_answercomputeaccuracy").show();
-                            $("#taskprotoform_answercustomizeaccuracy").hide();
-                        }
-                    }
-                    else {
-                        $("#taskprotoform_answercomputeaccuracy").hide();
-                        $("#taskprotoform_answercustomizeaccuracy").hide();
-                    }
-                });
+            if (d == "yes"){
+            if ($("#taskprotoform_answertype").val() !== "Interface/Custom"){
+            $("#taskprotoform_answercomputeaccuracy").hide();
+            $("#taskprotoform_answercustomizeaccuracy").show();
+            }
+            else{
+            $("#taskprotoform_answercomputeaccuracy").show();
+            $("#taskprotoform_answercustomizeaccuracy").hide();
+            }
+            }
+            else{
+            $("#taskprotoform_answercomputeaccuracy").hide();
+            $("#taskprotoform_answercustomizeaccuracy").hide();
+            }
+            });
 
             }
 
-            function putTaskprotoDataInForm(which) {
+            function putTaskprotoDataInForm(which){
 
-                $("#taskprotoform_loadxml").hide();
-                $("#taskprotoform_name").val(which.name);
-                $("#taskprotoform_description").val(which.description);
-                $("#taskprotoform_question").val(which.question);
+            $("#taskprotoform_loadxml").hide();
+            $("#taskprotoform_name").val(which.name);
+            $("#taskprotoform_description").val(which.description);
+            $("#taskprotoform_question").val(which.question);
 
-                $("#taskprotoform_inputs").html("");
-                for (var i = 0; i < which.inputs.length; i++) {
-                    var id = createEmptyInputRow();
-                    $("#taskprotoform_inputtype_" + id).val(which.inputs[i].typeName);
-                    $("#taskprotoform_inputdescription_" + id).val(which.inputs[i].description);
-                    $("#taskprotoform_inputshowinvis_" + id).val(which.inputs[i].showInVis);
-                    $("#taskprotoform_inputspecinvis_" + id).val(which.inputs[i].specifyInVis);
-                }
+            $("#taskprotoform_inputs").html( "");
+            for (var i=0; i<which.inputs.length; i++){
+            var id = createEmptyInputRow();
+            $("#taskprotoform_inputtype_" + id).val(which.inputs[i].typeName);
+            $("#taskprotoform_inputdescription_" + id).val(which.inputs[i].description);
+            $("#taskprotoform_inputshowinvis_" + id).val(which.inputs[i].showInVis);
+            $("#taskprotoform_inputspecinvis_" + id).val(which.inputs[i].specifyInVis);
+            }
 
-                $("#taskprotoform_answeroptionssection").hide();
-                $("#taskprotoform_answerinterfaces").hide();
-                $("#taskprotoform_answercustomizeaccuracy").hide();
-                $("#taskprotoform_answercomputeaccuracy").hide();
+            $("#taskprotoform_answeroptionssection").hide();
+            $("#taskprotoform_answerinterfaces").hide();
+            $("#taskprotoform_answercustomizeaccuracy").hide();
+            $("#taskprotoform_answercomputeaccuracy").hide();
 
-                $("#taskprotoform_answeroptions").html("");
-                $("#taskprotoform_answertype").val(which.answer.type);
-                if (which.answer.type === "Options(fixed)") {
-                    $("#taskprotoform_answeroptionssection").show();
-                    for (var i = which.answer.options.length - 1; i >= 0; i--) {
-                        var id = createEmptyAnswerOptionRow();
-                        $("#taskprotoform_answeroption_" + id).val(which.answer.options[i]);
-                    }
-                }
-                else if (which.answer.type === "Interface/Custom") {
-                    $("#taskprotoform_answerinterfaces").show();
-                    $("#taskprotoform_answercustomtypename").val(which.answer.customTypeName);
-                }
+            $("#taskprotoform_answeroptions").html("");
+            $("#taskprotoform_answertype").val(which.answer.type);
+            if (which.answer.type === "Options(fixed)"){		
+            $("#taskprotoform_answeroptionssection").show();
+            for (var i = which.answer.options.length-1; i>=0; i--){
+            var id = createEmptyAnswerOptionRow();
+            $("#taskprotoform_answeroption_" + id).val(which.answer.options[i]);
+            }
+            }
+            else if (which.answer.type === "Interface/Custom"){
+            $("#taskprotoform_answerinterfaces").show();
+            $("#taskprotoform_answercustomtypename").val(which.answer.customTypeName);
+            }
 
-                $("#taskprotoform_answercorectness").val(which.answer.correctness);
+            $("#taskprotoform_answercorectness").val(which.answer.correctness);
 
-                if (which.answer.type != "Options(fixed)") {
-                    createEmptyAnswerOptionRow();
-                    createEmptyAnswerOptionRow();
-                }
+            if (which.answer.type != "Options(fixed)"){
+            createEmptyAnswerOptionRow();
+            createEmptyAnswerOptionRow();
+            }
 
-                addTaskprotoFormHandlers();
+            addTaskprotoFormHandlers();
             }
 
 
@@ -1678,115 +1606,110 @@
 
 
             //saves the information from the taskproto form onto the server
-            function saveTaskprotoUpdates(which) {
+            function saveTaskprotoUpdates(which){
 
-                var object = putTaskprotoFormIntoObject(which);
+            var object = putTaskprotoFormIntoObject(which);
 
-                updateTaskprotoDataOnServer(false, object, function(success, errorMsg) {
-                    if (success) {
-                        currentTaskproto.data = object; //update the actual taskproto data item (currentTaskproto.data)
-                        updateTaskprotoIcon(currentTaskproto, object);//update the icon in home (currentViewer)
-                        $("#taskprotoform").hide(200, function() {
-                            $("#homediv").slideDown(200);
-                            currentTaskproto = null;
-                        });
-                    }
-                    else
-                        alert("Something went wrong: " + errorMsg);
-                });
+            updateTaskprotoDataOnServer(false, object, function(success, errorMsg){
+            if (success){
+            currentTaskproto.data = object; //update the actual taskproto data item (currentTaskproto.data)
+            updateTaskprotoIcon(currentTaskproto,object);//update the icon in home (currentViewer)
+            $("#taskprotoform").hide(200, function(){ 	$("#homediv").slideDown(200); 	currentTaskproto = null;   });
+            }
+            else	alert("Something went wrong: " + errorMsg);});
 
             }
 
-            function validateTaskprotoForm(which) {
+            function validateTaskprotoForm(which){
 
-                if ($("#taskprotoform_name").val().trim() == "") {
-                    alert("Please provide a name for your task");
-                    return false;
-                }
-
-                return true;
+            if ($("#taskprotoform_name").val().trim() == ""){
+            alert("Please provide a name for your task");
+            return false;
             }
 
-            function putTaskprotoFormIntoObject(which) {
-                var obj = new Object();
+            return true;
+            }
 
-                obj.name = $("#taskprotoform_name").val();
-                obj.description = $("#taskprotoform_description").val();
-                obj.question = $("#taskprotoform_question").val();
+            function putTaskprotoFormIntoObject(which){
+            var obj = new Object();
 
-                obj.inputs = [];
-                $("#taskprotoform_inputs").children().each(function() {
-                    var id = $(this).attr("id").split("_")[2];
-                    var inputobj = new Object();
-                    inputobj.typeName = $("#taskprotoform_inputtype_" + id).val();
-                    inputobj.description = $("#taskprotoform_inputdescription_" + id).val();
-                    inputobj.showInVis = $("#taskprotoform_inputshowinvis_" + id).val();
-                    inputobj.specifyInVis = $("#taskprotoform_inputspecinvis_" + id).val();
-                    obj.inputs.push(inputobj);
-                });
+            obj.name = $("#taskprotoform_name").val();
+            obj.description = $("#taskprotoform_description").val();
+            obj.question = $("#taskprotoform_question").val();
 
-                obj.answer = new Object();
-                obj.answer.type = $("#taskprotoform_answertype").val();
-                if (obj.answer.type == "Options(fixed)") {
-                    obj.answer.options = [];
-                    $("#taskprotoform_answeroptions").find("input").each(function() {
-                        obj.answer.options.push($(this).val());
-                    });
-                }
-                else if (obj.answer.type == "Interface/Custom") {
-                    obj.answer.customTypeName = $("#taskprotoform_answercustomtypename").val();
-                }
+            obj.inputs = [];
+            $("#taskprotoform_inputs").children().each(function(){
+            var id = $(this).attr("id").split("_")[2];
+            var inputobj = new Object();
+            inputobj.typeName = $("#taskprotoform_inputtype_" + id).val();
+            inputobj.description = $("#taskprotoform_inputdescription_" + id).val();
+            inputobj.showInVis = $("#taskprotoform_inputshowinvis_" + id).val();
+            inputobj.specifyInVis = $("#taskprotoform_inputspecinvis_" + id).val();
+            obj.inputs.push(inputobj);
+            });
 
-                obj.answer.correctness = $("#taskprotoform_answercorectness").val();
+            obj.answer = new Object();
+            obj.answer.type = $("#taskprotoform_answertype").val();
+            if (obj.answer.type == "Options(fixed)"){
+            obj.answer.options = [];
+            $("#taskprotoform_answeroptions").find("input").each(function(){
+            obj.answer.options.push($(this).val());
+            });
+            }
+            else if (obj.answer.type == "Interface/Custom"){
+            obj.answer.customTypeName = $("#taskprotoform_answercustomtypename").val();
+            }
 
-                return obj;
+            obj.answer.correctness = $("#taskprotoform_answercorectness").val();
+
+            return obj;
             }
 
 
-            function taskprotoFormAction(split) {
-                if (split[1] == "done") {
-                    if (validateTaskprotoForm(split[0])) {
-                        saveTaskprotoUpdates(split[0]);  //save changes to server; update icon in home; hide form
-                    }
-                }
-                if (split[1] == "addinput") {
-                    createEmptyInputRow();
-                }
-                if (split[1] == "showxmlform") {
-                    $("#taskprotoform_loadxml").toggle();
-                }
-                if (split[1] == "loadxmlfile") {
-                    if ($("#taskprotoform_xmlfile")[0].files.length == 0)
-                        alert("Please select a file first");
-                    else
-                        loadTaskXMLFile($("#taskprotoform_xmlfile")[0].files[0], function(success, msg, taskObject) {
-                            putTaskprotoDataInForm(taskObject);
-                        });
-                }
+            function taskprotoFormAction(split){
+            if (split[1] == "done"){
+            if (validateTaskprotoForm(split[0])){
+            saveTaskprotoUpdates(split[0]);  //save changes to server; update icon in home; hide form
+            }
+            }
+            if (split[1] == "addinput"){
+            createEmptyInputRow();
+            }
+            if (split[1] == "showxmlform"){
+            $("#taskprotoform_loadxml").toggle();
+            }
+            if (split[1] == "loadxmlfile"){
+            if ($("#taskprotoform_xmlfile")[0].files.length == 0)
+            alert("Please select a file first");
+            else
+            loadTaskXMLFile($("#taskprotoform_xmlfile")[0].files[0], function(success, msg, taskObject){
+            putTaskprotoDataInForm(taskObject);
+            });
+            }
             }
 
-            function createEmptyInputRow() {
-                uniqueInputId++;
-                var html = "<div id='taskprotoform_inputrow_" + uniqueInputId + "' style='margin-bottom:5px'>";
-                html += "<table style='background-color:rgba(100,100,100,0.2)'><tr>";
-                html += "<td style='vertical-align:middle'>&nbsp&nbsp" + ($("#taskprotoform_inputs").children().length + 1) + "&nbsp</td>";
-                html += "<td><div class='inputlabel'>Type name</div><input type='text' style='width:60px' id='taskprotoform_inputtype_" + uniqueInputId + "' value='text'></input></td>";
-                html += "<td><div class='inputlabel' style='padding-bottom:3px'>Description</div><textarea id=taskprotoform_inputdescription_" + uniqueInputId + " style='width: 200px; height: 25px;'></textarea></td>";
-                html += "<td><div class='inputlabel'>Show in vis</div><select style='width:100%' id='taskprotoform_inputshowinvis_" + uniqueInputId + "'><option value='yes'>yes</option><option value='no' selected>no</option></select></td>";
-                html += "<td><div class='inputlabel'>Specifiy in vis</div><select style='width:100%' id='taskprotoform_inputspecinvis_" + uniqueInputId + "'><option value='yes'>yes</option><option value='no' selected>no</option></select><td>";
-                html += "<td style='vertical-align:middle'><span class='button' id='taskprotoform_||_delinput_||_" + uniqueViewerId + "'> <img src='x-icon.png' height=12 width=12> </span></td>";
-                html += "</tr></table></div>";
-                $("#taskprotoform_inputs").append(html);
+            function createEmptyInputRow(){
+            uniqueInputId++;
+            var html = "<div id='taskprotoform_inputrow_" + uniqueInputId + "' style='margin-bottom:5px'>";
+            html += "<table style='background-color:rgba(100,100,100,0.2)'><tr>";
+            html += "<td style='vertical-align:middle'>&nbsp&nbsp" + ($("#taskprotoform_inputs").children().length+1) + "&nbsp</td>";
+            html += "<td><div class='inputlabel'>Type name</div><input type='text' style='width:60px' id='taskprotoform_inputtype_" + uniqueInputId + "' value='text'></input></td>";
+            html += "<td><div class='inputlabel' style='padding-bottom:3px'>Description</div><textarea id=taskprotoform_inputdescription_" + uniqueInputId + " style='width: 200px; height: 25px;'></textarea></td>";
+            html += "<td><div class='inputlabel'>Show in vis</div><select style='width:100%' id='taskprotoform_inputshowinvis_" + uniqueInputId + "'><option value='yes'>yes</option><option value='no' selected>no</option></select></td>";
+            html += "<td><div class='inputlabel'>Specifiy in vis</div><select style='width:100%' id='taskprotoform_inputspecinvis_" + uniqueInputId + "'><option value='yes'>yes</option><option value='no' selected>no</option></select><td>";
+            html += "<td style='vertical-align:middle'><span class='button' id='taskprotoform_||_delinput_||_" + uniqueViewerId + "'> <img src='x-icon.png' height=12 width=12> </span></td>";
+            html += "</tr></table></div>";
+            $("#taskprotoform_inputs").append(html);
 
-                return uniqueInputId;
+            return uniqueInputId;
             }
 
-            function createEmptyAnswerOptionRow() {
-                uniqueAnswerOptionId++;
-                var html = "<div style='padding:0px 0px 0px 0px; margin:-3px 0px -3px 0px; style='margin-bottom:5px'><input type='text' value='option' id='taskprotoform_answeroption_" + uniqueAnswerOptionId + "'></input>";
-                html += "&nbsp&nbsp&nbsp<span class='button' id='taskprotoform_||_delansweroption_||_" + uniqueAnswerOptionId + "'> <img src='x-icon.png' height=12 width=12> </span> </div>";
-                $("#taskprotoform_answeroptions").prepend(html);
-                return uniqueAnswerOptionId;
+            function createEmptyAnswerOptionRow(){
+            uniqueAnswerOptionId++;
+            var html = "<div style='padding:0px 0px 0px 0px; margin:-3px 0px -3px 0px; style='margin-bottom:5px'><input type='text' value='option' id='taskprotoform_answeroption_" + uniqueAnswerOptionId + "'></input>";
+            html += "&nbsp&nbsp&nbsp<span class='button' id='taskprotoform_||_delansweroption_||_" + uniqueAnswerOptionId + "'> <img src='x-icon.png' height=12 width=12> </span> </div>";
+            $("#taskprotoform_answeroptions").prepend(html);
+            return uniqueAnswerOptionId;
             }
 
 
@@ -1800,120 +1723,118 @@
 
 
             ////////////////////////////////   TASKINSTANCE FORM   /////////////////////////////////////////////////////
-            function addTaskinstanceFormHandlers() {
+            function addTaskinstanceFormHandlers(){
 
 
             }
 
-            function putTaskinstanceDataInForm(which) {
-                $("#taskinstanceform_loadxml").hide();
-                $("#taskinstanceform_taskcreator").hide();
+            function putTaskinstanceDataInForm(which){
+            $("#taskinstanceform_loadxml").hide();
+            $("#taskinstanceform_taskcreator").hide();
 
-                $("#taskinstanceform_availabletasks").html();
-                $("#taskinstanceform_availabletasks").append($('<option/>', {value: "Select", text: "Select"}));
-                for (var i = 0; i < taskprotos.length; i++)
-                    $("#taskinstanceform_availabletasks").append($('<option/>', {value: taskprotos[i].data.name, text: taskprotos[i].data.name}));
-                $("#taskinstanceform_availabletasks").val(which.taskproto);
+            $("#taskinstanceform_availabletasks").html();
+            $("#taskinstanceform_availabletasks").append($('<option/>', {value: "Select", text : "Select"}));
+            for (var i=0; i<taskprotos.length; i++)
+            $("#taskinstanceform_availabletasks").append($('<option/>', {value: taskprotos[i].data.name, text : taskprotos[i].data.name}));
+            $("#taskinstanceform_availabletasks").val(which.taskproto);
 
-                $("#taskinstanceform_availabledatasets").html("");
-                $("#taskinstanceform_availabledatasets").append($('<option/>', {value: "no data", text: "no data"}));
-                for (var i = 0; i < datasets.length; i++)
-                    $("#taskinstanceform_availabledatasets").append($('<option/>', {value: datasets[i].data.name, text: datasets[i].data.name}));
-                $("#taskinstanceform_availabledatasets").val(which.dataset);
+            $("#taskinstanceform_availabledatasets").html("");
+            $("#taskinstanceform_availabledatasets").append($('<option/>', {value: "no data", text : "no data"}));
+            for (var i=0; i<datasets.length; i++)
+            $("#taskinstanceform_availabledatasets").append($('<option/>', {value: datasets[i].data.name, text : datasets[i].data.name}));
+            $("#taskinstanceform_availabledatasets").val(which.dataset);
 
-                $("#taskinstanceform_availableviewers").html("");
-                $("#taskinstanceform_availableviewers").append($('<option/>', {value: "no viewer", text: "no viewer"}));
-                for (var i = 0; i < viewers.length; i++)
-                    $("#taskinstanceform_availableviewers").append($('<option/>', {value: viewers[i].data.name, text: viewers[i].data.name}));
-                $("#taskinstanceform_availableviewers").val(which.viewer);
+            $("#taskinstanceform_availableviewers").html("");
+            $("#taskinstanceform_availableviewers").append($('<option/>', {value: "no viewer", text : "no viewer"}));
+            for (var i=0; i<viewers.length; i++)
+            $("#taskinstanceform_availableviewers").append($('<option/>', {value: viewers[i].data.name, text : viewers[i].data.name}));
+            $("#taskinstanceform_availableviewers").val(which.viewer);
 
-                if (which.instances > 0) {
-                    $("#taskinstanceform_availabletasks").prop("disabled", true);
-                    $("#taskinstanceform_availabledatasets").prop("disabled", true);
-                }
-                else {
-                    $("#taskinstanceform_availabletasks").prop("disabled", false);
-                    $("#taskinstanceform_availabledatasets").prop("disabled", false);
-                }
+            if (which.instances > 0){
+            $("#taskinstanceform_availabletasks").prop("disabled",true);
+            $("#taskinstanceform_availabledatasets").prop("disabled",true);
+            }
+            else{
+            $("#taskinstanceform_availabletasks").prop("disabled",false);
+            $("#taskinstanceform_availabledatasets").prop("disabled",false);
+            }
             }
 
 
             //saves the information from the taskproto form onto the server
-            function saveTaskinstanceUpdates(which) {
+            function saveTaskinstanceUpdates(which){
 
             }
 
-            function validateTaskinstanceForm(which) {
+            function validateTaskinstanceForm(which){
 
 
-                return true;
+            return true;
             }
 
-            function putTaskinstanceFormIntoObject(which) {
+            function putTaskinstanceFormIntoObject(which){
 
             }
 
-            function taskInstanceCreated() {
-                currentTaskinstance.data.instances++;
-                $("#taskinstanceform_availabletasks").prop("disabled", true);
-                $("#taskinstanceform_availabledatasets").prop("disabled", true);
+            function taskInstanceCreated(){
+            currentTaskinstance.data.instances++;
+            $("#taskinstanceform_availabletasks").prop("disabled",true);
+            $("#taskinstanceform_availabledatasets").prop("disabled",true);	
             }
 
-            function taskinstanceFormAction(split) {
-                if (split[1] == "done") {
-                    currentTaskinstance.data.taskproto = $("#taskinstanceform_availabletasks").val();
-                    currentTaskinstance.data.dataset = $("#taskinstanceform_availabledatasets").val();
-                    currentTaskinstance.data.viewer = $("#taskinstanceform_availableviewers").val();
+            function taskinstanceFormAction(split){
+            if (split[1] == "done"){
+            currentTaskinstance.data.taskproto = $("#taskinstanceform_availabletasks").val();
+            currentTaskinstance.data.dataset = $("#taskinstanceform_availabledatasets").val();
+            currentTaskinstance.data.viewer = $("#taskinstanceform_availableviewers").val();
 
-                    if (currentTaskinstance.data.instances > 0) {
-                        var index = -1;
-                        for (var i = 0; i < taskinstances.length; i++)
-                            if (taskinstances[i].data.taskproto === currentTaskinstance.data.taskproto &&
-                                    taskinstances[i].data.dataset === currentTaskinstance.data.dataset)
-                                index = i;
-                        if (index >= 0) {
-                            alert("It seems you already have tasks of this type for this data set. We will merge the tasks you just created with those you had before.")
-                            taskinstances[index].data.instances += currentTaskinstance.data.instances;
-                            currentTaskinstance = taskinstances[index];
-                        }
-                        else {
-                            taskinstances.push(currentTaskinstance);
-                            $("#homediv_taskinstancesection").append(currentTaskinstance);
-                        }
-                    }
-                    updateTaskinstanceIcon(currentTaskinstance, currentTaskinstance.data);//update the icon in home (currentViewer)
-                    $("#taskinstanceform").hide(200, function() {
-                        $("#homediv").slideDown(200);
-                        currentTaskinstance = null;
-                    });
-                }
-                if (split[1] == "showxmlform") {
-                    $("#taskinstanceform_loadxml").toggle();
-                }
-                if (split[1] == "loadxmlfile") {
-                    if ($("#taskinstanceform_xmlfile")[0].files.length == 0)
-                        alert("Please select a file first");
-                    else
-                        loadTaskXMLFile($("#taskinstanceform_xmlfile")[0].files[0], function(success, msg, taskObject) {
-                            putTaskinstanceDataInForm(taskObject);
-                        });
-                }
-                if (split[1] == "createtaskinstances") {
-                    if ($("#taskinstanceform_availabletasks").val() === "Select")
-                        alert("Please select the task you want to create instance of first...");
-                    else
-                        $("#taskinstanceform_taskcreator").show();
-                }
+            if (currentTaskinstance.data.instances > 0){
+            var index = -1;
+            for (var i=0; i<taskinstances.length; i++)
+            if (taskinstances[i].data.taskproto === currentTaskinstance.data.taskproto && 
+            taskinstances[i].data.dataset === currentTaskinstance.data.dataset)
+            index = i;
+            if (index >=0){
+            alert("It seems you already have tasks of this type for this data set. We will merge the tasks you just created with those you had before.")
+            taskinstances[index].data.instances += currentTaskinstance.data.instances;
+            currentTaskinstance = taskinstances[index];
+            }
+            else{
+            taskinstances.push(currentTaskinstance);
+            $("#homediv_taskinstancesection").append(currentTaskinstance);
+            }
+            }
+            updateTaskinstanceIcon(currentTaskinstance, currentTaskinstance.data);//update the icon in home (currentViewer)
+            $("#taskinstanceform").hide(200, function(){ 	$("#homediv").slideDown(200); 	currentTaskinstance = null;   });
+            }
+            if (split[1] == "showxmlform"){
+            $("#taskinstanceform_loadxml").toggle();
+            }
+            if (split[1] == "loadxmlfile"){
+            if ($("#taskinstanceform_xmlfile")[0].files.length == 0)
+            alert("Please select a file first");
+            else
+            loadTaskXMLFile($("#taskinstanceform_xmlfile")[0].files[0], function(success, msg, taskObject){
+            putTaskinstanceDataInForm(taskObject);
+            });
+            }
+            if (split[1] == "createtaskinstances"){
+            if ($("#taskinstanceform_availabletasks").val() === "Select")
+            alert("Please select the task you want to create instance of first...");
+            else
+            $("#taskinstanceform_taskcreator").show();
+            }
 
-                if (split[1] == "mocktaskcreated")
-                    taskInstanceCreated();
+            if (split[1] == "mocktaskcreated")
+            taskInstanceCreated();
             }
 
 
             ////////////////////////////////   RESULTS FORM   /////////////////////////////////////////////////////
-            function resultFormAction(split) {
+            function resultFormAction(split){
 
             }
+            
 
         </script>
     </head>

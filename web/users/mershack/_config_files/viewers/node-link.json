@@ -1,0 +1,8 @@
+{
+  "name": "node-link",
+  "description": "A simple Node-link viewer",
+  "sourceDirectory": "mat_and_nl",
+  "sourceFile": "graph_lesMiserables.html"  
+}
+
+

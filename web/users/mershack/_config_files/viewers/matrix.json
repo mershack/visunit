@@ -1,0 +1,8 @@
+{
+  "name": "matrix",
+  "description": "A simple matrix viewer",
+  "sourceDirectory": "mat_and_nl",
+  "sourceFile": "matrix.html"  
+}
+
+
