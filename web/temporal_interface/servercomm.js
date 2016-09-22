@@ -1,3 +1,4 @@
+
 //Loads the list of all directories, then passes that array to a callback function. 
 //Each directory will be characterized by its name and a list of files in it. Json example:
 //			{"name" : "directory1", "files":["file1", "file2", "file3"]}
@@ -5,42 +6,41 @@
 //This callback function should be called with three paramaters: (i) a bool indicating success (true) or failure (false); and
 //(ii) an error message in case of failure; (iii) the data array.
 function loadDirectories(whendone) {
+
     var theURL = "../StudySetup?command=loadDirectories";
     $.ajax({
         url: theURL,
         success: function(data, status) {
             //handle success. data is [{name:"abc",...}, {name:"bcd",...}]
-            alert("directory name: " + data[0].name);
-            
-             whendone(true, "", data );
+
+            whendone(true, "", data);
         },
         error: function(data, status) {
             //handle error
-            alert("there was an error when loading the directories__"+status);
+            alert("there was an error when loading the directories__" + status);
         }
-    });  
-    
-    
-    
-    
-    
-    /*$.get("directories.txt", function(data, status) {
+    });
 
-        var dataLines = data.trim().split("\n");
-        var dirs = [];
-        for (var i = 0; i < dataLines.length; i++) {
-            var line = dataLines[i].trim().split(" || ");
-            var dir = new Object();
-            dir.name = line[0];
-            dir.files = [];
-            for (var j = 1; j < line.length; j++)
-                dir.files.push(line[j]);
 
-            dirs.push(dir);
-        }
 
-        whendone(true, "", dirs);
-    });   */
+
+//	$.get("directories.txt", function(data,status){
+//		
+//		var dataLines = data.trim().split("\n");
+//		var dirs = [];
+//		for (var i=0; i<dataLines.length; i++){
+//			var line = dataLines[i].trim().split(" || ");
+//			var dir = new Object();
+//			dir.name = line[0];
+//			dir.files = [];
+//			for (var j=1; j<line.length; j++)
+//				dir.files.push(line[j]);
+//		
+//			dirs.push(dir);
+//		}
+//		
+//		whendone(true,"", dirs);
+//	});
 
 }
 
@@ -63,119 +63,102 @@ function loadDirectories(whendone) {
 //This callback function should be called with three paramaters: (i) a bool indicating success (true) or failure (false); and
 //(ii) an error message in case of failure; (iii) the data array.
 function loadStudies(whendone) {
-    //some ajax call that gets all the study data
+
     var theURL = "../StudySetup?command=loadDetailsOfAllStudies";
-    
+
     $.ajax({
         url: theURL,
         success: function(data, status) {
             //handle success. data is [{name:"abc",...}, {name:"bcd",...}]
-            /*Below an example that contain only one study
-             * [
-             {"name":"study1","viewerDesign":"Between",
-             "dataDesign":"Between","viewerWidth":"860",
-             "viewerHeight":"800","trainingSize":"2",
-             "conditions": [{"url": "circularDendrogram/circular.html","shortname": "cond1"},
-             {"url": "horizontalDedrogram/horizontal.html","shortname": "cond2"}],
-             "datasets": [{"name": "life","format": ".txt"}],                             
-             "intros": [{"name": "group_intro2","directory": "group1_v1","file": "intro_graph_interpLong.html","cond": "MAT", "description": "A sample introduction description2"},
-             {"name": "group_intro","directory": "group1_v1","file": "intro_matrix_interpLong.html","cond": "NL", "description": "A sample introduction description3"}],
-             "standardTests": [{"name": "Color Blindness","description": "This is a test for color blindness","directory": "ColorBlindnessViewer","file": "color-blind-test.html",
-             "responseInterface": "getBlindTestAnswers","responseValidationInterface": "validateUserResponse"}],
-             "tasks": [{"name": "selectNodeWithHighestDegree2","question": "Select the most connected node","size": "3","time": "15"},
-             {"name": "selectAllNeighborsOf1Node","question": "Select all the neighbors of the highlighted node","size": "3","time": "25"}]}
-             }
-             ]
-             ]
-             */
-            alert("study name: " + data[0].name
-                    + " and viewerDesign: " + data[0].viewerDesign);
-            
-             whendone(true, "", data );
+
+            whendone(true, "", data);
         },
         error: function(data, status) {
             //handle error
-            alert("there was an error when loading the study files__"+status);
+            alert("there was an error when loading the study files__" + status);
         }
 
     });
 
-    $.get("studies.txt", function(data, status) {
-
-        var dataLines = data.trim().split("\n");
-        var _studies = [];
-        var ind = 0;
-
-        for (var i = 0; i < dataLines.length; i++) {
-            var line = dataLines[i].trim().split(" || ");
-            var study = new Object();
-            study.name = line[0];
-            study.viewers = [];
-            var nrViewers = parseInt(line[1]);
-            for (var j = 0; j < nrViewers; j++)
-                study.viewers.push(line[2 + j]);
-            study.viewerDesign = line[2 + nrViewers];
-            ind = 2 + nrViewers + 1;
-
-            study.datasets = [];
-            var nrData = parseInt(line[ind]);
-            ind++;
-            for (var j = 0; j < nrData; j++)
-                study.datasets.push(line[ind + j]);
-            study.datadesign = line[ind + nrData];
-            ind = ind + nrData + 1;
-
-            var nrTasks = parseInt(line[ind]);
-            ind++;
-            study.tasks = [];
-            for (var j = 0; j < nrTasks; j++) {
-                var taskobj = new Object();
-                taskobj.name = line[ind + (j * 4)];
-                taskobj.count = line[ind + (j * 4) + 1];
-                taskobj.time = line[ind + (j * 4) + 2];
-                taskobj.training = line[ind + (j * 4) + 3];
-                study.tasks.push(taskobj);
-            }
-            ind = ind + 4 * nrTasks;
-
-            var nrIntros = parseInt(line[ind]);
-            ind++;
-            study.intros = [];
-            for (var j = 0; j < nrIntros; j++) {
-                var introObj = new Object();
-                introObj.name = line[ind + j * 2];
-                introObj.match = line[ind + j * 2 + 1];
-                study.intros.push(introObj);
-
-            }
-            ind = ind + nrIntros * 2;
-
-            var nrTests = parseInt(line[ind]);
-            ind++;
-            study.tests = [];
-            for (var j = 0; j < nrTests; j++) {
-                var testobj = new Object();
-                testobj.name = line[ind + j * 3];
-                testobj.interface1 = line[ind + j * 3 + 1];
-                testobj.interface2 = line[ind + j * 3 + 2];
-                study.tests.push(testobj);
-
-            }
-            ind = ind + nrTests * 3;
-
-            study.width = line[ind];
-            study.height = line[ind + 1];
 
 
 
-            _studies.push(study);
-        }
-        //study data loaded
-
-        //whendone(true, "", _studies);
-       
-        
-    });
+    //some ajax call that gets all the study data
+    /*$.get("studies.txt", function(data,status){
+     
+     var dataLines = data.trim().split("\n");
+     var _studies = [];
+     var ind = 0;
+     
+     for (var i=0; i<dataLines.length; i++){
+     var line = dataLines[i].trim().split(" || ");
+     var study = new Object();
+     study.name = line[0];
+     study.viewers = [];
+     var nrViewers = parseInt(line[1]);
+     for (var j=0; j<nrViewers; j++)
+     study.viewers.push(line[2+j]);
+     study.viewerDesign = line[2 + nrViewers];
+     ind = 2 + nrViewers + 1;
+     
+     study.datasets = [];
+     var nrData = parseInt(line[ind]); ind++;
+     for (var j=0; j<nrData; j++)
+     study.datasets.push(line[ind + j]);
+     study.dataDesign = line[ind + nrData];
+     ind = ind + nrData + 1;
+     
+     var nrTasks = parseInt(line[ind]); ind++;
+     study.tasks = [];
+     for (var j=0; j<nrTasks; j++){
+     var taskobj = new Object();
+     taskobj.name = line[ind + (j*4)];
+     taskobj.count = line[ind + (j*4) + 1];
+     taskobj.time = line[ind + (j*4) + 2];
+     taskobj.training = line[ind +(j*4)+3];
+     study.tasks.push(taskobj);
+     }
+     ind = ind + 4*nrTasks;
+     
+     var nrIntros = parseInt(line[ind]); ind++;
+     study.intros = [];
+     for (var j=0; j<nrIntros; j++){
+     var introObj = new Object();
+     introObj.name = line[ind + j*2];
+     introObj.match = line[ind + j*2 +1];
+     study.intros.push(introObj);
+     
+     }
+     ind = ind + nrIntros*2;
+     
+     var nrTests = parseInt(line[ind]); ind++;
+     study.tests = [];
+     for (var j=0; j<nrTests; j++){
+     var testobj = new Object();
+     testobj.name = line[ind + j*3];
+     testobj.interface1 = line[ind + j*3 +1];
+     testobj.interface2 = line[ind + j*3 +2];
+     study.tests.push(testobj);
+     
+     }
+     ind = ind  + nrTests*3;
+     
+     study.width = line[ind];
+     study.height = line[ind+1];
+     
+     study.results = null;
+     study.entryTasks = ["age task", "experience task"];
+     study.exitTasks = ["liked it task", "comments task"];
+     
+     
+     
+     _studies.push(study);
+     }		
+     //study data loaded
+     
+     
+     whendone(true, "", _studies);
+     });  */
 
 }
 
@@ -191,6 +174,23 @@ function loadStudies(whendone) {
 //This callback function should be called with three paramaters: (i) a bool indicating success (true) or failure (false); and
 //(ii) an error message in case of failure; (iii) the data array.
 function loadViewers(whendone) {
+
+  /*  var theURL = "../StudySetup?command=loadViewers";
+    $.ajax({
+        url: theURL,
+        success: function(data, status) {
+            //handle success. data is [{name:"abc",...}, {name:"bcd",...}] 
+
+            //   alert("here");
+
+            whendone(true, "", data);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an error when loading the viewers ___ STATUS: " + status);
+        }
+    }); */
+
 
     $.get("viewers.txt", function(data, status) {
         var dataLines = data.trim().split("\n");
@@ -232,8 +232,8 @@ function loadDatasets(whendone) {
             var dataset = new Object();
             dataset.name = line[0];
             dataset.description = line[1];
-            dataset.sourcedirectory = line[2];
-            dataset.sourcefile = line[3];
+            dataset.sourceDirectory = line[2];
+            dataset.sourceFile = line[3];
             _datasets.push(dataset);
         }
         //datasets loaded
@@ -290,7 +290,7 @@ function loadTaskprotos(whendone) {
                     task.answer.options.push(line[4 + nrInputs * 4 + 2 + j]);
                 task.answer.correctness = line[4 + nrInputs * 4 + 2 + nrOptions];
             }
-            else if (task.answerType === "Interface/Custom") {
+            else if (task.answer.type === "Interface/Custom") {
                 task.answer.customTypeName = line[4 + nrInputs * 4 + 1];
                 task.answer.correctness = line[4 + nrInputs * 4 + 2];
             }
@@ -382,8 +382,8 @@ function loadTests(whendone) {
             var test = new Object();
             test.name = line[0];
             test.description = line[1];
-            test.sourcedirectory = line[2];
-            test.sourcefile = line[3];
+            test.sourceDirectory = line[2];
+            test.sourceFile = line[3];
             _tests.push(test);
         }
         //tests loaded

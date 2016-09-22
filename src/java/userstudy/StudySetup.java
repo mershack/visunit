@@ -1,6 +1,8 @@
 package userstudy;
 
 import com.amazon.mturk.requester.MTurkRequestsMgr;
+import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -45,6 +48,8 @@ public class StudySetup extends HttpServlet {
      */
     HashMap<String, StudySetupParameters> setupParameters = new HashMap<String, StudySetupParameters>();
     private final String DATA_DIR = "data";
+    private final String DEFAULT_USER = "mershack";
+    private final String CONFIG_DIR = "_config_files";
 
     String questionTemplateName = "graphQuestionForm.xml";
     MyUtils utils = new MyUtils();
@@ -96,7 +101,7 @@ public class StudySetup extends HttpServlet {
                 //use a default Login for now. 
                 //TODO: userid's should be taken from session ids.
                 // System.out.println("I'm here");
-                userid = "mershack";
+                userid = DEFAULT_USER;
 
                 //load all the study names.
                 String studiesURL = "users" + File.separator + userid + File.separator
@@ -119,8 +124,7 @@ public class StudySetup extends HttpServlet {
                 }
                 jsonOfAllStudies += "\n]";  //end of the json array.
 
-                System.out.println(jsonOfAllStudies);
-
+                //  System.out.println(jsonOfAllStudies);
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
 
@@ -129,9 +133,15 @@ public class StudySetup extends HttpServlet {
             } else if (command.equalsIgnoreCase("loadDirectories")) {
                 /*We will load all the directories of the user, and return a JSON
                  file that contains all the existing directories.
+                    
+                 the format of the json is as follows:
+                
+                 [ {"name": "name1", files: [{"name": "file1"}, {"name":"file2"}, ...]
+                
+                
                  */
-                userid = "mershack";
 
+                userid = DEFAULT_USER;
                 //load all the directories the user has created.
                 String userDirsURL = "users" + File.separator + userid;
 
@@ -150,12 +160,10 @@ public class StudySetup extends HttpServlet {
                         if (files[i].isDirectory() && !files[i].getName().equalsIgnoreCase("_config_files")) {
                             //System.out.println(loadDirectories(files[i].getName(), userid));
 
-                        //    System.out.println("*** "+ loadDirectories(files[i].getName(), userid));
-                            
+                            //    System.out.println("*** "+ loadDirectories(files[i].getName(), userid));
                             if (dirCount == 0) { //if this is the first directory we've found
                                 jsonOfAllDirectories += "\n\t" + loadDirectories(files[i].getName(), userid);
-                                
-                                
+
                             } else {
                                 jsonOfAllDirectories += ",\n\t" + loadDirectories(files[i].getName(), userid);
                             }
@@ -168,11 +176,61 @@ public class StudySetup extends HttpServlet {
 
                 jsonOfAllDirectories += "\n]";  //end of the json array.
 
-                System.out.println(jsonOfAllDirectories);
+                // System.out.println(jsonOfAllDirectories);
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
 
                 out2.print(jsonOfAllDirectories);
+
+            } else if (command.equalsIgnoreCase("loadViewers")) {
+                /*
+                 We will load all the viewers of the user
+                 and return a JSON object that represents all the viewers.
+                   
+                 the format of the JSON object is as follows.
+                
+                 [ {"name": "name1", "description": "descrip1", "sourceDirectory": "srcDir1", "sourceFile": "sourceFile1"}, ...]
+                 */
+
+                /*System.out.println("Loading Viewers");
+
+                userid = DEFAULT_USER;
+                //load all the viewers that the user has created.
+                String userDirsURL = "users" + File.separator + userid
+                        + File.separator + CONFIG_DIR + File.separator + "viewers";
+
+                //  System.out.println("The viewer directory is : "+ userDirsURL);
+                File f = new File(getServletContext().getRealPath(userDirsURL));
+
+                File[] files = f.listFiles();
+
+                
+                //compose the object for all the viewers
+                String jsonAllViewers = "[";
+
+                for (int i = 0; i < files.length; i++) {
+                    
+                    if(i==0){
+                         jsonAllViewers += "\n\t" + loadViewers(files[i].getName(), userid);
+                    }
+                    else{
+                        jsonAllViewers += ",\n\t" + loadViewers(files[i].getName(), userid);
+                    }
+                   
+                }
+                jsonAllViewers += "\n]";
+                
+                
+                
+                System.out.println(jsonAllViewers);
+                
+                
+                //now we will be sending the json object to the client
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+
+                out2.print(jsonAllViewers);   */
+                
 
             } else if (command.equalsIgnoreCase("getManagementCommand")) {
                 String mc = spmts.getManagementCommand();
@@ -811,7 +869,7 @@ public class StudySetup extends HttpServlet {
             jsonStr += "]";
 
             //get standardTest 
-            jsonStr += ", \"standardTests\": [";
+            jsonStr += ", \"tests\": [";
             for (int i = 0; i < testNames.size(); i++) {
                 if (i == 0) {
                     jsonStr += " {\"name\": \"" + testNames.get(i) + "\""
@@ -855,6 +913,15 @@ public class StudySetup extends HttpServlet {
                 }
             }
             jsonStr += "]";
+            
+            
+            //entrytasks and exit tasks.
+            //TODO: Get the actual entry task and exit task specified by the user.
+            
+            jsonStr += ", \"entryTasks\": [], \"exitTasks\": []";
+            
+            
+            
 
             jsonStr += "}";
 
@@ -910,6 +977,40 @@ public class StudySetup extends HttpServlet {
 
         return jsonOfADir;
 
+    }
+
+    public String loadViewers(String filename, String userid) {
+        String viewerJSON = "";
+
+        try {
+            String filePath = "users" + File.separator + userid
+                    + File.separator + CONFIG_DIR + File.separator + "viewers"
+                    + File.separator + filename;
+
+            File f = new File(getServletContext().getRealPath(filePath));
+
+            FileReader reader = new FileReader(f);
+
+            Gson gson = new Gson();
+
+            BufferedReader br = new BufferedReader(new FileReader(f));
+
+            Viewer viewerObj = gson.fromJson(br, Viewer.class);
+
+            viewerJSON = "{";
+
+            viewerJSON += "\"name\": \"" + viewerObj.getName() + "\""
+                    + ", \"description\": \"" + viewerObj.getDescription() + "\""
+                    + ", \"sourceDirectory\": \"" + viewerObj.getSourceDirectory() + "\""
+                    + ", \"sourceFile\": \"" + viewerObj.getSourceFile() + "\"";
+
+            viewerJSON += "}";
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return viewerJSON;
     }
 
     public void writeTasksToFile(StudySetupParameters spmts, String userid) {
