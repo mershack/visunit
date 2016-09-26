@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 	<study_specification>
 	<studyname>study6</studyname>
-	<experimenttype_vis>Between</experimenttype_vis>
-	<experimenttype_ds></experimenttype_ds>
+	<experimenttype_vis>Between subjects</experimenttype_vis>
+	<experimenttype_ds>Between subjects</experimenttype_ds>
 	<trainingsize>2</trainingsize>
 	<condition>
 		<conditionurl>tree_map/treemap.html</conditionurl>
@@ -10,7 +10,7 @@
 	</condition>
 	<condition>
 		<conditionurl>rectangle/rectangle.html</conditionurl>
-		<conditionshortname>rect</conditionshortname>
+		<conditionshortname>rectangle</conditionshortname>
 	</condition>
 	<viewerwidth>860</viewerwidth>
 	<viewerheight>800</viewerheight>
@@ -19,8 +19,7 @@
 		<question>Which of the two rectangles (marked A or B) is smaller?</question>
 		<size>4</size>
 		<time>10</time>
-		<trainingsize>2</trainingsize>
-		
+		<trainingsize>2</trainingsize>		
 	</task>
 	<task>
 		<name>estimatePercentage</name>

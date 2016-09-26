@@ -6,15 +6,15 @@
 		<datasetFormat>.json</datasetFormat>
 </datasetCondition>	
 <studyname>study3</studyname>
-<experimenttype_vis>Between</experimenttype_vis>
-<experimenttype_ds>Between</experimenttype_ds>
+<experimenttype_vis>Between subjects</experimenttype_vis>
+<experimenttype_ds>Between subjects</experimenttype_ds>
 <trainingsize>2</trainingsize>
 <condition>
-	<conditionurl>s1_v1/graph_lesMiserables.html</conditionurl>
-	<conditionshortname>graph</conditionshortname>
+	<conditionurl>mat_and_nl/graph_lesMiserables.html</conditionurl>
+	<conditionshortname>node-link</conditionshortname>
 </condition>
 <condition>
-	<conditionurl>s1_v1/matrix.html</conditionurl>
+	<conditionurl>mat_and_nl/matrix.html</conditionurl>
 	<conditionshortname>matrix</conditionshortname>
 </condition>
 <viewerwidth>860</viewerwidth>

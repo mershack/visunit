@@ -124,7 +124,7 @@ public class StudySetup extends HttpServlet {
                 }
                 jsonOfAllStudies += "\n]";  //end of the json array.
 
-                //  System.out.println(jsonOfAllStudies);
+               // System.out.println(jsonOfAllStudies);
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
 
@@ -192,8 +192,7 @@ public class StudySetup extends HttpServlet {
                  [ {"name": "name1", "description": "descrip1", "sourceDirectory": "srcDir1", "sourceFile": "sourceFile1"}, ...]
                  */
 
-                /*System.out.println("Loading Viewers");
-
+                //System.out.println("Loading Viewers");
                 userid = DEFAULT_USER;
                 //load all the viewers that the user has created.
                 String userDirsURL = "users" + File.separator + userid
@@ -204,35 +203,73 @@ public class StudySetup extends HttpServlet {
 
                 File[] files = f.listFiles();
 
-                
                 //compose the object for all the viewers
                 String jsonAllViewers = "[";
 
                 for (int i = 0; i < files.length; i++) {
-                    
-                    if(i==0){
-                         jsonAllViewers += "\n\t" + loadViewers(files[i].getName(), userid);
-                    }
-                    else{
+
+                    if (i == 0) {
+                        jsonAllViewers += "\n\t" + loadViewers(files[i].getName(), userid);
+                    } else {
                         jsonAllViewers += ",\n\t" + loadViewers(files[i].getName(), userid);
                     }
-                   
+
                 }
                 jsonAllViewers += "\n]";
-                
-                
-                
-                System.out.println(jsonAllViewers);
-                
-                
+
+                // System.out.println(jsonAllViewers);
                 //now we will be sending the json object to the client
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
 
-                out2.print(jsonAllViewers);   */
-                
+                out2.print(jsonAllViewers);
 
-            } else if (command.equalsIgnoreCase("getManagementCommand")) {
+            } else if (command.equalsIgnoreCase("loadDatasets")) {
+                /*
+                 We will load all the datasets of the user
+                 and return a JSON object that represents all the datasets
+                   
+                 the format of the JSON object is as follows.
+                
+                 [ {"name": "name1", "description": "descrip1", "sourceDirectory": "srcDir1", "sourceFile": "sourceFile1"}, ...]
+                 */
+
+                userid = DEFAULT_USER;
+                //load all the datasets that the user has created.
+                String userDirsURL = "users" + File.separator + userid
+                        + File.separator + CONFIG_DIR + File.separator + "datasets";
+
+                File f = new File(getServletContext().getRealPath(userDirsURL));
+
+                File[] files = f.listFiles();
+
+                //compose the object for all the datasets
+                String jsonAllDatasets = "[";
+
+                for (int i = 0; i < files.length; i++) {
+                    if (i == 0) {
+                        jsonAllDatasets += "\n\t" + loadADataset(files[i].getName(), userid);
+                    } else {
+                        jsonAllDatasets += ",\n\t" + loadADataset(files[i].getName(), userid);
+                    }
+
+                }
+                jsonAllDatasets += "\n]";
+
+                //System.out.println(jsonAllDatasets);
+                //now we will be sending the json object to the client
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+
+                out2.print(jsonAllDatasets);
+
+            } 
+            else if(command.equalsIgnoreCase("loadTasks")){
+                
+            }
+            
+            
+            else if (command.equalsIgnoreCase("getManagementCommand")) {
                 String mc = spmts.getManagementCommand();
 
                 spmts.setManagementCommand("");
@@ -801,20 +838,20 @@ public class StudySetup extends HttpServlet {
                     conditionFiles.add(file);
                     // conditionurl.add(url);
                     conditionShortNames.add(shortname);
-
                 }
-
             }
 
             //now compose a json object and send it to the viewer.
+            //TODO: Make sure the studies details contain a description 
+            //attribute, read that attribute and include it in this JSON file.
             jsonStr = "{";
             jsonStr += " \"name\":\"" + studyname + "\"";
-            /*  jsonStr += ",\"dataset\":\"" + dataset + "\"";
-             jsonStr += ",\"datasetFormat\":\"" + datasetFormat + "\"";   */
+            jsonStr += ",\"description\":\"" + "study's description goes here." + "\"";
+            /*jsonStr += ",\"datasetFormat\":\"" + datasetFormat + "\"";   */
             jsonStr += ", \"viewerDesign\":\"" + experimentType_vis + "\"";
             jsonStr += ", \"dataDesign\":\"" + experimentType_ds + "\"";
-            jsonStr += ", \"viewerWidth\":\"" + viewerWidth + "\"";
-            jsonStr += ", \"viewerHeight\":\"" + viewerHeight + "\"";
+            jsonStr += ", \"width\":\"" + viewerWidth + "\"";
+            jsonStr += ", \"height\":\"" + viewerHeight + "\"";
 
             // get the conditions also
             jsonStr += ", \"viewers\": [";
@@ -913,15 +950,10 @@ public class StudySetup extends HttpServlet {
                 }
             }
             jsonStr += "]";
-            
-            
+
             //entrytasks and exit tasks.
             //TODO: Get the actual entry task and exit task specified by the user.
-            
             jsonStr += ", \"entryTasks\": [], \"exitTasks\": []";
-            
-            
-            
 
             jsonStr += "}";
 
@@ -1006,11 +1038,54 @@ public class StudySetup extends HttpServlet {
 
             viewerJSON += "}";
 
+            //close the bufferedreader 
+            br.close();
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         return viewerJSON;
+    }
+
+    public String loadADataset(String filename, String userid) {
+        String datasetJSON = "";
+
+        try {
+            String filePath = "users" + File.separator + userid
+                    + File.separator + CONFIG_DIR + File.separator + "datasets"
+                    + File.separator + filename;
+
+            
+           
+            
+            File f = new File(getServletContext().getRealPath(filePath));
+
+            FileReader reader = new FileReader(f);
+
+            Gson gson = new Gson();
+
+            BufferedReader br = new BufferedReader(reader);
+
+            Viewer viewerObj = gson.fromJson(br, Viewer.class);
+
+            datasetJSON = "{";
+
+            datasetJSON += "\"name\": \"" + viewerObj.getName() + "\""
+                    + ", \"description\": \"" + viewerObj.getDescription() + "\""
+                    + ", \"sourceDirectory\": \"" + viewerObj.getSourceDirectory() + "\""
+                    + ", \"sourceFile\": \"" + viewerObj.getSourceFile() + "\"";
+
+            datasetJSON += "}";
+
+            //close the bufferedreader 
+            br.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return datasetJSON;
     }
 
     public void writeTasksToFile(StudySetupParameters spmts, String userid) {

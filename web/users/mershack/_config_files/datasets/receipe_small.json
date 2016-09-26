@@ -1,0 +1,6 @@
+{
+  "name": "receipe_small",
+  "description": "A small dataset about receipes",
+  "sourceDirectory": "my_datasets",
+  "sourceFile": "receipe_small.json"  
+}

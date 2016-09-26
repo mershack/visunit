@@ -1,0 +1,6 @@
+{
+  "name": "miserables",	
+  "description": "This is the miserables dataset. A small dataset with 99 nodes",
+  "sourceDirectory": "my_datasets",
+  "sourceFile": "miserables.json"  
+}

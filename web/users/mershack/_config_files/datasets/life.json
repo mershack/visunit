@@ -1,0 +1,6 @@
+{
+  "name": "life",
+  "description": "A database about a simple life tree, with 100 nodes",
+  "sourceDirectory": "my_datasets",
+  "sourceFile": "life.txt"  
+}

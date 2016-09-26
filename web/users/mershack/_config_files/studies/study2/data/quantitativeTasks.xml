@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 	<study_specification>
 	<studyname>study2</studyname>
-	<experimenttype_vis>Between</experimenttype_vis>
-	<experimenttype_ds>Between</experimenttype_ds>
+	<experimenttype_vis>Between subjects</experimenttype_vis>
+	<experimenttype_ds>Between subjects</experimenttype_ds>
 	<trainingsize>2</trainingsize>
 	<condition>
 		<conditionurl>circularDendrogram/circular.html</conditionurl>
-		<conditionshortname>cond1</conditionshortname>
+		<conditionshortname>circularDendrogram</conditionshortname>
 	</condition>
 	<condition>
 		<conditionurl>horizontalDedrogram/horizontal.html</conditionurl>
-		<conditionshortname>cond2</conditionshortname>
+		<conditionshortname>horizontalDendrogram</conditionshortname>
 	</condition>
 	<datasetCondition>
 		<dataset>life</dataset>

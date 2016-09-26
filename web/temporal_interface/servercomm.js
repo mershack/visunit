@@ -175,7 +175,7 @@ function loadStudies(whendone) {
 //(ii) an error message in case of failure; (iii) the data array.
 function loadViewers(whendone) {
 
-  /*  var theURL = "../StudySetup?command=loadViewers";
+    var theURL = "../StudySetup?command=loadViewers";
     $.ajax({
         url: theURL,
         success: function(data, status) {
@@ -189,26 +189,26 @@ function loadViewers(whendone) {
             //handle error
             alert("there was an error when loading the viewers ___ STATUS: " + status);
         }
-    }); */
-
-
-    $.get("viewers.txt", function(data, status) {
-        var dataLines = data.trim().split("\n");
-        var _viewers = [];
-        for (var i = 0; i < dataLines.length; i++) {
-            var line = dataLines[i].trim().split(" || ");
-            var viewer = new Object();
-            viewer.name = line[0];
-            viewer.description = line[1];
-            viewer.sourceDirectory = line[2];
-            viewer.sourceFile = line[3];
-            _viewers.push(viewer);
-        }
-        //viewers loaded
-
-
-        whendone(true, "", _viewers);
     });
+
+
+//    $.get("viewers.txt", function(data, status) {
+//        var dataLines = data.trim().split("\n");
+//        var _viewers = [];
+//        for (var i = 0; i < dataLines.length; i++) {
+//            var line = dataLines[i].trim().split(" || ");
+//            var viewer = new Object();
+//            viewer.name = line[0];
+//            viewer.description = line[1];
+//            viewer.sourceDirectory = line[2];
+//            viewer.sourceFile = line[3];
+//            _viewers.push(viewer);
+//        }
+//        //viewers loaded
+//
+//
+//        whendone(true, "", _viewers);
+//    });
 }
 
 //Loads the list of all datasets managed by a user into an array, then passes the array to a callback.  
@@ -223,23 +223,38 @@ function loadViewers(whendone) {
 //(ii) an error message in case of failure; (iii) the data array.
 function loadDatasets(whendone) {
 
+    var theURL = "../StudySetup?command=loadDatasets";
+    $.ajax({
+        url: theURL,
+        success: function(data, status) {
+            //handle success. data is [{name:"abc",...}, {name:"bcd",...}] 
 
-    $.get("datasets.txt", function(data, status) {
-        var dataLines = data.trim().split("\n");
-        var _datasets = [];
-        for (var i = 0; i < dataLines.length; i++) {
-            var line = dataLines[i].trim().split(" || ");
-            var dataset = new Object();
-            dataset.name = line[0];
-            dataset.description = line[1];
-            dataset.sourceDirectory = line[2];
-            dataset.sourceFile = line[3];
-            _datasets.push(dataset);
+            alert("finished loading datasets");
+
+            whendone(true, "", data);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an error when loading the datasets ___ STATUS: " + status);
         }
-        //datasets loaded
-
-        whendone(true, "", _datasets);
     });
+
+//    $.get("datasets.txt", function(data, status) {
+//        var dataLines = data.trim().split("\n");
+//        var _datasets = [];
+//        for (var i = 0; i < dataLines.length; i++) {
+//            var line = dataLines[i].trim().split(" || ");
+//            var dataset = new Object();
+//            dataset.name = line[0];
+//            dataset.description = line[1];
+//            dataset.sourceDirectory = line[2];
+//            dataset.sourceFile = line[3];
+//            _datasets.push(dataset);
+//        }
+//        //datasets loaded
+//
+//        whendone(true, "", _datasets);
+//    });
 
 }
 

@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <study_specification>
 	<studyname>group1</studyname>
-	<experimenttype_vis>Between</experimenttype_vis>
-	<experimenttype_ds>Between</experimenttype_ds>
+	<experimenttype_vis>Between subjects</experimenttype_vis>
+	<experimenttype_ds>Between subjects</experimenttype_ds>
 	<trainingsize>3</trainingsize>
 	<condition>
 		<conditionurl>group1_v1/nodeLink_LongTrainnig6.html</conditionurl>
-		<conditionshortname>NL</conditionshortname>
+		<conditionshortname>group-node-link</conditionshortname>
 	</condition> 
 	
 	<!--<condition>
@@ -15,7 +15,7 @@
 	</condition>-->
 	<condition>
 		<conditionurl>group1_v1/matrix__Long_intro_IdenticalQn12.html</conditionurl>
-		<conditionshortname>MAT</conditionshortname>
+		<conditionshortname>group-matrix</conditionshortname>
 	</condition>
 	<datasetCondition>
 		<dataset>receipe_small</dataset>
