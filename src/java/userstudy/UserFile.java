@@ -10,18 +10,17 @@ package userstudy;
  *
  * @author Mershack
  */
-public class Viewer {
+public class UserFile {
+    private String name;
+    private String description;
+    private String sourceDirectory;
+    private String sourceFile;
     
-    private String name;   // name of the viewer
-    private String description;  // a description of the viewer
-    private String sourceDirectory;  // the source directory of the viewer
-    private String sourceFile; // the source file of the directory
-    
-    public Viewer(String name, String description, String srcdir, String srcFile){
+    public UserFile(String name, String description, String sourceDirectory, String sourceFile){
         this.name = name;
         this.description = description;
-        this.sourceDirectory = srcdir;
-        this.sourceFile = srcFile;
+        this.sourceDirectory = sourceDirectory;
+        this.sourceFile = sourceFile;
     }
 
     public String getName() {
@@ -54,6 +53,5 @@ public class Viewer {
 
     public void setSourceFile(String sourceFile) {
         this.sourceFile = sourceFile;
-    }
-    
+    }    
 }

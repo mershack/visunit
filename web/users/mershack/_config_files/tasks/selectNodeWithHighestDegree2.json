@@ -1,0 +1,9 @@
+{
+	"name": "selectNodeWithHighestDegree2",
+	"answer": {"type": "interface", "options": [], "correctness": "yes", "customTypeName": "node", "correctnessCheckingInterface": ""},
+	"question": "Select the most connected node",
+	"description": "The user will select the most connected node",
+	"inputs": [
+				{"typeName": "nodes", "description": "the nodes to be highlighted", "inputMedium": "by-typing", "specifyInVis": "yes",  "showInVis": "yes"}
+			  ]
+}

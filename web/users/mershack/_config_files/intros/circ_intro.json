@@ -1,0 +1,6 @@
+{
+	"name": "circ_intro",
+	"description": "An introduction for the circular dendrogram",
+	"sourceDirectory": "circularDendrogram",
+	"sourceFile": "introduction.html"
+}

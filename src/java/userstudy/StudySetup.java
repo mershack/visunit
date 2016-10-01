@@ -64,7 +64,7 @@ public class StudySetup extends HttpServlet {
 
             if (session.getAttribute("username") != null) {
                 String username = session.getAttribute("username").toString();
-                System.out.println("username is: " + username);
+                // System.out.println("username is: " + username);
             }
 
             //printTheURL(request);
@@ -124,7 +124,7 @@ public class StudySetup extends HttpServlet {
                 }
                 jsonOfAllStudies += "\n]";  //end of the json array.
 
-               // System.out.println(jsonOfAllStudies);
+                // System.out.println(jsonOfAllStudies);
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
 
@@ -263,11 +263,128 @@ public class StudySetup extends HttpServlet {
 
                 out2.print(jsonAllDatasets);
 
+            } else if (command.equalsIgnoreCase("loadTasks")) {
+                //we will be loading the tasks.
+
+                userid = DEFAULT_USER;
+                //load all the datasets that the user has created.
+                String userDirsURL = "users" + File.separator + userid
+                        + File.separator + CONFIG_DIR + File.separator + "tasks";
+
+                File f = new File(getServletContext().getRealPath(userDirsURL));
+
+                File[] files = f.listFiles();
+
+                //compose the object for all the datasets
+                String jsonAllTasks = "[";
+
+                for (int i = 0; i < files.length; i++) {
+                    //System.out.println(files[i].getName());
+                    if (i == 0) {
+                        jsonAllTasks += "\n\t" + loadTask(files[i].getName(), userid);
+                    } else {
+                        jsonAllTasks += ",\n\t" + loadTask(files[i].getName(), userid);
+                    }
+
+                }
+                jsonAllTasks += "\n]";
+
+                //   System.out.println(jsonAllTasks);
+                //now we will be sending the json object to the client
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+
+                out2.print(jsonAllTasks);
+
+            } else if (command.equalsIgnoreCase("loadTaskInstances")) {
+                //we will be loading the tasks Instances
+
+                userid = DEFAULT_USER;
+                //load all the datasets that the user has created.
+                String userDirsURL = "users" + File.separator + userid
+                        + File.separator + CONFIG_DIR + File.separator + "taskInstances";
+
+                File f = new File(getServletContext().getRealPath(userDirsURL));
+
+                File[] files = f.listFiles();
+
+                //compose the object for all 
+                String jsonAllTaskIntances = "[";
+
+                for (int i = 0; i < files.length; i++) {
+                    if (i == 0) {
+                        jsonAllTaskIntances += "\n\t" + loadTaskInstance(files[i].getName(), userid);
+                    } else {
+                        jsonAllTaskIntances += ",\n\t" + loadTaskInstance(files[i].getName(), userid);
+                    }
+                }
+                jsonAllTaskIntances += "\n]";
+
+                // System.out.println(jsonAllTaskIntances);
+//                //now we will be sending the json object to the client
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print(jsonAllTaskIntances);
+            } else if (command.equalsIgnoreCase("loadIntros")) {
+
+                userid = DEFAULT_USER;
+                //load all the datasets that the user has created.
+                String userDirsURL = "users" + File.separator + userid
+                        + File.separator + CONFIG_DIR + File.separator + "intros";
+
+                File f = new File(getServletContext().getRealPath(userDirsURL));
+
+                File[] files = f.listFiles();
+
+                //compose the object for all 
+                String jsonAllIntros = "[";
+
+                for (int i = 0; i < files.length; i++) {
+                    //System.out.println(files[i].getName());
+                    if (i == 0) {
+                        jsonAllIntros += "\n\t" + loadIntro(files[i].getName(), userid);
+                    } else {
+                        jsonAllIntros += ",\n\t" + loadIntro(files[i].getName(), userid);
+                    }
+                }
+                jsonAllIntros += "\n]";
+//
+                //System.out.println(jsonAllIntros);
+                //now we will be sending the json object to the client
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print(jsonAllIntros);
+
             } 
-            else if(command.equalsIgnoreCase("loadTasks")){
-                
+            else if(command.equalsIgnoreCase("loadTests")){
+                userid = DEFAULT_USER;
+                //load all the datasets that the user has created.
+                String userDirsURL = "users" + File.separator + userid
+                        + File.separator + CONFIG_DIR + File.separator + "tests";
+
+                File f = new File(getServletContext().getRealPath(userDirsURL));
+
+                File[] files = f.listFiles();
+
+                //compose the object for all 
+                String jsonAllTests = "[";
+
+                for (int i = 0; i < files.length; i++) {
+                    //System.out.println(files[i].getName());
+                    if (i == 0) {
+                        jsonAllTests += "\n\t" + loadTest(files[i].getName(), userid);
+                    } else {
+                        jsonAllTests += ",\n\t" + loadTest(files[i].getName(), userid);
+                    }
+                }
+                jsonAllTests += "\n]";
+//
+                System.out.println(jsonAllTests);
+                //now we will be sending the json object to the client
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print(jsonAllTests);
             }
-            
             
             else if (command.equalsIgnoreCase("getManagementCommand")) {
                 String mc = spmts.getManagementCommand();
@@ -1027,7 +1144,7 @@ public class StudySetup extends HttpServlet {
 
             BufferedReader br = new BufferedReader(new FileReader(f));
 
-            Viewer viewerObj = gson.fromJson(br, Viewer.class);
+            UserFile viewerObj = gson.fromJson(br, UserFile.class);
 
             viewerJSON = "{";
 
@@ -1048,17 +1165,15 @@ public class StudySetup extends HttpServlet {
         return viewerJSON;
     }
 
-    public String loadADataset(String filename, String userid) {
-        String datasetJSON = "";
+    public String loadTask(String filename, String userid) {
+
+        String taskJSON = "";
 
         try {
             String filePath = "users" + File.separator + userid
-                    + File.separator + CONFIG_DIR + File.separator + "datasets"
+                    + File.separator + CONFIG_DIR + File.separator + "tasks"
                     + File.separator + filename;
 
-            
-           
-            
             File f = new File(getServletContext().getRealPath(filePath));
 
             FileReader reader = new FileReader(f);
@@ -1067,7 +1182,122 @@ public class StudySetup extends HttpServlet {
 
             BufferedReader br = new BufferedReader(reader);
 
-            Viewer viewerObj = gson.fromJson(br, Viewer.class);
+            Task taskObj = gson.fromJson(br, Task.class);
+
+            taskJSON = gson.toJson(taskObj);
+
+            br.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return taskJSON;
+
+    }
+
+    public String loadTaskInstance(String filename, String userid) {
+        String taskInstJSON = "";
+
+        try {
+            String filePath = "users" + File.separator + userid
+                    + File.separator + CONFIG_DIR + File.separator + "taskInstances"
+                    + File.separator + filename;
+
+            File f = new File(getServletContext().getRealPath(filePath));
+
+            FileReader reader = new FileReader(f);
+
+            Gson gson = new Gson();
+
+            BufferedReader br = new BufferedReader(reader);
+
+            TaskInstancesDetails taskInstObj = gson.fromJson(br, TaskInstancesDetails.class);
+
+            taskInstJSON = gson.toJson(taskInstObj);
+
+            br.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return taskInstJSON;
+    }
+
+    public String loadIntro(String filename, String userid) {
+        String introJSON = "";
+
+        try {
+            String filePath = "users" + File.separator + userid
+                    + File.separator + CONFIG_DIR + File.separator + "intros"
+                    + File.separator + filename;
+
+            File f = new File(getServletContext().getRealPath(filePath));
+
+            FileReader reader = new FileReader(f);
+
+            Gson gson = new Gson();
+
+            BufferedReader br = new BufferedReader(reader);
+
+            UserFile introObj = gson.fromJson(br, UserFile.class);
+
+            introJSON = gson.toJson(introObj);
+
+            br.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return introJSON;
+    }
+    
+    public String loadTest(String filename, String userid){
+          String testJSON = "";
+
+        try {
+            String filePath = "users" + File.separator + userid
+                    + File.separator + CONFIG_DIR + File.separator + "tests"
+                    + File.separator + filename;
+
+            File f = new File(getServletContext().getRealPath(filePath));
+
+            FileReader reader = new FileReader(f);
+
+            Gson gson = new Gson();
+
+            BufferedReader br = new BufferedReader(reader);
+
+            UserFile introObj = gson.fromJson(br, UserFile.class);
+
+            testJSON = gson.toJson(introObj);
+
+            br.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return testJSON;
+    }
+
+    public String loadADataset(String filename, String userid) {
+        String datasetJSON = "";
+
+        try {
+            String filePath = "users" + File.separator + userid
+                    + File.separator + CONFIG_DIR + File.separator + "datasets"
+                    + File.separator + filename;
+
+            File f = new File(getServletContext().getRealPath(filePath));
+
+            FileReader reader = new FileReader(f);
+
+            Gson gson = new Gson();
+
+            BufferedReader br = new BufferedReader(reader);
+
+            UserFile viewerObj = gson.fromJson(br, UserFile.class);
 
             datasetJSON = "{";
 

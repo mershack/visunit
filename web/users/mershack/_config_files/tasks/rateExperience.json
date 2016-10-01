@@ -1,0 +1,7 @@
+{
+	"name": "rateExperience",
+	"answer": {"type": "options(fixed)", "options": ["1", "2", "3", "4", "5"],  "correctness": "no", "customTypeName": "", "correctnessCheckingInterface": ""},	
+	"question": "Please Rate your experience in this study",
+	"description": "asking users to rate their experience on a Likert scale",
+	"inputs": []	
+}

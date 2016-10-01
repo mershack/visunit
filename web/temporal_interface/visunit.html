@@ -834,7 +834,7 @@
 
             function createTaskinstanceIconContent(data) {
 
-                var html = "Task:" + data.taskproto + "<br>" + "Dataset:" + data.dataset + "<br>" + data.instances + " instances";
+                var html = "Task:" + data.taskproto + "<br>" + "Dataset:" + data.dataset + "<br>" + data.instanceCount + " instances";
                 html += "<div style='text-align:right'>";
                 html += "<span class=button id=home_||_deltaskinstance_||_" + data.taskproto + "_||_" + data.dataset + "><img src='x-icon.png' height=12 width=12></span>";
 
@@ -855,7 +855,7 @@
                 newtasks.dataset = "no data";
                 newtasks.taskproto = "Select";
                 newtasks.viewer = "no viewer";
-                newtasks.instances = 0;
+                newtasks.instanceCount = 0;
 
                 $("#homediv").slideUp(200, function() {
                     $("#homedivheader").animate({opacity: '0.5'}, 300, function() {
@@ -2272,7 +2272,7 @@
                     $("#taskinstanceform_availableviewers").append($('<option/>', {value: viewers[i].data.name, text: viewers[i].data.name}));
                 $("#taskinstanceform_availableviewers").val(which.viewer);
 
-                if (which.instances > 0) {
+                if (which.instanceCount > 0) {
                     $("#taskinstanceform_availabletasks").prop("disabled", true);
                     $("#taskinstanceform_availabledatasets").prop("disabled", true);
                 }
@@ -2299,7 +2299,7 @@
             }
 
             function taskInstanceCreated() {
-                currentTaskinstance.data.instances++;
+                currentTaskinstance.data.instanceCount++;
                 $("#taskinstanceform_availabletasks").prop("disabled", true);
                 $("#taskinstanceform_availabledatasets").prop("disabled", true);
             }
@@ -2310,7 +2310,7 @@
                     currentTaskinstance.data.dataset = $("#taskinstanceform_availabledatasets").val();
                     currentTaskinstance.data.viewer = $("#taskinstanceform_availableviewers").val();
 
-                    if (currentTaskinstance.data.instances > 0) {
+                    if (currentTaskinstance.data.instanceCount > 0) {
                         var index = -1;
                         for (var i = 0; i < taskinstances.length; i++)
                             if (taskinstances[i].data.taskproto === currentTaskinstance.data.taskproto &&
@@ -2318,7 +2318,7 @@
                                 index = i;
                         if (index >= 0) {
                             alert("It seems you already have tasks of this type for this data set. We will merge the tasks you just created with those you had before.")
-                            taskinstances[index].data.instances += currentTaskinstance.data.instances;
+                            taskinstances[index].data.instanceCount += currentTaskinstance.data.instanceCount;
                             currentTaskinstance = taskinstances[index];
                         }
                         else {

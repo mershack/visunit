@@ -1,0 +1,11 @@
+{
+	"name": "neighborCount",
+	"answer": {"type": "Number", "options": [],  "correctness": "yes", "customTypeName": "", "correctnessCheckingInterface": ""},
+	"question": "How many nodes can be reached in one step from the highlighted node?",
+	"description": "The user will count the number of neighbors that a highlighted node has",
+	"hasCorrectAnswer": "yes",
+	"inputs": [
+				{"typeName": "node", "description": "a single node", "inputMedium": "by-typing",  "specifyInVis": "yes",  "showInVis": "yes"}
+			  ]
+	
+}

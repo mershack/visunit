@@ -229,7 +229,7 @@ function loadDatasets(whendone) {
         success: function(data, status) {
             //handle success. data is [{name:"abc",...}, {name:"bcd",...}] 
 
-            alert("finished loading datasets");
+            //   alert("here");
 
             whendone(true, "", data);
         },
@@ -277,69 +277,104 @@ function loadDatasets(whendone) {
 //(ii) an error message in case of failure; (iii) the data array.
 function loadTaskprotos(whendone) {
 
-    $.get("taskproto.txt", function(data, status) {
-        var dataLines = data.trim().split("\n");
-        var _tasks = [];
-        for (var i = 0; i < dataLines.length; i++) {
-            var line = dataLines[i].trim().split(" || ");
-            var task = new Object();
-            task.name = line[0];
-            task.description = line[1];
-            task.question = line[2];
-            task.inputs = [];
-            var nrInputs = parseInt(line[3]);
-            for (var j = 0; j < nrInputs; j++) {
-                var input = new Object();
-                input.typeName = line[4 + j * 4];
-                input.description = line[4 + j * 4 + 1];
-                input.showInVis = line[4 + j * 4 + 2];
-                input.specifyInVis = line[4 + j * 4 + 3]
-                task.inputs.push(input);
-            }
-            task.answer = new Object();
-            task.answer.type = line[4 + nrInputs * 4];
-            if (task.answer.type === "Options(fixed)") {
-                task.answer.options = [];
-                var nrOptions = parseInt(line[4 + nrInputs * 4 + 1]);
-                for (var j = 0; j < nrOptions; j++)
-                    task.answer.options.push(line[4 + nrInputs * 4 + 2 + j]);
-                task.answer.correctness = line[4 + nrInputs * 4 + 2 + nrOptions];
-            }
-            else if (task.answer.type === "Interface/Custom") {
-                task.answer.customTypeName = line[4 + nrInputs * 4 + 1];
-                task.answer.correctness = line[4 + nrInputs * 4 + 2];
-            }
-            else
-                task.answer.correctness = line[4 + nrInputs * 4 + 1];
+    var theURL = "../StudySetup?command=loadTasks";
+    $.ajax({
+        url: theURL,
+        success: function(data, status) {
+            //handle success. data is 
 
-            _tasks.push(task);
+            whendone(true, "", data);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an error when loading the tasks ___ STATUS: " + status);
         }
-
-        whendone(true, "", _tasks);
     });
+
+
+
+//
+//    $.get("taskproto.txt", function(data, status) {
+//        var dataLines = data.trim().split("\n");
+//        var _tasks = [];
+//        for (var i = 0; i < dataLines.length; i++) {
+//            var line = dataLines[i].trim().split(" || ");
+//            var task = new Object();
+//            task.name = line[0];
+//            task.description = line[1];
+//            task.question = line[2];
+//            task.inputs = [];
+//            var nrInputs = parseInt(line[3]);
+//            for (var j = 0; j < nrInputs; j++) {
+//                var input = new Object();
+//                input.typeName = line[4 + j * 4];
+//                input.description = line[4 + j * 4 + 1];
+//                input.showInVis = line[4 + j * 4 + 2];
+//                input.specifyInVis = line[4 + j * 4 + 3]
+//                task.inputs.push(input);
+//            }
+//            task.answer = new Object();
+//            task.answer.type = line[4 + nrInputs * 4];
+//            if (task.answer.type === "Options(fixed)") {
+//                task.answer.options = [];
+//                var nrOptions = parseInt(line[4 + nrInputs * 4 + 1]);
+//                for (var j = 0; j < nrOptions; j++)
+//                    task.answer.options.push(line[4 + nrInputs * 4 + 2 + j]);
+//                task.answer.correctness = line[4 + nrInputs * 4 + 2 + nrOptions];
+//            }
+//            else if (task.answer.type === "Interface/Custom") {
+//                task.answer.customTypeName = line[4 + nrInputs * 4 + 1];
+//                task.answer.correctness = line[4 + nrInputs * 4 + 2];
+//            }
+//            else
+//                task.answer.correctness = line[4 + nrInputs * 4 + 1];
+//
+//            _tasks.push(task);
+//        }
+//
+//        whendone(true, "", _tasks);
+//    });
 
 }
 
 //TBD
 function loadTaskinstances(whendone) {
 
-    $.get("taskinstances.txt", function(data, status) {
-        var dataLines = data.trim().split("\n");
-        var _tasks = [];
-        for (var i = 0; i < dataLines.length; i++) {
-            var line = dataLines[i].trim().split(" || ");
-            var task = new Object();
-            task.dataset = line[0];
-            task.taskproto = line[1];
-            task.viewer = line[2]
-            task.instances = parseInt(line[3]);
-            _tasks.push(task);
+    var theURL = "../StudySetup?command=loadTaskInstances";
+    $.ajax({
+        url: theURL,
+        success: function(data, status) {
+            //handle success.          
+
+            whendone(true, "", data);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an error when loading the task instances ___ STATUS: " + status);
         }
-        //task instance info loaded
-
-
-        whendone(true, "", _tasks);
     });
+
+
+
+
+
+//    $.get("taskinstances.txt", function(data, status) {
+//        var dataLines = data.trim().split("\n");
+//        var _tasks = [];
+//        for (var i = 0; i < dataLines.length; i++) {
+//            var line = dataLines[i].trim().split(" || ");
+//            var task = new Object();
+//            task.dataset = line[0];
+//            task.taskproto = line[1];
+//            task.viewer = line[2]
+//            task.instanceCount = parseInt(line[3]);
+//            _tasks.push(task);
+//        }
+//        //task instance info loaded
+//
+//
+//        whendone(true, "", _tasks);
+//    });
 
 }
 
@@ -356,22 +391,36 @@ function loadTaskinstances(whendone) {
 //(ii) an error message in case of failure; (iii) the data array.
 function loadIntros(whendone) {
 
+    var theURL = "../StudySetup?command=loadIntros";
+    $.ajax({
+        url: theURL,
+        success: function(data, status) {
+            //handle success.     
+            //alert(data.toSource());
 
-    $.get("intros.txt", function(data, status) {
-        var dataLines = data.trim().split("\n");
-        var _intros = [];
-        for (var i = 0; i < dataLines.length; i++) {
-            var line = dataLines[i].trim().split(" || ");
-            var intro = new Object();
-            intro.name = line[0];
-            intro.description = line[1];
-            intro.sourceDirectory = line[2];
-            intro.sourceFile = line[3];
-            _intros.push(intro);
+            whendone(true, "", data);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an error when loading the Intros ___ STATUS: " + status);
         }
-        //intros loaded
-        whendone(true, "", _intros);
     });
+//
+//    $.get("intros.txt", function(data, status) {
+//        var dataLines = data.trim().split("\n");
+//        var _intros = [];
+//        for (var i = 0; i < dataLines.length; i++) {
+//            var line = dataLines[i].trim().split(" || ");
+//            var intro = new Object();
+//            intro.name = line[0];
+//            intro.description = line[1];
+//            intro.sourceDirectory = line[2];
+//            intro.sourceFile = line[3];
+//            _intros.push(intro);
+//        }
+//        //intros loaded
+//        whendone(true, "", _intros);
+//    });
 
 }
 
@@ -388,23 +437,39 @@ function loadIntros(whendone) {
 //(ii) an error message in case of failure; (iii) the data array.
 function loadTests(whendone) {
 
+    var theURL = "../StudySetup?command=loadTests";
+    $.ajax({
+        url: theURL,
+        success: function(data, status) {
+            //handle success.     
+            //alert(data.toSource());
 
-    $.get("tests.txt", function(data, status) {
-        var dataLines = data.trim().split("\n");
-        var _tests = [];
-        for (var i = 0; i < dataLines.length; i++) {
-            var line = dataLines[i].trim().split(" || ");
-            var test = new Object();
-            test.name = line[0];
-            test.description = line[1];
-            test.sourceDirectory = line[2];
-            test.sourceFile = line[3];
-            _tests.push(test);
+            whendone(true, "", data);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an error when loading the tests ___ STATUS: " + status);
         }
-        //tests loaded
-
-        whendone(true, "", _tests);
     });
+
+
+//
+//    $.get("tests.txt", function(data, status) {
+//        var dataLines = data.trim().split("\n");
+//        var _tests = [];
+//        for (var i = 0; i < dataLines.length; i++) {
+//            var line = dataLines[i].trim().split(" || ");
+//            var test = new Object();
+//            test.name = line[0];
+//            test.description = line[1];
+//            test.sourceDirectory = line[2];
+//            test.sourceFile = line[3];
+//            _tests.push(test);
+//        }
+//        //tests loaded
+//
+//        whendone(true, "", _tests);
+//    });
 
 }
 

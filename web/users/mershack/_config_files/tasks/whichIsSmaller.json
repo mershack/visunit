@@ -1,0 +1,9 @@
+{
+	"name": "whichIsSmaller",
+	"answer": {"type": "options(fixed)", "options": ["A", "B"],  "correctness": "yes", "customTypeName": "", "correctnessCheckingInterface": ""},
+	"question": "Which of the two rectangles (marked A or B) is smaller?",
+	"description": "The user will determine which of two rectangles is smaller",
+	"inputs": [
+				{"typeName": "stimuli", "description": "the stimuli for the task", "inputMedium": "by-typing",  "specifyInVis": "yes",  "showInVis": "yes"}
+			  ]
+}

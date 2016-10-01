@@ -1,0 +1,6 @@
+{
+	"name": "group_nl_intro",
+	"description": "An introduction for a simple node-link with grouping",
+	"sourceDirectory": "group_viewer",
+	"sourceFile": "intro_graph_interpLong.html"
+}

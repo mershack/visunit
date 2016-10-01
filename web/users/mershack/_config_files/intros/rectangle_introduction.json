@@ -1,0 +1,6 @@
+{
+	"name": "rectangle_introduction",
+	"description": "An introduction for the rectangle viewer",
+	"sourceDirectory": "rectangle",
+	"sourceFile": "introduction.html"
+}
