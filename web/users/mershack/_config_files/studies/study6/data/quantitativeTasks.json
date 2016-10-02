@@ -1,0 +1,15 @@
+{ 
+	"name":"study6",
+	"description":"study's description goes here.", 
+	"viewerDesign":"Between subjects", 
+	"dataDesign":"Between subjects",
+	"width":"860", "height":"800", 
+	"viewers": [ {"name": "treemap"}, {"name": "rectangle"}], 
+	"datasets": [], 
+	"intros": [ {"name": "circ_intro", "match": "all"}], 
+	"tests": [], 
+	"tasks": [ {"name": "whichIsSmaller", "count": "4", "time": "10", "training": "2"}, 
+				{"name": "estimatePercentage", "count": "4", "time": "10", "training": "2"}], 
+	"entryTasks": [], 
+	"exitTasks": []
+}

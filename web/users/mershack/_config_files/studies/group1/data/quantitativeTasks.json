@@ -1,0 +1,48 @@
+{ 
+	"name":"group1",
+	"description": "study's description goes here.", 
+	"viewerDesign":"Between subjects", 
+	"dataDesign":"Between subjects", 
+	"width":"820", "height":"790", 
+	"viewers": [
+				{
+					"name": "group-node-link"
+				},
+				{					
+					"name": "group-matrix"
+				}
+			   ], 
+	"datasets": [ 
+				   {				   
+						"name": "receipe_small" 					
+					}
+				], 
+	"intros": [ 
+				{
+					"name": "group_intro2", 
+					"match": "group-matrix"
+					
+				 }, 
+				{
+					"name": "group_intro", 
+					"match": "group-node-link"
+				}
+			  ], 
+	"tests": [], 
+	"tasks": [
+				{
+					"name": "selectNodeWithHighestDegree2", 		
+					"count": "3", 
+					"time": "15", 
+					"training": "2"
+				}, 
+				{
+					"name": "selectAllNeighborsOf1Node", 
+					"count": "3", 
+					"time": "25", 
+					"training": "2"
+				}
+			 ], 
+	"entryTasks": [], 
+	"exitTasks": []
+ }

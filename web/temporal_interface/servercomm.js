@@ -70,7 +70,6 @@ function loadStudies(whendone) {
         url: theURL,
         success: function(data, status) {
             //handle success. data is [{name:"abc",...}, {name:"bcd",...}]
-
             whendone(true, "", data);
         },
         error: function(data, status) {

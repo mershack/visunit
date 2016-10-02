@@ -1,0 +1,130 @@
+{ 
+	"name":"group1",
+	"description":"study's description goes here.", 
+	"viewerDesign":"Between subjects", 
+	"dataDesign":"Between subjects", 
+	"width":"820", "height":"790", 
+	"viewers": [
+				{
+					"sourceDirectory": "group1_v1", 
+					"sourceFile": "nodeLink_LongTrainnig6.html", 
+					"name": "group-node-link"
+				},
+				{
+					"sourceDirectory": "group1_v1", 
+					"sourceFile": "matrix__Long_intro_IdenticalQn12.html", 
+					"name": "group-matrix"
+				}
+			   ], 
+	"datasets": [ 
+				   {
+				   
+						"name": "receipe_small", 
+						"format": ".json"
+					}
+				], 
+	"intros": [ 
+				{
+					"name": "group_intro2", 
+					"directory": "group1_v1", 
+					"file": "intro_graph_interpLong.html", 
+					"match": "MAT", 
+					"description": "A sample introduction description2"
+				 }, 
+				{
+					"name": "group_intro", 
+					"directory": "group1_v1", "file": 
+					"intro_matrix_interpLong.html", 
+					"match": "NL", "description": "A sample introduction description3"
+				}
+			  ], 
+	"tests": [], 
+	"tasks": [
+				{
+					"name": "selectNodeWithHighestDegree2", 		
+					"question": "Select the most connected node", 
+					"count": "3", 
+					"time": "15", 
+					"trainingSize": "2"
+				}, 
+				{
+					"name": "selectAllNeighborsOf1Node", 
+					"question": "Select all the neighbors of the highlighted node", 
+					"count": "3", 
+					"time": "25", 
+					"trainingSize": "2"
+				}
+			 ], 
+	"entryTasks": [], 
+	"exitTasks": []
+ },
+	
+	
+	<!--
+	{ "name":"study1","description":"study's description goes here.", "viewerDesign":"Between subjects", "dataDesign":"Between subjects", "width":"860", "height":"800", "viewers": [ {"sourceDirectory": "circularDendrogram", "sourceFile": "circular.html", "name": "circularDendrogram"}, {"sourceDirectory": "horizontalDedrogram", "sourceFile": "horizontal.html", "name": "circularDendrogram"}], "datasets": [ {"name": "life", "format": ".txt"}], "intros": [ {"name": "circ_intro", "directory": "circularDendrogram", "file": "introduction.html", "match": "all", "description": "A sample introduction description2"}], "tests": [], "tasks": [ {"name": "DepthOfNode", "question": "How many levels deep is the highlighted node", "count": "2", "time": "12", "trainingSize": "2"}], "entryTasks": [], "exitTasks": []},
+	{ "name":"study2","description":"study's description goes here.", "viewerDesign":"Between subjects", "dataDesign":"Between subjects", "width":"860", "height":"800", "viewers": [ {"sourceDirectory": "circularDendrogram", "sourceFile": "circular.html", "name": "circularDendrogram"}, {"sourceDirectory": "horizontalDedrogram", "sourceFile": "horizontal.html", "name": "horizontalDendrogram"}], "datasets": [ {"name": "life", "format": ".txt"}], "intros": [ {"name": "circ_intro", "directory": "circularDendrogram", "file": "introduction.html", "match": "all", "description": "A sample introduction description"}], "tests": [ {"name": "Color Blindness", "description": "This is a test for color blindness", "directory": "ColorBlindnessViewer", "file": "color-blind-test.html", "responseInterface": "getBlindTestAnswers", "responseValidationInterface": "validateUserResponse"}], "tasks": [ {"name": "isHighlightedNodeDeeper", "question": "Is the highlighted node deeper than $2 ?", "count": "2", "time": "12", "trainingSize": "2"}], "entryTasks": [], "exitTasks": []},
+	{ "name":"study3","description":"study's description goes here.", "viewerDesign":"Between subjects", "dataDesign":"Between subjects", "width":"860", "height":"800", "viewers": [ {"sourceDirectory": "mat_and_nl", "sourceFile": "graph_lesMiserables.html", "name": "node-link"}, {"sourceDirectory": "mat_and_nl", "sourceFile": "matrix.html", "name": "matrix"}], "datasets": [ {"name": "miserables", "format": ".json"}], "intros": [ {"name": "intro1", "directory": "s1_v1", "file": "introduction2.html", "match": "all", "description": "A sample introduction description2"}], "tests": [], "tasks": [ {"name": "neighborCount", "question": "How many nodes can be reached in one step from the highlighted node?", "count": "20", "time": "10", "trainingSize": "2"}], "entryTasks": [], "exitTasks": []},
+	{ "name":"study4","description":"study's description goes here.", "viewerDesign":"Between subjects", "dataDesign":"Between subjects", "width":"860", "height":"800", "viewers": [ {"sourceDirectory": "circularDendrogram", "sourceFile": "circular.html", "name": "circularDendrogram"}, {"sourceDirectory": "horizontalDendrogram", "sourceFile": "horizontal.html", "name": "horizontalDendrogram"}], "datasets": [ {"name": "life", "format": ".txt"}], "intros": [ {"name": "circ_intro", "directory": "circularDendrogram", "file": "introduction.html", "match": "all", "description": "A sample introduction description"}], "tests": [], "tasks": [ {"name": "DepthOfNode", "question": "How many levels deep is the highlighted node", "count": "2", "time": "12", "trainingSize": "2"}], "entryTasks": [], "exitTasks": []},
+	{ "name":"study6","description":"study's description goes here.", "viewerDesign":"Between subjects", "dataDesign":"Between subjects", "width":"860", "height":"800", "viewers": [ {"sourceDirectory": "tree_map", "sourceFile": "treemap.html", "name": "treemap"}, {"sourceDirectory": "rectangle", "sourceFile": "rectangle.html", "name": "rectangle"}], "datasets": [], "intros": [ {"name": "circ_intro", "directory": "rectangle", "file": "introduction.html", "match": "all", "description": "A sample introduction description"}], "tests": [], "tasks": [ {"name": "whichIsSmaller", "question": "Which of the two rectangles (marked A or B) is smaller?", "count": "4", "time": "10", "trainingSize": "2"}, {"name": "estimatePercentage", "question": "Estimate the percentage of the smaller rectangle to the larger one", "count": "4", "time": "10", "trainingSize": "2"}], "entryTasks": [], "exitTasks": []}
+
+
+<?xml version="1.0"?>
+<study_specification>
+	<studyname>group1</studyname>
+	<experimenttype_vis>Between subjects</experimenttype_vis>
+	<experimenttype_ds>Between subjects</experimenttype_ds>
+	<trainingsize>3</trainingsize>
+	<condition>
+		<conditionurl>group1_v1/nodeLink_LongTrainnig6.html</conditionurl>
+		<conditionshortname>group-node-link</conditionshortname>
+	</condition> 
+	
+	
+	<condition>
+		<conditionurl>group1_v1/matrix__Long_intro_IdenticalQn12.html</conditionurl>
+		<conditionshortname>group-matrix</conditionshortname>
+	</condition>
+	<datasetCondition>
+		<dataset>receipe_small</dataset>
+		<datasetType>System_Datasets</datasetType>
+		<datasetFormat>.json</datasetFormat>
+	</datasetCondition>
+	<viewerwidth>820</viewerwidth>
+	<viewerheight>790</viewerheight>
+	<task>
+		<name>selectNodeWithHighestDegree2</name>
+		<question>Select the most connected node</question>
+		<size>3</size>
+		<time>15</time>
+		<trainingsize>2</trainingsize>
+	</task>
+	<task>
+		<name>selectAllNeighborsOf1Node</name>
+		<question>Select all the neighbors of the highlighted node</question>
+		<size>3</size>
+		<time>25</time>
+		<trainingsize>2</trainingsize>
+	</task>
+	<introFile>
+		<name>group_intro2</name>
+		<description>A sample introduction description2 </description>
+		<introURL>group1_v1/intro_graph_interpLong.html</introURL>
+		<introCond>MAT</introCond>
+	</introFile>
+	<introFile>
+		<name>group_intro</name>
+		<description>A sample introduction description3 </description>
+		<introURL>group1_v1/intro_matrix_interpLong.html</introURL>
+		<introCond>NL</introCond>
+	</introFile>	
+	<preStudyTask>
+		<name>enter_turk_id</name>
+		<question>Please enter your Mechanical Turk ID</question>
+	</preStudyTask>
+	<postStudyTask>
+		<name>feedback_comment_issues</name>
+		<question>Do you have any feedback,comment or what issue did you had in this study?</question>
+	</postStudyTask>
+</study_specification>
+
+-->

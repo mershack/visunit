@@ -18,13 +18,20 @@ public class Task {
     private String question;
     private String description;
     private Input[] inputs;
+    private String count;
+    private String time;
+    private String training;       
   
-    public Task(String name, Answer answer, String question, String description, Input[] inputs) {
+    public Task(String name, Answer answer, String question, String description, Input[] inputs
+                , String count, String time, String trainingSize) {
         this.name = name;
         this.answer = answer;
         this.question = question;
         this.description = description;        
         this.inputs = inputs;        
+        this.count = count;
+        this.time = time;
+        this.training = trainingSize;
     }
 
     public String getName() {
@@ -66,6 +73,30 @@ public class Task {
 
     public void setInputs(Input[] inputs) {
         this.inputs = inputs;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getTrainingSize() {
+        return training;
+    }
+
+    public void setTrainingSize(String trainingSize) {
+        this.training = trainingSize;
     }
 
    
