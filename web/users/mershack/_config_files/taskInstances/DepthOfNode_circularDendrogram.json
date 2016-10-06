@@ -1,6 +1,6 @@
 {
 	"taskproto": "DepthOfNode",
 	"viewer": "circularDendrogram",
-	"dataset": "",
+	"dataset": "no data",
 	"instanceCount" : "5"
 }

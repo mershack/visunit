@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +26,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -383,6 +387,217 @@ public class StudySetup extends HttpServlet {
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
                 out2.print(jsonAllTests);
+            } else if (command.equalsIgnoreCase("updateStudyData")) {
+                /*We will get the json object of the study from the request, and save it 
+                 on the server.
+                 */
+                String studyData = request.getParameter("studyData");
+
+                //now create the Gson object 
+                Gson gson = new Gson();
+
+                Study study = (Study) gson.fromJson(studyData.toString(), Study.class);
+                //now we will write the study object to file
+
+                String studyJson = gson.toJson(study);
+
+                userid = DEFAULT_USER;
+
+                //load all the study names.
+                String studiesURL = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator + "studies";
+
+                String jsonFilename = studiesURL + File.separator + study.getName()
+                        + File.separator + "data" + File.separator + "quantitativeTasks.json";
+
+                System.out.println("The filename is : " + jsonFilename);
+
+                FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
+                writer.write(studyJson);
+                writer.close();
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+
+            } else if (command.equalsIgnoreCase("updateViewerData")) {
+                //we will get the viewerData json object and save it.
+
+                String studyData = request.getParameter("viewerData");
+
+                //now create the Gson object 
+                Gson gson = new Gson();
+
+                UserFile viewer = gson.fromJson(studyData.toString(), UserFile.class);
+                //now we will write the study object to file
+                String viewerJson = gson.toJson(viewer);
+
+                userid = DEFAULT_USER;
+
+                String viewersURL = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator + "viewers";
+
+                String jsonFilename = viewersURL + File.separator + viewer.getName()
+                        + ".json";
+
+                FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
+                writer.write(viewerJson);
+                writer.close();
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+            } else if (command.equalsIgnoreCase("updateDatasetData")) {
+                String studyData = request.getParameter("datasetData");
+
+                //now create the Gson object 
+                Gson gson = new Gson();
+
+                UserFile dataset = gson.fromJson(studyData.toString(), UserFile.class);
+                //now we will write the study object to file
+                String datasetJson = gson.toJson(dataset);
+
+                userid = DEFAULT_USER;
+
+                String datasetsURL = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator + "datasets";
+
+                String jsonFilename = datasetsURL + File.separator + dataset.getName()
+                        + ".json";
+
+                FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
+                writer.write(datasetJson);
+                writer.close();
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+            } else if (command.equalsIgnoreCase("updateTaskData")) {
+                String studyData = request.getParameter("taskData");
+
+                //now create the Gson object 
+                Gson gson = new Gson();
+
+                Task task = gson.fromJson(studyData.toString(), Task.class);
+                //now we will write the study object to file
+                String taskJson = gson.toJson(task);
+
+                userid = DEFAULT_USER;
+
+                String datasetsURL = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator + "tasks";
+
+                String jsonFilename = datasetsURL + File.separator + task.getName()
+                        + ".json";
+
+                FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
+                writer.write(taskJson);
+                writer.close();
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+            } else if (command.equalsIgnoreCase("updateIntroData")) {
+                String studyData = request.getParameter("introData");
+
+                //now create the Gson object 
+                Gson gson = new Gson();
+
+                Introduction intro = gson.fromJson(studyData.toString(), Introduction.class);
+                //now we will write the study object to file
+                String introJson = gson.toJson(intro);
+
+                userid = DEFAULT_USER;
+
+                String introURL = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator + "intros";
+
+                String jsonFilename = introURL + File.separator + intro.getName()
+                        + ".json";
+
+                FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
+                writer.write(introJson);
+                writer.close();
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+            } else if (command.equalsIgnoreCase("updateTestData")) {
+                String testData = request.getParameter("testData");
+
+                //now create the Gson object 
+                Gson gson = new Gson();
+
+                StandardTestDetail test = gson.fromJson(testData.toString(), StandardTestDetail.class);
+                //now we will write the test object to file
+                String testJson = gson.toJson(test);
+
+                userid = DEFAULT_USER;
+
+                String testURL = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator + "tests";
+
+                String jsonFilename = testURL + File.separator + test.getName()
+                        + ".json";
+
+                FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
+                writer.write(testJson);
+                writer.close();
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+
+            } else if (command.equalsIgnoreCase("addNewFiles")) {
+                String dirName = request.getParameter("directory");
+
+                userid = DEFAULT_USER;
+
+                String dirURL = "users" + File.separator + userid + File.separator
+                        + dirName;
+
+                String dirPath = getServletContext()
+                        .getRealPath(dirURL);
+
+                // File viewerDir = new File(dirPath);
+                if (ServletFileUpload.isMultipartContent(request)) {
+                    try {
+                        List<FileItem> multiparts = new ServletFileUpload(
+                                new DiskFileItemFactory()).parseRequest(request);
+
+                        // System.out.println("Hey");
+                        for (FileItem item : multiparts) {
+                            if (!item.isFormField()) {
+
+                                String name = new File(item.getName()).getName();
+                                //System.out.println("Filename: "+name);
+                                //now write the fi in that directory
+                                item.write(new File(dirPath + File.separator + name));
+                            }
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        request.setAttribute("message", "File Upload Failed due to " + ex);
+                    }
+                }
+            } else if (command.equalsIgnoreCase("createNewDirectory")) {
+                String dirName = request.getParameter("directoryName");
+
+                //we will create the directory if it does not exist
+                userid = DEFAULT_USER;
+
+                String dirURL = "users" + File.separator + userid + File.separator
+                        + dirName;
+
+                String dirPath = getServletContext()
+                        .getRealPath(dirURL);
+
+                File file = new File(dirPath);
+
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+
             } else if (command.equalsIgnoreCase("getManagementCommand")) {
                 String mc = spmts.getManagementCommand();
 

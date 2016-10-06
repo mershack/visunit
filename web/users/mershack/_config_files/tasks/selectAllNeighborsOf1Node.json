@@ -1,5 +1,5 @@
 {
-	"name": "selectAllNeigbhorsOf1Node",
+	"name": "selectAllNeighborsOf1Node",
 	"answer": {"type": "Interface", "options": [],  "correctness": "yes", "customTypeName": "", "correctnessCheckingInterface": ""},
 	"question": "Select all the neighbors of the highlighted node",
 	"description": "The user will select all the nodes connected to  a highlighted node",

@@ -22,8 +22,6 @@ function loadDirectories(whendone) {
     });
 
 
-
-
 //	$.get("directories.txt", function(data,status){
 //		
 //		var dataLines = data.trim().split("\n");
@@ -479,8 +477,22 @@ function loadTests(whendone) {
 //an error message in case of failure.
 //check the loadStudies for info on the studydata object structure
 function updateStudyDataOnServer(newstudy, studydata, callback) {
-    alert("not implemented: updateStudyDataOnServer");
-    callback(true, "");
+    //we will be sending the study data to the server using ajax
+    var theURL = "../StudySetup?command=updateStudyData";
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        data: {studyData: JSON.stringify(studydata)},
+        dataType: 'json',
+        success: function(data, status) {
+            callback(true, "");
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an errror saving the"
+                    + " study on the server___ STATUS: " + status);
+        }
+    });
 }
 
 
@@ -489,8 +501,24 @@ function updateStudyDataOnServer(newstudy, studydata, callback) {
 //an error message in case of failure.
 //check the loadViewers for info on the viewerData object structure
 function updateViewerDataOnServer(newViewer, viewerData, callback) {
-    alert("not implemented: updateViewerDataOnServer");
-    callback(true, "");
+    //alert("not implemented: updateViewerDataOnServer");
+
+    var theURL = "../StudySetup?command=updateViewerData";
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        data: {viewerData: JSON.stringify(viewerData)},
+        dataType: 'json',
+        success: function(data, status) {
+            callback(true, "");
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an errror saving the"
+                    + " viewer on the server___ STATUS: " + status);
+        }
+    });
+
 }
 
 
@@ -499,8 +527,24 @@ function updateViewerDataOnServer(newViewer, viewerData, callback) {
 //an error message in case of failure.
 //check the loadDatasets for info on the datasetdata object structure
 function updateDatasetDataOnServer(newDataset, datasetData, callback) {
-    alert("not implemented: updateDatasetDataOnServer");
-    callback(true, "");
+    //alert("not implemented: updateDatasetDataOnServer");
+
+    var theURL = "../StudySetup?command=updateDatasetData";
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        data: {datasetData: JSON.stringify(datasetData)},
+        dataType: 'json',
+        success: function(data, status) {
+            callback(true, "");
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an errror saving the"
+                    + " dataset on the server___ STATUS: " + status);
+        }
+    });
+
 }
 
 //the params are: (1) is this a new task (true), or an existing one (false); (2) the task data to save; (3) a function
@@ -508,8 +552,22 @@ function updateDatasetDataOnServer(newDataset, datasetData, callback) {
 //an error message in case of failure.
 //check the loadTaskprotos for info on the taskData object structure
 function updateTaskprotoDataOnServer(newTask, taskData, callback) {
-    alert("not implemented: updateTaskprotoDataOnServer");
-    callback(true, "");
+
+    var theURL = "../StudySetup?command=updateTaskData";
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        data: {taskData: JSON.stringify(taskData)},
+        dataType: 'json',
+        success: function(data, status) {
+            callback(true, "");
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an errror saving the"
+                    + " task on the server___ STATUS: " + status);
+        }
+    });
 }
 
 //the params are: (1) is this a new intro (true), or an existing one (false); (2) the intro data to save; (3) a function
@@ -517,8 +575,9 @@ function updateTaskprotoDataOnServer(newTask, taskData, callback) {
 //an error message in case of failure.
 //check the loadIntros for info on the introData object structure
 function updateIntroDataOnServer(newIntro, introData, callback) {
-    alert("not implemented: updateIntroDataOnServer");
-    callback(true, "");
+   alert("not implemented: updateIntroDataOnServer");
+   callback(true, "");
+   
 }
 
 
@@ -527,20 +586,55 @@ function updateIntroDataOnServer(newIntro, introData, callback) {
 //an error message in case of failure.
 //check the loadTests for info on the testData object structure
 function updateTestDataOnServer(newTest, testData, callback) {
-    alert("not implemented: updateTestDataOnServer");
-    callback(true, "");
+   alert("not implemented: updateTestDataOnServer");
+   callback(true, "");   
 }
 
 //creates a new directory on the server, in the users' managed space
 function createNewDirectoryOnServer(name, callback) {
-    alert("not implemented: createNewDirectoryOnServer; Create on the server a folder with name " + name);
-    callback("true", "");
+    //alert("not implemented: createNewDirectoryOnServer; Create on the server a folder with name " + name);
+
+    var theURL = "../StudySetup?command=createNewDirectory&directoryName=" + name;
+
+    $.ajax({
+        url: theURL,
+        success: function(data, status) {
+            //handle success.             
+
+            whendone(true, "", data);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an error when creating the directory ___ STATUS: " + status);
+        }
+    });
+
 }
 
 //loads the files into the user's dir directory. The dir directory can be assumed to exist. 
 function addNewFilesOnServer(dir, files, callback) {
-    alert("not implemented: createNewDirectoryOnServer; Create on the server a folder with name " + name);
-    callback("true", "");
+    //we will be adding the files on the server.
+
+    var formData = new FormData();
+    for (var i = 0; i < files.length; i++)
+        formData.append("File", files[i]);
+
+
+    var theURL = "../StudySetup?command=addNewFiles&directory=" + dir;
+
+    var xmlHttpRequest = getXMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function()
+    {
+        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
+        {
+            //use the callback
+            alert("Files have been successfully loaded");
+            callback(true, "");
+        }
+
+    };
+    xmlHttpRequest.open("POST", theURL, true);
+    xmlHttpRequest.send(formData);
 }
 
 

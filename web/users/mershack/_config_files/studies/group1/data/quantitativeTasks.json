@@ -19,12 +19,12 @@
 				], 
 	"intros": [ 
 				{
-					"name": "group_intro2", 
+					"name": "group_mat_intro", 
 					"match": "group-matrix"
 					
 				 }, 
 				{
-					"name": "group_intro", 
+					"name": "group_nl_intro", 
 					"match": "group-node-link"
 				}
 			  ], 

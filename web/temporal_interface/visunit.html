@@ -200,6 +200,7 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="servercomm.js"></script>
+        <script src="utils.js"></script>
         <script>
 
             var currentStudy = null; //current study being edited
@@ -1087,7 +1088,7 @@
 
                 var studyObject = putFormIntoStudyObject();
 
-                updateStudyDataOnServer(false, studyObject, function(success, errorMsg) {
+               updateStudyDataOnServer(false, studyObject, function(success, errorMsg) {
                     if (success) {
                         currentStudy.data = studyObject; //update the actual study data item (currentStudy.data)
                         updateStudyIcon(currentStudy, studyObject);//update the icon in home (currentStudy)
@@ -1126,18 +1127,24 @@
                 study.name = $("#studyform_name").val();
 
                 study.viewers = [];
+                //NB viewers are objects and they have name
                 $("#studyform_viewers").children().each(function() {
-                    study.viewers.push($(this).find('select').val());
+                    var viewerObj = new Object();
+                    viewerObj.name = $(this).find('select').val();
+                    study.viewers.push(viewerObj);
                 });
 
-                study.viewerdesign = $("#studyform_viewerdesign").val();
+                study.viewerDesign = $("#studyform_viewerdesign").val();
 
                 study.datasets = [];
+                //NB datasets are objects
                 $("#studyform_datasets").children().each(function() {
-                    study.datasets.push($(this).find('select').val());
+                    var dsObj = new Object();
+                    dsObj.name = $(this).find('select').val()
+                    study.datasets.push(dsObj);
                 });
 
-                study.datadesign = $("#studyform_datadesign").val();
+                study.dataDesign = $("#studyform_datadesign").val();
 
                 study.tasks = [];
                 $("#studyform_tasks").children().each(function() {
@@ -1151,15 +1158,23 @@
                 });
 
                 study.entryTasks = [];
+                //NB: entry tasks are objects too.
                 $("#studyform_entrytasks").children().each(function() {
-                    var id = $(this).attr("id").split("_")[2];
-                    study.entryTasks.push($(this).find("#studyform_entrytaskselect_" + id).val());
+                    var entryTaskObj = new Object();
+                    
+                    var id = $(this).attr("id").split("_")[2];                    
+                    entryTaskObj.name = $(this).find("#studyform_entrytaskselect_" + id).val()
+                    study.entryTasks.push(entryTaskObj);
                 });
 
                 study.exitTasks = [];
+                //NB: exit tasks are objects too
                 $("#studyform_exittasks").children().each(function() {
+                    var exitTaskObj = new Object();
+                    
                     var id = $(this).attr("id").split("_")[2];
-                    study.exitTasks.push($(this).find("#studyform_exittaskselect_" + id).val());
+                    exitTaskObj.name = $(this).find("#studyform_exittaskselect_" + id).val();
+                    study.exitTasks.push(exitTaskObj);
                 });
 
                 study.intros = [];
@@ -1177,8 +1192,8 @@
                     var id = $(this).attr("id").split("_")[2];
                     var obj = new Object();
                     obj.name = $(this).find("#studyform_testselect_" + id).val();
-                    obj.interface1 = $(this).find("#studyform_testinterface1_" + id).val();
-                    obj.interface2 = $(this).find("#studyform_testinterface2_" + id).val();
+                    obj.responseInterface = $(this).find("#studyform_testinterface1_" + id).val();
+                    obj.responseValidationInterface = $(this).find("#studyform_testinterface2_" + id).val();
                 });
 
                 study.width = $("#studyform_width").val();
