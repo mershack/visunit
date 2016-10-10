@@ -17,8 +17,8 @@ public class StandardTestDetail extends UserFile{
     private String responseValidationInterface;
     
     public StandardTestDetail(String name, String description, String sourceDirectory, String sourceFile
-    ,String responseInterface, String responseValidationInterface){
-        super(name, description, sourceDirectory, sourceFile);
+    ,String responseInterface, String responseValidationInterface, String url){
+        super(name, description, sourceDirectory, sourceFile, url);
         
         this.responseInterface = responseInterface;
         this.responseValidationInterface = responseValidationInterface;
