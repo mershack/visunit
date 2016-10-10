@@ -15,8 +15,14 @@ public class UserFile {
     private String description;
     private String sourceDirectory;
     private String sourceFile;
+    private String url;
     
-    public UserFile(String name, String description, String sourceDirectory, String sourceFile){
+    public UserFile(){
+        
+    }
+    
+    public UserFile(String name, String description, String sourceDirectory, String sourceFile,
+            String url){
         this.name = name;
         this.description = description;
         this.sourceDirectory = sourceDirectory;
@@ -54,4 +60,12 @@ public class UserFile {
     public void setSourceFile(String sourceFile) {
         this.sourceFile = sourceFile;
     }    
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

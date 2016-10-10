@@ -1,0 +1,61 @@
+[
+		{
+			"taskName": "selectNodeWithHighestDegree2",
+			"viewer": "group-node-link",
+			"dataset": "receipe_small",
+			"basicAccuracy": [
+								{
+									"responses": ["herring","chive","jasmine","orange","gelatin","lettuce","wasabi","cider","fennel","cabbage"]
+								},
+								{
+									"responses" ["herring","chive","jasmine","orange","gelatin","red_algae","mackerel","red_wine","olive","cabbage"]
+								},
+								{
+									"responses": ["herring","chive","jasmine","orange","gelatin","lettuce","wasabi","cider","fennel","cabbage"]
+								},
+								{
+									"responses": ["herring","timedout","jasmine","orange","gelatin","lettuce","wasabi","cider","fennel","cabbage"]
+								},
+								{
+									"responses": ["herring","chive","jasmine","avocado","peach","lettuce","wasabi","red_wine","fennel","hazelnut"]
+								}
+								
+							]
+			
+		},
+		{
+			"taskName": "selectAllNeigbhorsOf1Node",
+			"viewer": "group-node-link",
+			"dataset": "receipe_small",
+			"basicAccuracy": [
+								{
+									"responses": ["rice;;pimento;;saffron;;carrot","coffee;;peppermint;;fig;;malt;;brandy;;cognac","oyster;;soy_sauce;;sesame_oil;;meat","yam;;leek;;beet;;flower;;pimenta,nectarine;;grape;;raspberry;;melon;;kiwi;;blueberry","butter;;vanilla;;milk;;lard;;yeast","mace;;currant;;pear;;lamb;;veal;;cider","brandy;;yam;;peppermint,rum;;mango,yam;;cider"] 
+								},
+								{
+									"responses" ["rice;;carrot;;saffron;;pimento","brandy;;cognac;;malt;;peppermint","oyster;;soy_sauce;;sesame_oil;;meat","leek;;yam;;beet;;endive;;liver;;corn_grit;;flower","melon;;kiwi;;blueberry;;raspberry;;grape;;nectarine","butter;;vanilla;;milk;;lard;;yeast","currant;;mace;;pear;;lamb;;smoke","peppermint;;brandy;;yam,mango;;rum,yam;;cider" ]
+								},
+								{
+									"responses": ["pimento;;saffron;;carrot;;rice","timedout","meat;;soy_sauce;;oyster","beet;;yam;;endive;;liver;;lentil","raspberry;;grape;;nectarine;;kiwi","yeast;;lard;;milk;;vanilla;;butter","mace;;currant;;cider;;veal;;pear","peppermint;;yam;;brandy,mango;;rum,yam;;cider"] 
+								},
+								{
+									"responses": ["rice;;carrot","coffee;;peppermint;;malt;;cognac;;brandy","oyster;;soy_sauce;;sesame_oil;;meat","lentil;;flower;;yam;;beet;;liver","blueberry;;grape;;raspberry;;melon;;nectarine","vanilla;;butter;;milk;;lard;;yeast","pear;;mace;;lamb;;veal;;cider","brandy;;yam","mango;;rum","yam;;cider"]
+								},
+								{
+									"responses": ["vinegar","timedout","oyster;;soy_sauce;;sesame_oil","lentil","melon;;raspberry","butter;;vanilla;;milk;;lard;;yeast","timedout","yam;;lemongrass","rum","yam;;potato"] 
+								}
+								
+							]
+			
+		}
+
+
+]
+
+
+
+
+
+
+
+
+

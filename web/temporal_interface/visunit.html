@@ -191,7 +191,28 @@
                 background-color: #DDDFDD;
                 border-color: gray;
             }
-
+            #taskInstanceViewerFrame{
+                display: block;
+                border: 2px solid black;
+                margin-left: 20px;
+                height: 700px;
+                width: 900px;
+                background: white;
+            }
+            #taskInstanceViewerFrameDiv{
+                float: left;
+                height: 700px;
+                width: 900px;
+            }
+            
+             #propControl{
+                float: right;
+                width: 400px;
+                height: 680px;
+                border: solid #000;
+                padding: 10px;   
+                margin-right: 20px;
+            }
 
 
 
@@ -201,6 +222,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
         <script src="servercomm.js"></script>
         <script src="utils.js"></script>
+        <script src="taskinstances.js"></script>
         <script>
 
             var currentStudy = null; //current study being edited
@@ -1088,7 +1110,7 @@
 
                 var studyObject = putFormIntoStudyObject();
 
-               updateStudyDataOnServer(false, studyObject, function(success, errorMsg) {
+                updateStudyDataOnServer(false, studyObject, function(success, errorMsg) {
                     if (success) {
                         currentStudy.data = studyObject; //update the actual study data item (currentStudy.data)
                         updateStudyIcon(currentStudy, studyObject);//update the icon in home (currentStudy)
@@ -1161,8 +1183,8 @@
                 //NB: entry tasks are objects too.
                 $("#studyform_entrytasks").children().each(function() {
                     var entryTaskObj = new Object();
-                    
-                    var id = $(this).attr("id").split("_")[2];                    
+
+                    var id = $(this).attr("id").split("_")[2];
                     entryTaskObj.name = $(this).find("#studyform_entrytaskselect_" + id).val()
                     study.entryTasks.push(entryTaskObj);
                 });
@@ -1171,7 +1193,7 @@
                 //NB: exit tasks are objects too
                 $("#studyform_exittasks").children().each(function() {
                     var exitTaskObj = new Object();
-                    
+
                     var id = $(this).attr("id").split("_")[2];
                     exitTaskObj.name = $(this).find("#studyform_exittaskselect_" + id).val();
                     study.exitTasks.push(exitTaskObj);
@@ -2361,8 +2383,13 @@
                 if (split[1] == "createtaskinstances") {
                     if ($("#taskinstanceform_availabletasks").val() === "Select")
                         alert("Please select the task you want to create instance of first...");
-                    else
-                        $("#taskinstanceform_taskcreator").show();
+                    else {
+                        //$("#taskinstanceform_taskcreator").show();
+                        createTasksInstancesManually();
+                    }
+
+
+
                 }
 
                 if (split[1] == "mocktaskcreated")
@@ -3018,11 +3045,200 @@
                                                                                                                                                                                                         </td>
                                                                                                                                                                                                         </tr></table>
 
-                                                                                                                                                                                                        <div id="taskinstanceform_taskcreator" style="width:800; height:600px; background-color:lightgray">
-                                                                                                                                                                                                        <br><br><br>
-                                                                                                                                                                                                        <div> Here is where the viewer will be shown and tasks will be created. Maybe an iframe?</div>
-                                                                                                                                                                                                        <br><br>
+                                                                                                                                                                                                        <div id="taskinstanceform_taskcreator" style="width:1000; height:850px; background-color:lightgray">
+                                                                                                                                                                                                        <br>
+                                                                                                                                                                                                        <div id="taskInstanceViewerFrameDiv"></div>
+                                                                                                                                                                                                        <!--
                                                                                                                                                                                                         <div class="button" id="taskinstanceform_||_mocktaskcreated">This button simulates that a new instance was created and saved to the server</div>
+                                                                                                                                                                                                        -->
+
+                                                                                                                                                                                                        <!-- managing window -->
+                                                                                                                                                                                                        <div id="propControl">  
+                                                                                                                                                                                                            <h4 style="margin-top: 0px;">Select task instances for the task listed below.</h4>
+                                                                                                                                                                                                            <p id="task"><strong>Task: </strong></p>
+                                                                                                                                                                                                            <hr />
+
+                                                                                                                                                                                                            <div>
+                                                                                                                                                                                                                <span id="showStepsButton" style="display:none;"><button onclick="showSteps()">Show steps</button> </span> 
+                                                                                                                                                                                                                <span id="hideStepsButton"><button onclick="hideSteps()">Hide steps</button> </span>
+                                                                                                                                                                                                            </div>
+
+                                                                                                                                                                                                            <div id="steps">
+                                                                                                                                                                                                            <p><u>Steps</u></p>
+                                                                                                                                                                                                            <ol>
+                                                                                                                                                                                                                <li>Select input(s) for the task instance one by one.</li>
+                                                                                                                                                                                                                <li>Give correct answer for task instance.</li> 
+                                                                                                                                                                                                                <li>Click the "Next Instance" button, and repeat step 1 and 2.</li>
+                                                                                                                                                                                                                <li>Click the "Save All Instances" button when done 
+                                                                                                                                                                                                                        with all instances. </li>
+                                                                                                                                                                                                            </ol>  
+                                                                                                                                                                                                            <hr/> 
+                                                                                                                                                                                                            </div>
+
+
+
+                                                                                                                                                                                                        <div id="inputsAndAnswers">
+
+
+                                                                                                                                                                                                        <p> <u><strong>Current Task instance #</strong>: <span id="taskInstanceNumber">1</span></u></p>
+
+                                                                                                                                                                                                        <div id="inputsDiv">
+                                                                                                                                                                                                        Provide <strong><em>Inputs</em></strong> for current instance 
+
+                                                                                                                                                                                                        <br /> <br/>
+                                                                                                                                                                                                        Input Type: <em><span id="inputType"></span>  </em>
+                                                                                                                                                                                                        <br/>
+                                                                                                                                                                                                        Input Description:  <em><span id="inputDescription"></span>  </em>
+                                                                                                                                                                                                        <br/> <br/>
+
+                                                                                                                                                                                                        <!--Specify how this input will be provided -->
+                                                                                                                                                                                                        <p id="input-from-visualization" style="display: none;">               
+
+                                                                                                                                                                                                        Select this input in the visualization
+                                                                                                                                                                                                        <span id="selectedInputSpan" style="display:none"> <input type="text" id="selectedInput" size="30" readOnly/> </span>
+
+                                                                                                                                                                                                        &nbsp;&nbsp;&nbsp;<input type="button" value="Check/Refresh Input" onclick="getAndShowSelectedInput();"/>
+
+                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                        <p id="input-from-typing" style="display: none;">
+                                                                                                                                                                                                        Provide this input here:  <input type="text" size="25" id="typedInput"/>
+                                                                                                                                                                                                        </p>
+
+
+
+                                                                                                                                                                                                        <!--and specify the type of input
+                                                                                                                                                                                                        
+                                                                                                                                                                                                        <p> <input type="radio" /> Will be selected</p>
+                                                                                                                                                                                                        <p> <input type="radio" /> Will be part of a question</p> -->
+                                                                                                                                                                                                        <p id="next-input-button" style="display:none;">  
+                                                                                                                                                                                                        <input type="button" value="Next Input" onclick="saveInputs();"/>                 
+                                                                                                                                                                                                        </p>
+
+                                                                                                                                                                                                        <p id="provide-answer-button" style="display:none;">
+                                                                                                                                                                                                        <input type="button" value="Next - Provide Answer" onclick="doneWithInputs();"/> 
+                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                        </div>
+
+
+
+                                                                                                                                                                                                        <div id="answersDivContainer" style="display:none;">
+                                                                                                                                                                                                        <div>
+                                                                                                                                                                                                        
+                                                                                                                                                                                                        <p id="answer-from-visualization" style="display:none;">
+                                                                                                                                                                                                        Provide the correct answer from the visualization
+                                                                                                                                                                                                        <input type="text" id="selectedAnswerFromVis" size="25" readOnly style="display:none;"/> 
+                                                                                                                                                                                                        &nbsp;  <input type="button" value="Check/Refresh Answer" onclick="getAndShowSelectedAnswer()"/>
+                                                                                                                                                                                                        <br /><br/>
+                                                                                                                                                                                                        Or <input type="button" value="Answer manually" class="small-font" onclick="showAnswerByTyping()"/> 
+                                                                                                                                                                                                        <input type="text" id="selectedAnswerFromTyping" style="display:none;"/>
+                                                                                                                                                                                                        </p>
+
+                                                                                                                                                                                                        <p id="answer-by-typing" style="display:none;">
+                                                                                                                                                                                                        Type the correct answer <input type="text" size="22" id="typedAnswer"/>                    
+                                                                                                                                                                                                        </p>
+
+
+                                                                                                                                                                                                        <input type="hidden" id="selectedAnswer" value="" />
+                                                                                                                                                                                                        <input type="hidden" id= "answerMedium" value=""/>
+
+                                                                                                                                                                                                        <div id="interfaceAnswerDiv" style="display:none;">
+
+                                                                                                                                                                                                        </div>
+
+                                                                                                                                                                                                        <div id="answerSelectionDiv" style="display:none">
+                                                                                                                                                                                                        <br/>                  
+                                                                                                                                                                                                        </div>
+
+                                                                                                                                                                                                        <div id="answersDiv">
+                                                                                                                                                                                                        <!-- for widget answers. -->
+                                                                                                                                                                                                        </div>
+
+
+                                                                                                                                                                                                        <div id="dynamic-optionsDiv" style="display:none;">                    
+                                                                                                                                                                                                        Provide all the options and select the correct option.
+                                                                                                                                                                                                        <div id="optionsDiv">      
+                                                                                                                                                                                                        <div id="div_option1">
+                                                                                                                                                                                                        <p>
+                                                                                                                                                                                                        <input type="radio" id="optionRadio1" name="answerOption"
+                                                                                                                                                                                                        value="1" onclick="setDynamicOptionAnswer(this)"
+                                                                                                                                                                                                        />
+                                                                                                                                                                                                        <input type="text" id="option1" size="15"/>
+                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                        <div id="div_option2">
+                                                                                                                                                                                                        <p>
+                                                                                                                                                                                                        <input type="radio" id="optionRadio2" name="answerOption"
+                                                                                                                                                                                                        value="2" onclick="setDynamicOptionAnswer(this)"
+                                                                                                                                                                                                        />
+                                                                                                                                                                                                        <input type="text" id="option2" size="15"/> 
+                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                        <div id="div_option3">
+                                                                                                                                                                                                        <p>
+                                                                                                                                                                                                        <input type="radio" id="optionRadio3" name="answerOption"
+                                                                                                                                                                                                        value="3" onclick="setDynamicOptionAnswer(this)"
+                                                                                                                                                                                                        />
+                                                                                                                                                                                                        <input type="text" id="option3" size="15" />
+                                                                                                                                                                                                        </p>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                        <div id="div_option4">
+                                                                                                                                                                                                        <p>
+                                                                                                                                                                                                        <input type="radio" id="optionRadio4" name="answerOption"
+                                                                                                                                                                                                        value="4" onclick="setDynamicOptionAnswer(this)"
+                                                                                                                                                                                                        />
+                                                                                                                                                                                                        <input type="text" id="option4" size="15" />
+                                                                                                                                                                                                        </p>                              
+                                                                                                                                                                                                        </div>
+
+
+                                                                                                                                                                                                        <input type="hidden" value="" id="selectedOption" />
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                        <!--
+                                                                                                                                                                                                        <div id="dynamic-option-answerDiv">
+                                                                                                                                                                                                        <br/>
+                                                                                                                                                                                                        What is the correct Option?:  <input type="text" size="15" id="dynamic-option-answer"/>
+                                                                                                                                                                                                        <br/> <br/>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                        -->
+                                                                                                                                                                                                        <input type="button" value="add additional option box box" onclick="addMoreDynamicOptions()"/>
+                                                                                                                                                                                                        <!-- <input type="button" value="Done with Options" onclick="doneWithDynamicOptions()"/> -->
+
+                                                                                                                                                                                                        <input type="hidden" value="4" id="numberOfOptions"/>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                        </div>    
+                                                                                                                                                                                                        <p>  <input type="button" id="nextInstance" value="Go to Next Instance" onclick="saveInstance();" disabled/></p>
+                                                                                                                                                                                                        <hr/>
+                                                                                                                                                                                                        <p><input type="button" value="Save All Instances" onclick="saveAllTaskInstances();"/></p>
+
+                                                                                                                                                                                                        </div>
+
+                                                                                                                                                                                                        <div id="noNeedForTaskInstances" style="display:none;">
+                                                                                                                                                                                                        <br/><br/>
+                                                                                                                                                                                                        <strong> NOTE:  </strong>
+                                                                                                                                                                                                        Since this task does not require any input,
+                                                                                                                                                                                                        and does not have a correct answer, there is no need to create 
+                                                                                                                                                                                                        task instance for this task.
+                                                                                                                                                                                                        </div>
+
+
+
+
+
+                                                                                                                                                                                                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
                                                                                                                                                                                                         </div>
 
                                                                                                                                                                                                         <br>

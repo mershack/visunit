@@ -1,0 +1,73 @@
+{  
+	"accuracy":
+				[
+					{
+						"taskName": "selectNodeWithHighestDegree2",
+						"viewer": "group-node-link",
+						"dataset": "receipe_small",
+						"mean": "0.9",
+						"SD": "0.163299316185545",
+						"standardError": ""		
+					},
+					{
+						"taskName": "selectNodeWithHighestDegree2",
+						"viewer": "group-matrix",
+						"dataset": "receipe_small",
+						"mean": "0.688888888888889",
+						"SD": "0.153659074288215",
+						"standardError": ""		
+					},
+					{
+						"taskName": "selectAllNeigbhorsOf1Node",
+						"viewer": "group-node-link",
+						"dataset": "receipe_small",
+						"mean": "0.741388888888889",
+						"SD": "0.314957620116002",
+						"standardError": ""		
+					},
+					{
+						"taskName": "selectAllNeigbhorsOf1Node",
+						"viewer": "group-matrix",
+						"dataset": "receipe_small",
+						"mean": "0.744444444444444",
+						"SD": "0.233550824563565",
+						"standardError": ""		
+					}
+			],
+	"time": 
+			[
+				{
+						"taskName": "selectNodeWithHighestDegree2",
+						"viewer": "group-node-link",
+						"dataset": "receipe_small",
+						"mean": "7.35",
+						"SD": "2.66176633084123",
+						"standardError": ""		
+					},
+					{
+						"taskName": "selectNodeWithHighestDegree2",
+						"viewer": "group-matrix",
+						"dataset": "receipe_small",
+						"mean": "11.2777777777778",
+						"SD": "1.46011795566127",
+						"standardError": ""		
+					},
+					{
+						"taskName": "selectAllNeigbhorsOf1Node",
+						"viewer": "group-node-link",
+						"dataset": "receipe_small",
+						"mean": "16.16",
+						"SD": "5.18099089621538",
+						"standardError": ""		
+					},
+					{
+						"taskName": "selectAllNeigbhorsOf1Node",
+						"viewer": "group-matrix",
+						"dataset": "receipe_small",
+						"mean": "21.0777777777778",
+						"SD": "1.92988197681735",
+						"standardError": ""		
+					}
+			]
+
+}

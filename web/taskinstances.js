@@ -192,7 +192,7 @@ function getSelectedElements() {
     //we will get the output by calling the interface method to get the output
     var iframe = document.getElementById("viewerFrame");
     var outInterfaceName = getOutputInterface();
-
+    
     if (typeof iframe.contentWindow.window[outInterfaceName] == "function") {
         var selectedElements = iframe.contentWindow.window[outInterfaceName]();
 

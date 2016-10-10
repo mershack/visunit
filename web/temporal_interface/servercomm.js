@@ -22,6 +22,8 @@ function loadDirectories(whendone) {
     });
 
 
+
+
 //	$.get("directories.txt", function(data,status){
 //		
 //		var dataLines = data.trim().split("\n");
@@ -448,29 +450,25 @@ function loadTests(whendone) {
             alert("there was an error when loading the tests ___ STATUS: " + status);
         }
     });
-
-
-//
-//    $.get("tests.txt", function(data, status) {
-//        var dataLines = data.trim().split("\n");
-//        var _tests = [];
-//        for (var i = 0; i < dataLines.length; i++) {
-//            var line = dataLines[i].trim().split(" || ");
-//            var test = new Object();
-//            test.name = line[0];
-//            test.description = line[1];
-//            test.sourceDirectory = line[2];
-//            test.sourceFile = line[3];
-//            _tests.push(test);
-//        }
-//        //tests loaded
-//
-//        whendone(true, "", _tests);
-//    });
-
 }
-
-
+/*
+ * Get the viewer name and dataset. This function will return a JSON file as follows:
+ * { "viewer": {}, "dataset": {} }
+ */
+function getViewerDatasetTask(viewerName, datasetName, taskName, whendone) {
+    var theURL = "../StudySetup?command=getViewerDatasetTask";
+    theURL += "&viewerName=" + viewerName + "&datasetName=" + datasetName + "&taskName=" + taskName;
+    $.ajax({
+        url: theURL,
+        success: function(data, status) {
+           whendone(true, data);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an error when getting the viewerDataTask from server ___ STATUS: " + status);
+        }
+    });
+}
 
 //the params are: (1) is this a new study (true), or an existing one (false); (2) the study data to save; (3) a function
 //to be called when the response arrives; pass two params to this callback: a boolean to indicate success (true) or not (false), and 
@@ -575,9 +573,23 @@ function updateTaskprotoDataOnServer(newTask, taskData, callback) {
 //an error message in case of failure.
 //check the loadIntros for info on the introData object structure
 function updateIntroDataOnServer(newIntro, introData, callback) {
-   alert("not implemented: updateIntroDataOnServer");
-   callback(true, "");
-   
+    //alert("not implemented: updateIntroDataOnServer");
+
+    var theURL = "../StudySetup?command=updateIntroData";
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        data: {introData: JSON.stringify(introData)},
+        dataType: 'json',
+        success: function(data, status) {
+            callback(true, "");
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an errror saving the"
+                    + " intro on the server___ STATUS: " + status);
+        }
+    });
 }
 
 
@@ -586,8 +598,24 @@ function updateIntroDataOnServer(newIntro, introData, callback) {
 //an error message in case of failure.
 //check the loadTests for info on the testData object structure
 function updateTestDataOnServer(newTest, testData, callback) {
-   alert("not implemented: updateTestDataOnServer");
-   callback(true, "");   
+
+    var theURL = "../StudySetup?command=updateTestData";
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        data: {testData: JSON.stringify(testData)},
+        dataType: 'json',
+        success: function(data, status) {
+            callback(true, "");
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an errror saving the"
+                    + " test on the server___ STATUS: " + status);
+        }
+    });
+
+
 }
 
 //creates a new directory on the server, in the users' managed space

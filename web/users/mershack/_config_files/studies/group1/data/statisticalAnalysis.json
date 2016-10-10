@@ -1,0 +1,6 @@
+[
+	{"type": "shapiro", "link": "shapiro-wilk-Analysis.txt"},
+	{"type": "wilcoxonRankSum", "link": "wilcoxon-rank-sum-analysis.txt"},
+	{"type": "ttest", "link": "ttest-analysis.txt"}
+]
+

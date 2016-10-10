@@ -106,7 +106,7 @@ function populateViewerDirectoryOptions(optionsStr, select) {
 
 function populateViewerDirectoryOptions2(select) {
     var options = existingViewerDirectories.split("::::");
-      
+
     if (options.length >= 1) {
         //make sure they select one of the options 
         var opt1 = document.createElement("option");
@@ -125,9 +125,6 @@ function populateViewerDirectoryOptions2(select) {
         }
 
     }
-
-
-
-
-
 }
+ 
+ 

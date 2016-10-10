@@ -213,9 +213,9 @@ public class StudySetup extends HttpServlet {
                 for (int i = 0; i < files.length; i++) {
 
                     if (i == 0) {
-                        jsonAllViewers += "\n\t" + loadViewers(files[i].getName(), userid);
+                        jsonAllViewers += "\n\t" + loadAViewer(files[i].getName(), userid, request);
                     } else {
-                        jsonAllViewers += ",\n\t" + loadViewers(files[i].getName(), userid);
+                        jsonAllViewers += ",\n\t" + loadAViewer(files[i].getName(), userid, request);
                     }
 
                 }
@@ -252,9 +252,9 @@ public class StudySetup extends HttpServlet {
 
                 for (int i = 0; i < files.length; i++) {
                     if (i == 0) {
-                        jsonAllDatasets += "\n\t" + loadADataset(files[i].getName(), userid);
+                        jsonAllDatasets += "\n\t" + loadADataset(files[i].getName(), userid, request);
                     } else {
-                        jsonAllDatasets += ",\n\t" + loadADataset(files[i].getName(), userid);
+                        jsonAllDatasets += ",\n\t" + loadADataset(files[i].getName(), userid, request);
                     }
 
                 }
@@ -387,6 +387,42 @@ public class StudySetup extends HttpServlet {
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
                 out2.print(jsonAllTests);
+            } else if (command.equalsIgnoreCase("getViewerDatasetTask")) {
+                //load the viewer and dataset
+
+                userid = DEFAULT_USER;
+
+                String viewerName = request.getParameter("viewerName");
+                String datasetName = request.getParameter("datasetName");
+                String taskName = request.getParameter("taskName");
+
+                String viewerJson, dsJson, taskJson;
+
+                viewerJson = loadAViewer(viewerName + ".json", userid, request);
+
+                if (!datasetName.equalsIgnoreCase("no data")) {
+                    dsJson = loadADataset(datasetName + ".json", userid, request);
+                } else { //no data
+                    dsJson = "{\"name\" : \"no data\"}";
+                }
+
+                taskJson = loadTask(taskName + ".json", userid);
+
+                String allJsons = "{";
+                allJsons += "\"viewer\": " + viewerJson;
+                allJsons += ",\"dataset\": " + dsJson;
+                allJsons += ",\"task\": " + taskJson;
+                allJsons += "}";
+
+                System.out.println("allJson is :\n" + allJsons);
+                
+
+//
+                //System.out.println(jsonAllTests);
+                //now we will be sending the json object to the client
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print(allJsons);
             } else if (command.equalsIgnoreCase("updateStudyData")) {
                 /*We will get the json object of the study from the request, and save it 
                  on the server.
@@ -1038,7 +1074,7 @@ public class StudySetup extends HttpServlet {
 
     }
 
-    public String loadViewers(String filename, String userid) {
+    public String loadAViewer(String filename, String userid, HttpServletRequest request) {
         String viewerJSON = "";
 
         try {
@@ -1056,6 +1092,11 @@ public class StudySetup extends HttpServlet {
 
             UserFile viewerObj = gson.fromJson(br, UserFile.class);
 
+            //compose the url of the viewerObject.
+            String url = getServerUrl(request) + "/users/" + userid + "/" + viewerObj.getSourceDirectory() 
+                    + "/" + viewerObj.getSourceFile();
+            viewerObj.setUrl(url);
+            
             viewerJSON = gson.toJson(viewerObj);
 
             //close the bufferedreader 
@@ -1181,7 +1222,7 @@ public class StudySetup extends HttpServlet {
         return testJSON;
     }
 
-    public String loadADataset(String filename, String userid) {
+    public String loadADataset(String filename, String userid, HttpServletRequest request) {
         String datasetJSON = "";
 
         try {
@@ -1197,10 +1238,15 @@ public class StudySetup extends HttpServlet {
 
             BufferedReader br = new BufferedReader(reader);
 
+            //compose the url of the viewerObject.            
             UserFile dsObj = gson.fromJson(br, UserFile.class);
 
+            String url = getServerUrl(request) + "/users/" + userid + "/" + dsObj.getSourceDirectory() 
+                    + "/" + dsObj.getSourceFile();
+            
+            dsObj.setUrl(url);
+            
             datasetJSON += gson.toJson(dsObj);
-
             //close the bufferedreader 
             br.close();
 
