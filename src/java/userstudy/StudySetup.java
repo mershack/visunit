@@ -414,7 +414,7 @@ public class StudySetup extends HttpServlet {
                 allJsons += ",\"task\": " + taskJson;
                 allJsons += "}";
 
-                System.out.println("allJson is :\n" + allJsons);
+               // System.out.println("allJson is :\n" + allJsons);
                 
 
 //

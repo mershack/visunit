@@ -377,6 +377,29 @@ function loadTaskinstances(whendone) {
 
 }
 
+/**
+ * We will be saving a task instance on the server.
+ * @param {type} instanceData
+ * @returns {undefined}
+ */
+function updateTaskInstance(instanceData){    
+//we will be sending the task instance data to the server using ajax
+    var theURL = "../TaskInstancesCreator?command=updateTaskInstanceData";
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        data: {instanceData: JSON.stringify(instanceData)},
+        dataType: 'json',
+        success: function(data, status) {
+           
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an errror saving the"
+                    + " task instance on the server___ STATUS: " + status);
+        }
+    });    
+}
 
 //Loads the list of all intros managed by a user into an array, then sends that array to a callback. 
 //Each intro has the following json structure: 
@@ -679,3 +702,5 @@ function loadTaskXMLFile(file, callback) {
     taskObj.answer = {type: "Number", correctness: "yes"};
     callback(true, "", taskObj);
 }
+
+

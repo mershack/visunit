@@ -5,23 +5,78 @@
 			"dataset": "receipe_small",
 			"basicAccuracy": [
 								{
-									"responses": ["herring","chive","jasmine","orange","gelatin","lettuce","wasabi","cider","fennel","cabbage"]
+									"responses": [
+													{"response":  "herring", "accuracy": "1"},
+                                                    {"response":  "chive",  "accuracy": "1"},
+                                                    {"response": "jasmine", "accuracy": "1"},
+                                                    {"response": "orange", accuracy": "1"},
+													{"response": "gelatin", accuracy": "1"},
+													{"response": "lettuce", accuracy": "1"},
+													{"response": "wasabi", accuracy": "1"},
+													{"response": "cider", accuracy": "1"},
+													{"response": "fennel", accuracy": "1"},
+													{"response": "cabbage", accuracy": "1"}
+												]
 								},
 								{
-									"responses" ["herring","chive","jasmine","orange","gelatin","red_algae","mackerel","red_wine","olive","cabbage"]
+									"responses" [
+													{"response":  "herring", "accuracy": "1"},
+                                                    {"response":  "chive",  "accuracy": "1"},
+                                                    {"response": "jasmine", "accuracy": "1"},
+                                                    {"response": "orange", accuracy": "1"},
+													{"response": "gelatin", accuracy": "1"},
+													{"response": "red_algae", accuracy": "0"},
+													{"response": "mackerel", accuracy": "0"},
+													{"response": "red_wine", accuracy": "0"},
+													{"response": "olive", accuracy": "0"},
+													{"response": "cabbage", accuracy": "1"}									
+									           ]
 								},
 								{
-									"responses": ["herring","chive","jasmine","orange","gelatin","lettuce","wasabi","cider","fennel","cabbage"]
+									"responses": [
+													{"response":  "herring", "accuracy": "1"},
+                                                    {"response":  "chive",  "accuracy": "1"},
+                                                    {"response": "jasmine", "accuracy": "1"},
+                                                    {"response": "orange", accuracy": "1"},
+													{"response": "gelatin", accuracy": "1"},
+													{"response": "lettuce", accuracy": "1"},
+													{"response": "wasabi", accuracy": "1"},
+													{"response": "cider", accuracy": "1"},
+													{"response": "fennel", accuracy": "1"},
+													{"response": "cabbage", accuracy": "1"}													
+									           
+											     ]
 								},
 								{
-									"responses": ["herring","timedout","jasmine","orange","gelatin","lettuce","wasabi","cider","fennel","cabbage"]
+									"responses": [
+													{"response":  "herring", "accuracy": "1"},
+                                                    {"response":  "timedout",  "accuracy": "0"},
+                                                    {"response": "jasmine", "accuracy": "1"},
+                                                    {"response": "orange", accuracy": "1"},
+													{"response": "gelatin", accuracy": "1"},
+													{"response": "lettuce", accuracy": "1"},
+													{"response": "wasabi", accuracy": "1"},
+													{"response": "cider", accuracy": "1"},
+													{"response": "fennel", accuracy": "1"},
+													{"response": "cabbage", accuracy": "1"}									
+									           ]
 								},
 								{
-									"responses": ["herring","chive","jasmine","avocado","peach","lettuce","wasabi","red_wine","fennel","hazelnut"]
+									"responses": [									
+													{"response":  "herring", "accuracy": "1"},
+                                                    {"response":  "chive",  "accuracy": "1"},
+                                                    {"response": "jasmine", "accuracy": "1"},
+                                                    {"response": "avocado", accuracy": "0"},
+													{"response": "peach", accuracy": "0"},
+													{"response": "lettuce", accuracy": "1"},
+													{"response": "wasabi", accuracy": "1"},
+													{"response": "red_wine", accuracy": "0"},
+													{"response": "fennel", accuracy": "1"},
+													{"response": "hazelnut", accuracy": "0"}
+												]
 								}
 								
-							]
-			
+							]			
 		},
 		{
 			"taskName": "selectAllNeigbhorsOf1Node",
@@ -29,26 +84,82 @@
 			"dataset": "receipe_small",
 			"basicAccuracy": [
 								{
-									"responses": ["rice;;pimento;;saffron;;carrot","coffee;;peppermint;;fig;;malt;;brandy;;cognac","oyster;;soy_sauce;;sesame_oil;;meat","yam;;leek;;beet;;flower;;pimenta,nectarine;;grape;;raspberry;;melon;;kiwi;;blueberry","butter;;vanilla;;milk;;lard;;yeast","mace;;currant;;pear;;lamb;;veal;;cider","brandy;;yam;;peppermint,rum;;mango,yam;;cider"] 
+									"responses": [
+													{"response":  "rice;;pimento;;saffron;;carrot", "accuracy": "1"},
+													{"response":  "coffee;;peppermint;;fig;;malt;;brandy;;cognac", "accuracy": "1"},
+													{"response":  "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1"},
+													{"response":  "yam;;leek;;beet;;flower;;pimenta", "accuracy": "0.6"},
+													{"response": "nectarine;;grape;;raspberry;;melon;;kiwi;;blueberry", "accuracy": "1"},
+													{"response":  "butter;;vanilla;;milk;;lard;;yeast": "accuracy": "1"},
+													{"response": "mace;;currant;;pear;;lamb;;veal;;cider", "accuracy": "1"},
+													{"response": "brandy;;yam;;peppermint", "accuracy": "1"}, 
+													{"response": "rum;;mango", "accuracy": "1"}, 
+													{"response": "yam;;cider", "accuracy": "1"} 
+									            ] 
 								},
 								{
-									"responses" ["rice;;carrot;;saffron;;pimento","brandy;;cognac;;malt;;peppermint","oyster;;soy_sauce;;sesame_oil;;meat","leek;;yam;;beet;;endive;;liver;;corn_grit;;flower","melon;;kiwi;;blueberry;;raspberry;;grape;;nectarine","butter;;vanilla;;milk;;lard;;yeast","currant;;mace;;pear;;lamb;;smoke","peppermint;;brandy;;yam,mango;;rum,yam;;cider" ]
+									"responses" [
+													{"response":  "rice;;carrot;;saffron;;pimento", "accuracy": "1"},
+													{"response":  "brandy;;cognac;;malt;;peppermint", "accuracy": "0.6"},
+													{"response":  "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1"},
+													{"response":  "leek;;yam;;beet;;endive;;liver;;corn_grit;;flower", "accuracy": "0.8"},
+													{"response":  "melon;;kiwi;;blueberry;;raspberry;;grape;;nectarine", "accuracy": "1"},
+													{"response":  "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1"},
+													{"response":  "currant;;mace;;pear;;lamb;;smoke", "accuracy": "0.7"},
+													{"response":  "peppermint;;brandy;;yam", "accuracy": "1"},
+													{"response":  "mango;;rum", "accuracy": "1"},
+													{"response":  "yam;;cider", "accuracy": "1"}
+									            ] 
 								},
 								{
-									"responses": ["pimento;;saffron;;carrot;;rice","timedout","meat;;soy_sauce;;oyster","beet;;yam;;endive;;liver;;lentil","raspberry;;grape;;nectarine;;kiwi","yeast;;lard;;milk;;vanilla;;butter","mace;;currant;;cider;;veal;;pear","peppermint;;yam;;brandy,mango;;rum,yam;;cider"] 
+									"responses": [
+									
+													{"response":  "pimento;;saffron;;carrot;;rice", "accuracy": "1"},
+													{"response":  "timedout", "accuracy": "0"},
+													{"response":  "meat;;soy_sauce;;oyster", "accuracy": "0.6"},
+													{"response":  "beet;;yam;;endive;;liver;;lentil", "accuracy": "0.6"},
+													{"response":  "raspberry;;grape;;nectarine;;kiwi", "accuracy": "0.5"},
+													{"response":  "yeast;;lard;;milk;;vanilla;;butter", "accuracy": "1"},
+													{"response":  "mace;;currant;;cider;;veal;;pear", "accuracy": "1"},
+													{"response":  "peppermint;;yam;;brandy", "accuracy": "1"},
+													{"response":  "mango;;rum", "accuracy": "1"},
+													{"response":  "yam;;cider", "accuracy": "1"}
+									
+									           ] 
 								},
 								{
-									"responses": ["rice;;carrot","coffee;;peppermint;;malt;;cognac;;brandy","oyster;;soy_sauce;;sesame_oil;;meat","lentil;;flower;;yam;;beet;;liver","blueberry;;grape;;raspberry;;melon;;nectarine","vanilla;;butter;;milk;;lard;;yeast","pear;;mace;;lamb;;veal;;cider","brandy;;yam","mango;;rum","yam;;cider"]
+									"responses": [
+													{"response":  "rice;;carrot", "accuracy": "0.5"},
+													{"response":  "coffee;;peppermint;;malt;;cognac;;brandy", "accuracy": "0.8"},
+													{"response":  "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1"},
+													{"response":  "lentil;;flower;;yam;;beet;;liver", "accuracy": "0.8"},
+													{"response":  "blueberry;;grape;;raspberry;;melon;;nectarine", "accuracy": "0.8"},
+													{"response":  "vanilla;;butter;;milk;;lard;;yeast", "accuracy": "1"},
+													{"response":  "pear;;mace;;lamb;;veal;;cider", "accuracy": "0.8"},
+													{"response":  "brandy;;yam", "accuracy": "0.6"},
+													{"response":  "mango;;rum", "accuracy": "1"},
+													{"response":  "yam;;cider", "accuracy": "1"}
+									
+									           ]
 								},
 								{
-									"responses": ["vinegar","timedout","oyster;;soy_sauce;;sesame_oil","lentil","melon;;raspberry","butter;;vanilla;;milk;;lard;;yeast","timedout","yam;;lemongrass","rum","yam;;potato"] 
+									"responses": [
+													{"response":  "vinegar", "accuracy": "0"},
+													{"response":  "timedout", "accuracy": "0"},
+													{"response":  "oyster;;soy_sauce;;sesame_oil", "accuracy": ""},
+													{"response":  "lentil", "accuracy": "0.2"},
+													{"response":  "melon;;raspberry", "accuracy": "0.3"},
+													{"response":  "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1"},
+													{"response":  "timedout", "accuracy": "0"},
+													{"response":  "yam;;lemongrass", "accuracy": "0.5"},
+													{"response":  "rum", "accuracy": "0.5"},
+													{"response":  "yam;;potato", "accuracy": "0.5"}
+									            ] 
 								}
 								
 							]
 			
 		}
-
-
 ]
 
 

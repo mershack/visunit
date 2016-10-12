@@ -56,3 +56,12 @@ function setUserId(func) {
     xmlHttpRequest.open("GET", url, true);
     xmlHttpRequest.send();
 }
+
+/**
+ * capitalize the first letter.
+ * @param {type} string
+ * @returns {unresolved}
+ */
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}

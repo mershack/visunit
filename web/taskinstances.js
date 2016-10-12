@@ -549,8 +549,6 @@ function chosenInputMedium(elem) {
 
 
 function saveAllTaskInstances() {
-
-
     //check if the current instance has not been saved, then save it.     
     var instanceSaved = true;
 
