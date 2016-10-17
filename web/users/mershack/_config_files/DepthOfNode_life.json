@@ -1,0 +1,24 @@
+{
+	"instances": [
+		{
+			"inputs": ["N"],
+			"answer": "2"
+		},
+		{
+			"inputs": ["K"],
+			"answer": "3"
+		},
+		{
+			"inputs": ["L"],
+			"answer": "5"
+		},
+		{
+			"inputs": ["D"],
+			"answer": "5"
+		},
+		{
+			"inputs": ["M"],
+			"answer": "6"
+		}
+	]
+}

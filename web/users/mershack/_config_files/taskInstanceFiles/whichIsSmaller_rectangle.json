@@ -1,0 +1,24 @@
+{
+	"instances": [
+		{
+			"inputs": ["0540150067067.png"],
+			"answer": "A"
+		},
+		{
+			"inputs": ["0550280067067.png"],
+			"answer": "A"
+		},
+		{
+			"inputs": ["0560410067067.png"],
+			"answer": "A"
+		},
+		{
+			"inputs": ["0570450067067.png"],
+			"answer": "A"
+		},
+		{
+			"inputs": ["0580850067067.png"],
+			"answer": "B"
+		}
+	]
+}

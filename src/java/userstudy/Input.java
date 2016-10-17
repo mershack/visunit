@@ -13,15 +13,13 @@ package userstudy;
 public class Input {
     private String typeName;
     private String description; 
-    private String inputMedium;
     private String specifyInVis;
     private String showInVis;
    
     
-    public Input(String type, String description, String inputMedium, String specifyInVis, String showInVis){
+    public Input(String type, String description, String specifyInVis, String showInVis){
         this.typeName = type;
         this.description = description;
-        this.inputMedium = inputMedium;
         this.showInVis = showInVis;
         this.specifyInVis = specifyInVis;
     }
@@ -40,14 +38,6 @@ public class Input {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getInputMedium() {
-        return inputMedium;
-    }
-
-    public void setInputMedium(String inputMedium) {
-        this.inputMedium = inputMedium;
     }
 
     public String getShowInVis() {

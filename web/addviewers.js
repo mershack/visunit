@@ -1,4 +1,5 @@
 var existingViewerDirectories = "";
+
 function uploadViewerFiles() {
     var thefiles = document.getElementById("thefiles").files;
     var userid = document.getElementById("userid").value;

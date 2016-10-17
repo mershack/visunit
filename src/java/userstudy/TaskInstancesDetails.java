@@ -55,6 +55,10 @@ public class TaskInstancesDetails {
         this.instanceCount = instanceCount;
     }
     
+    public void incrementInstanceCount(){
+        instanceCount = "" + (Integer.parseInt(instanceCount) + 1);
+    }
+    
     
     
     

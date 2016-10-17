@@ -11,13 +11,21 @@
         stroke: #999;
         stroke-opacity: .6;
     }
+	.selectedNode{
+		fill: red; 
+		stroke: red;
+		stroke-width: 2px;
+	}
+	.unselectedNode{
+		fill: gray;
+	}
 
 </style>
 <body>
     <script src="http://d3js.org/d3.v3.min.js"></script>
     <script>
      //   var dataset = "";
-
+		var selectedNode="";
         function showGraph(dataset) {
 		
             var width = 700,
@@ -53,16 +61,21 @@
                         .data(graph.nodes)
                         .enter().append("circle")
                         .attr("class", "node")
+						.attr("id", function(d){
+								return d.name;
+							})
                         .attr("r", 5)
                         .style("fill", function(d) {
                             return "gray";
                         })
+						.on("click", click)
                         .call(force.drag);
 
                 node.append("title")
                         .text(function(d) {
                             return d.name;
                         });
+				
 
                 force.on("tick", function() {
                     link.attr("x1", function(d) {
@@ -85,15 +98,21 @@
                                 return d.y;
                             });
                 });
+				
+					function click(d){						
+						d3.selectAll(".node").classed("selectedNode", false);
+						d3.select(this).classed("selectedNode", true);
+						selectedNode = d.name;												
+					}
+				
             });
         }
+		
+		
 
 
 
         /********************* GRAPHUNIT METHOD STARTS **********************/
-
-        var nodePositions = {};
-
         function getGraphType() {
             //directed/undirected            
             return "undirected";
@@ -101,6 +120,7 @@
 
 
         function setNode(nodeName) {
+		selectedNode = nodeName;
 		  if (nodeName !== ""){
 			 d3.selectAll("circle")
                     .style("fill", function(d, i) {
@@ -110,9 +130,25 @@
                             }
                        
                     });
-		  }
+		  }	  
            
         }
+		
+		function getNode(){
+			return selectedNode;
+		}
+		
+		function getAnswer(){
+			return selectedNode;		
+		}
+		
+		function setAnswer(value){
+			if(value.trim()===""){
+				selectedNode = "";
+			}
+		}
+		
+		
         /**
          * This function will be called to set the dataset variable
          * @param {type} dataseturl - this is a string of the dataset 

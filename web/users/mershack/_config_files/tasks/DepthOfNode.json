@@ -4,6 +4,6 @@
 	"question": "How many levels deep is the highlighted node?",
 	"description": "The user will determine how deep a highlighted node is",
 	"inputs": [
-				{"typeName": "node", "description": "The node to be highlighted", "inputMedium": "by-typing", "specifyInVis": "yes",  "showInVis": "yes"}
+				{"typeName": "node", "description": "The node to be highlighted", "specifyInVis": "no",  "showInVis": "yes"}
 			  ]	
 }

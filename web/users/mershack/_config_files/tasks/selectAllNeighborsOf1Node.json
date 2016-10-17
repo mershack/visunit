@@ -1,10 +1,10 @@
 {
 	"name": "selectAllNeighborsOf1Node",
-	"answer": {"type": "Interface", "options": [],  "correctness": "yes", "customTypeName": "", "correctnessCheckingInterface": ""},
+	"answer": {"type": "Interface", "options": [],  "correctness": "yes", "customTypeName": "answer", "correctnessCheckingInterface": "checkAnswer"},
 	"question": "Select all the neighbors of the highlighted node",
 	"description": "The user will select all the nodes connected to  a highlighted node",
 	"hasCorrectAnswer": "yes",
 	"inputs": [
-				{"typeName": "node", "description": "A single node", "inputMedium": "from-visualization", "specifyInVis": "yes",  "showInVis": "yes"}
+				{"typeName": "node", "description": "A single node", "specifyInVis": "yes",  "showInVis": "yes"}
 			  ]
 }

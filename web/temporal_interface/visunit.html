@@ -224,6 +224,7 @@
         <script src="servercomm.js"></script>
         <script src="utils.js"></script>
         <script src="taskinstances.js"></script>
+        <script src="answers.js"></script>
         <script>
 
             var currentStudy = null; //current study being edited
@@ -2099,6 +2100,7 @@
                     $("#taskprotoform_inputdescription_" + id).val(which.inputs[i].description);
                     $("#taskprotoform_inputshowinvis_" + id).val(which.inputs[i].showInVis);
                     $("#taskprotoform_inputspecinvis_" + id).val(which.inputs[i].specifyInVis);
+                    $("#taskprotoform_answercorrect" + id).val(which.inputs[i].correctness);
                 }
 
                 $("#taskprotoform_answeroptionssection").hide();
@@ -2220,7 +2222,7 @@
                     obj.answer.customTypeName = $("#taskprotoform_answercustomtypename").val();
                 }
 
-                obj.answer.correctness = $("#taskprotoform_answercorectness").val();
+                obj.answer.correctness = $("#taskprotoform_answercorrect").val();
 
                 return obj;
             }
@@ -2255,8 +2257,8 @@
                 html += "<td style='vertical-align:middle'>&nbsp&nbsp" + ($("#taskprotoform_inputs").children().length + 1) + "&nbsp</td>";
                 html += "<td><div class='inputlabel'>Type name</div><input type='text' style='width:60px' id='taskprotoform_inputtype_" + uniqueInputId + "' value='text'></input></td>";
                 html += "<td><div class='inputlabel' style='padding-bottom:3px'>Description</div><textarea id=taskprotoform_inputdescription_" + uniqueInputId + " style='width: 200px; height: 25px;'></textarea></td>";
-                html += "<td><div class='inputlabel'>Show in vis</div><select style='width:100%' id='taskprotoform_inputshowinvis_" + uniqueInputId + "'><option value='yes'>yes</option><option value='no' selected>no</option></select></td>";
-                html += "<td><div class='inputlabel'>Specifiy in vis</div><select style='width:100%' id='taskprotoform_inputspecinvis_" + uniqueInputId + "'><option value='yes'>yes</option><option value='no' selected>no</option></select><td>";
+                html += "<td><div class='inputlabel'>Will be Shown in vis</div><select style='width:100%' id='taskprotoform_inputshowinvis_" + uniqueInputId + "'><option value='yes'>yes</option><option value='no' selected>no</option></select></td>";
+                html += "<td><div class='inputlabel'>Will be specified in vis</div><select style='width:100%' id='taskprotoform_inputspecinvis_" + uniqueInputId + "'><option value='yes'>yes</option><option value='no' selected>no</option></select><td>";
                 html += "<td style='vertical-align:middle'><span class='button' id='taskprotoform_||_delinput_||_" + uniqueViewerId + "'> <img src='x-icon.png' height=12 width=12> </span></td>";
                 html += "</tr></table></div>";
                 $("#taskprotoform_inputs").append(html);
@@ -2336,8 +2338,8 @@
 
             }
 
-            function taskInstanceCreated() {
-                currentTaskinstance.data.instanceCount++;
+            function taskInstanceCreated(cnt) {
+                currentTaskinstance.data.instanceCount = parseInt(currentTaskinstance.data.instanceCount) + parseInt(cnt);
                 $("#taskinstanceform_availabletasks").prop("disabled", true);
                 $("#taskinstanceform_availabledatasets").prop("disabled", true);
             }
@@ -2356,7 +2358,7 @@
                                 index = i;
                         if (index >= 0) {
                             alert("It seems you already have tasks of this type for this data set. We will merge the tasks you just created with those you had before.")
-                            taskinstances[index].data.instanceCount += currentTaskinstance.data.instanceCount;
+                            taskinstances[index].data.instanceCount = currentTaskinstance.data.instanceCount;
                             currentTaskinstance = taskinstances[index];
                         }
                         else {
@@ -2374,12 +2376,28 @@
                     $("#taskinstanceform_loadxml").toggle();
                 }
                 if (split[1] == "loadxmlfile") {
-                    if ($("#taskinstanceform_xmlfile")[0].files.length == 0)
+                    if ($("#taskinstanceform_jsonfile")[0].files.length == 0)
                         alert("Please select a file first");
-                    else
-                        loadTaskXMLFile($("#taskinstanceform_xmlfile")[0].files[0], function(success, msg, taskObject) {
-                            putTaskinstanceDataInForm(taskObject);
-                        });
+                    else{
+                        
+                        
+                         var instanceDetail = {};
+                        instanceDetail.taskName = $("#taskinstanceform_availabletasks").val();
+                        instanceDetail.dataName = $("#taskinstanceform_availabledatasets").val();
+                        instanceDetail.viewerName = $("#taskinstanceform_availableviewers").val();
+                        var file = $("#taskinstanceform_jsonfile")[0].files[0];
+
+                        updateTaskInstanceWithAJSONFile(instanceDetail, file, function(success, msg, count) {
+                                if(count>0){
+                                    taskInstanceCreated(count);
+                                        alert("file saved successfully!");
+                                } else{
+                                    alert("Your file did not contain any instance or the format of the file is not accurate");
+                                }
+                                
+                        });                       
+                    }
+                       
                 }
                 if (split[1] == "createtaskinstances") {
                     if ($("#taskinstanceform_availabletasks").val() === "Select")
@@ -2388,9 +2406,6 @@
                         //$("#taskinstanceform_taskcreator").show();
                         createTasksInstancesManually();
                     }
-
-
-
                 }
 
                 if (split[1] == "mocktaskcreated")
@@ -3037,9 +3052,9 @@
                                                                                                                                                                                                         </td>
                                                                                                                                                                                                         <td>
                                                                                                                                                                                                         <div class="inputdiv" style="margin-left:0px">
-                                                                                                                                                                                                        <div class="button" id="taskinstanceform_||_showxmlform" style="width:220px; text-align:center; margin-top:0px; border-radius:1px; font-size:14px; opacity:0.5">Add task instances by uploading an XML file</div>
+                                                                                                                                                                                                        <div class="button" id="taskinstanceform_||_showxmlform" style="width:220px; text-align:center; margin-top:0px; border-radius:1px; font-size:14px; opacity:0.5">Add task instances by uploading a JSON file</div>
                                                                                                                                                                                                         <div id="taskinstanceform_loadxml">
-                                                                                                                                                                                                        <input type="file" id="taskinstanceform_xmlfile"></input>
+                                                                                                                                                                                                        <input type="file" id="taskinstanceform_jsonfile"></input>
                                                                                                                                                                                                         <span class="button" id="taskinstanceform_||_loadxmlfile">go!</span>
                                                                                                                                                                                                         </div>
                                                                                                                                                                                                         </div>
@@ -3119,42 +3134,30 @@
                                                                                                                                                                                                         <input type="button" value="Next - Provide Answer" onclick="doneWithInputs();"/> 
                                                                                                                                                                                                         </p>
                                                                                                                                                                                                         </div>
-
-
-
-                                                                                                                                                                                                        <div id="answersDivContainer" style="display:none;">
-                                                                                                                                                                                                        <div>
+                                                                                                                                                                                                        <div id="answersDiv" style="display:none;">
+                                                                                                                                                                                                        <!-- for widget answers. -->
                                                                                                                                                                                                         
-                                                                                                                                                                                                        <p id="answer-from-visualization" style="display:none;">
+                                                                                                                                                                                                        </div>
+                                                                                                                                                                                                        
+                                                                                                                                                                                                         <p id="answer-from-visualization" style="display:none;">
                                                                                                                                                                                                         Provide the correct answer from the visualization
                                                                                                                                                                                                         <input type="text" id="selectedAnswerFromVis" size="25" readOnly style="display:none;"/> 
                                                                                                                                                                                                         &nbsp;  <input type="button" value="Check/Refresh Answer" onclick="getAndShowSelectedAnswer()"/>
                                                                                                                                                                                                         <br /><br/>
-                                                                                                                                                                                                        Or <input type="button" value="Answer manually" class="small-font" onclick="showAnswerByTyping()"/> 
-                                                                                                                                                                                                        <input type="text" id="selectedAnswerFromTyping" style="display:none;"/>
+                                                                                                                                                                                                        <!--Or <input type="button" value="Answer manually" class="small-font" onclick="showAnswerByTyping()"/> 
+                                                                                                                                                                                                        <input type="text" id="selectedAnswerFromTyping" style="display:none;"/>-->
                                                                                                                                                                                                         </p>
 
-                                                                                                                                                                                                        <p id="answer-by-typing" style="display:none;">
-                                                                                                                                                                                                        Type the correct answer <input type="text" size="22" id="typedAnswer"/>                    
-                                                                                                                                                                                                        </p>
-
-
-                                                                                                                                                                                                        <input type="hidden" id="selectedAnswer" value="" />
-                                                                                                                                                                                                        <input type="hidden" id= "answerMedium" value=""/>
-
-                                                                                                                                                                                                        <div id="interfaceAnswerDiv" style="display:none;">
-
-                                                                                                                                                                                                        </div>
-
-                                                                                                                                                                                                        <div id="answerSelectionDiv" style="display:none">
-                                                                                                                                                                                                        <br/>                  
-                                                                                                                                                                                                        </div>
-
-                                                                                                                                                                                                        <div id="answersDiv">
-                                                                                                                                                                                                        <!-- for widget answers. -->
-                                                                                                                                                                                                        </div>
-
-
+                                                                                                                                                                                                       <!-- <p id="answer-by-typing" style="display:none;">
+                                                                                                                                                                                                        Provide the correct answer <input type="text" size="22" id="typedAnswer"/>                    
+                                                                                                                                                                                                        </p> -->
+                                                                                                                                                                                                        
+                                                                                                                                                                                                        
+                                                                                                                                                                                                        
+                                                                                                                                                                                                        
+                                                                                                                                                                                                         <input type="hidden" id="providedAnswer" value="" />
+                                                                                                                                                                                                        
+                                                                                                                                                                                                        
                                                                                                                                                                                                         <div id="dynamic-optionsDiv" style="display:none;">                    
                                                                                                                                                                                                         Provide all the options and select the correct option.
                                                                                                                                                                                                         <div id="optionsDiv">      
@@ -3201,14 +3204,37 @@
                                                                                                                                                                                                         <br/> <br/>
                                                                                                                                                                                                         </div>
                                                                                                                                                                                                         -->
-                                                                                                                                                                                                        <input type="button" value="add additional option box box" onclick="addMoreDynamicOptions()"/>
+                                                                                                                                                                                                        <input type="button" value="add additional option box" onclick="addMoreDynamicOptions()"/>
                                                                                                                                                                                                         <!-- <input type="button" value="Done with Options" onclick="doneWithDynamicOptions()"/> -->
 
                                                                                                                                                                                                         <input type="hidden" value="4" id="numberOfOptions"/>
                                                                                                                                                                                                         </div>
+
+
+                                                                                                                                                                                                        <div id="answersDivContainer" style="display:none;">
+                                                                                                                                                                                                        <div>
+                                                                                                                                                                                                        
+                                                                                                                                                                                                       
+                                                                                                                                                                                                        
+
+
+                                                                                                                                                                                                       
+                                                                                                                                                                                                        <input type="hidden" id= "answerMedium" value=""/>
+
+                                                                                                                                                                                                        <div id="interfaceAnswerDiv" style="display:none;">
+
+                                                                                                                                                                                                        </div>
+
+                                                                                                                                                                                                        <div id="answerSelectionDiv" style="display:none">
+                                                                                                                                                                                                        <br/>                  
+                                                                                                                                                                                                        </div>
+
+                                                                                                                                                                                                       
+
+
                                                                                                                                                                                                         </div>
                                                                                                                                                                                                         </div>    
-                                                                                                                                                                                                        <p>  <input type="button" id="nextInstance" value="Go to Next Instance" onclick="saveInstance();" disabled/></p>
+                                                                                                                                                                                                        <p>  <input type="button" id="nextInstance" value="Add Another Instance" onclick="saveInstance();" disabled/></p>
                                                                                                                                                                                                         <hr/>
                                                                                                                                                                                                         <!--<p><input type="button" value="Save All Instances" onclick="saveAllTaskInstances();"/></p> -->
 

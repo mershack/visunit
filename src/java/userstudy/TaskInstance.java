@@ -11,24 +11,27 @@ package userstudy;
  */
 public class TaskInstance {
 
-    private String nodes;
+    private String[] inputs;
     private String answer;
+    private String[] options;  //For task instances that have dynamic options
 
     public TaskInstance() {
 
     }
 
-    public TaskInstance(String nodes, String answer) {
-        this.nodes = nodes;
+    public TaskInstance(String inputs[], String answer, String[] options) {
+        this.inputs = inputs;
         this.answer = answer;
+        this.options = options;
+        
     }
 
-    public String getNodes() {
-        return nodes;
+    public String[] getInputs() {
+        return inputs;
     }
 
-    public void setNodes(String nodes) {
-        this.nodes = nodes;
+    public void setInputs(String[] inputs) {
+        this.inputs = inputs;
     }
 
     public String getAnswer() {
@@ -39,9 +42,18 @@ public class TaskInstance {
         this.answer = answer;
     }
 
+    public String[] getOptions() {
+        return options;
+    }
+
+    public void setOptions(String[] options) {
+        this.options = options;
+    }  
+    
     @Override
     public String toString() {
-        return "nodes: " + this.nodes + "  "
+        return "nodes: " + this.inputs + "  "
                 + "answer: " + this.answer + "  ";
     }
+    
 }

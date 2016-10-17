@@ -1,0 +1,1 @@
+{"name":"whichIsANeighbor","answer":{"type":"Options(dynamic)", "correctness": "yes"},"question":"Which of the following options is a neighbor of the selected node?","description":"Which of a group of options is a neighbor of a selected node","inputs":[{"typeName":"node","description":"the name of a node","specifyInVis":"yes","showInVis":"yes"}]}

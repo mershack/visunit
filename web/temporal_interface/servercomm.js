@@ -1,7 +1,7 @@
 
 //Loads the list of all directories, then passes that array to a callback function. 
 //Each directory will be characterized by its name and a list of files in it. Json example:
-//			{"name" : "directory1", "files":["file1", "file2", "file3"]}
+//{"name" : "directory1", "files":["file1", "file2", "file3"]}
 //The function receives as argument a callback function to be called once the loading is done.
 //This callback function should be called with three paramaters: (i) a bool indicating success (true) or failure (false); and
 //(ii) an error message in case of failure; (iii) the data array.
@@ -382,24 +382,52 @@ function loadTaskinstances(whendone) {
  * @param {type} instanceData
  * @returns {undefined}
  */
-function updateTaskInstance(instanceData){    
+function updateTaskInstance(taskName, viewerName, datasetName, instanceData, whendone) {
 //we will be sending the task instance data to the server using ajax
     var theURL = "../TaskInstancesCreator?command=updateTaskInstanceData";
+    theURL += "&taskName=" + taskName + "&viewerName=" + viewerName + "&datasetName=" + datasetName;
     $.ajax({
         url: theURL,
-        type: 'GET',
+        type: 'POST',
         data: {instanceData: JSON.stringify(instanceData)},
-        dataType: 'json',
         success: function(data, status) {
-           
+            whendone();
         },
         error: function(data, status) {
             //handle error
             alert("there was an errror saving the"
                     + " task instance on the server___ STATUS: " + status);
         }
-    });    
+    });
 }
+
+/**
+ * This function will get the count of existing task instances.
+ * @param {type} taskName
+ * @param {type} viewerName
+ * @param {type} datasetName
+ * @returns {undefined}
+ */
+function getCountOfTaskInstanceData(taskName, viewerName, datasetName, whendone) {
+    //we will be sending the task instance data to the server using ajax
+    var theURL = "../TaskInstancesCreator?command=getCountOfTaskInstanceData";
+    theURL += "&taskName=" + taskName + "&viewerName=" + viewerName + "&datasetName=" + datasetName;
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data, status) {
+            whendone(data);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was an errror when getting the count of existing task instances__STATUS:" + status);
+        }
+    });
+}
+
+
+
 
 //Loads the list of all intros managed by a user into an array, then sends that array to a callback. 
 //Each intro has the following json structure: 
@@ -484,7 +512,7 @@ function getViewerDatasetTask(viewerName, datasetName, taskName, whendone) {
     $.ajax({
         url: theURL,
         success: function(data, status) {
-           whendone(true, data);
+            whendone(true, data);
         },
         error: function(data, status) {
             //handle error
@@ -703,4 +731,32 @@ function loadTaskXMLFile(file, callback) {
     callback(true, "", taskObj);
 }
 
+
+function updateTaskInstanceWithAJSONFile(instanceDetail, file, whendone) {
+    var taskName = instanceDetail.taskName;
+    var dataName = instanceDetail.dataName;
+    var viewerName = instanceDetail.viewerName;
+
+    //we will be sending the task instance json file to the server
+
+    var theURL = "../TaskInstancesCreator?command=updateTaskInstanceWithAFile";
+    theURL += "&taskName=" + taskName + "&viewerName=" + viewerName + "&datasetName=" + dataName;
+
+
+    var formData = new FormData();
+    formData.append("File", file);
+
+    var xmlHttpRequest = getXMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function()
+    {
+        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
+        {
+            whendone(true, "", xmlHttpRequest.responseText);
+        }
+
+    };
+    xmlHttpRequest.open("POST", theURL, true);
+    xmlHttpRequest.send(formData);
+
+}
 

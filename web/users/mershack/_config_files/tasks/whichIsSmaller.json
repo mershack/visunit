@@ -4,6 +4,6 @@
 	"question": "Which of the two rectangles (marked A or B) is smaller?",
 	"description": "The user will determine which of two rectangles is smaller",
 	"inputs": [
-				{"typeName": "stimuli", "description": "the stimuli for the task", "inputMedium": "by-typing",  "specifyInVis": "yes",  "showInVis": "yes"}
+				{"typeName": "stimuli", "description": "the stimuli for the task", "specifyInVis": "no",  "showInVis": "yes"}
 			  ]
 }

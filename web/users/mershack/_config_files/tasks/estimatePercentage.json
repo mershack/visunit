@@ -4,6 +4,6 @@
 	"question": "Estimate the percentage of the smaller rectangle to the larger one",
 	"description": "estimating the percentage a smaller rectangle is of a larger rectangle",
 	"inputs": [
-				{"typeName": "stimuli", "description": "The stimuli for the task", "inputMedium": "by-typing",  "specifyInVis": "yes",  "showInVis": "yes"}
+				{"typeName": "stimuli", "description": "The stimuli for the task", "specifyInVis": "no",  "showInVis": "yes"}
 			  ]
 }

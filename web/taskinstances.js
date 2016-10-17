@@ -1092,3 +1092,4 @@ function hideSteps() {
     document.getElementById("showStepsButton").style.display = "block";
     document.getElementById("hideStepsButton").style.display = "none";
 }
+

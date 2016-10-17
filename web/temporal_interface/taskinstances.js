@@ -13,9 +13,9 @@ var viewerName;
 
 function createTasksInstancesManually() {
     //first remove the div.
-     taskName = $("#taskinstanceform_availabletasks").val();
-     dataName = $("#taskinstanceform_availabledatasets").val();
-     viewerName = $("#taskinstanceform_availableviewers").val();
+    taskName = $("#taskinstanceform_availabletasks").val();
+    dataName = $("#taskinstanceform_availabledatasets").val();
+    viewerName = $("#taskinstanceform_availableviewers").val();
 
 
 
@@ -41,6 +41,17 @@ function createTasksInstancesManually() {
         setTheTaskQuestion();
         //create the input type and descriptions
         setInputTypeAndInputDescriptions(task);
+        //setupAnswerControllers also
+//        var answersDiv = document.getElementById("answersDiv");
+//        var labelText = "Provide Correct Answer: ";
+//        setUpAnswerControllers(task.answer, answersDiv, labelText);
+    });
+
+    getCountOfTaskInstanceData(taskName, viewerName, dataName, function(data) {
+        //set the taskInstance Counter  (add 1 to the existing count).
+        //taskInstancesCounter = parseInt(data.count) + 1;
+        //var tnum = document.getElementById("taskInstanceNumber");
+        //tnum.innerHTML = taskInstancesCounter;
     });
 
     //$("#taskinstanceform_taskcreator").html('Your task instance generating html');
@@ -97,31 +108,28 @@ function setInputTypeAndInputDescriptions() {
         //specify the description of the input.
         document.getElementById("inputDescription").innerHTML = inputs[inputsCnt].description;
 
-        var inputMedium = inputs[inputsCnt].inputMedium; //the input medium of that input.
+        //var inputMedium = ; //the input medium of that input.
 
 
         //NB: currently the input medium can be of two types (i.e. "from-visualization"  and "by-typing".
 
         //depending on the input type, provide the appropriate answering method.
-        if (inputMedium.trim() === "from-visualization") {
+        if (inputs[inputsCnt].specifyInVis=== "yes") {
             //show the input from visualization
             document.getElementById("input-from-visualization").style.display = "block"
             document.getElementById("input-from-typing").style.display = "none";
         }
         else {
-            // alert("kiddo -- ");
             //show the input by typing
             document.getElementById("input-from-visualization").style.display = "none"
             document.getElementById("input-from-typing").style.display = "block";
         }
 
-
         //Determine if we should ask for the answer now.
         if (inputsCnt < inputs.length) {
 
             if (inputs.length === 1 || inputsCnt === (inputs.length - 1)) {
-
-                //disable the next input button.
+                 //disable the next input button.
                 document.getElementById("next-input-button").style.display = "none";
 
 
@@ -149,33 +157,34 @@ function doneWithInputs() {
         return false;
     }
 
-    // alert("taskInstances.length  -- "+taskInstances.length);
-    //enable the next button so that it can be clicked on after the inputs has been provided
+   //enable the next button so that it can be clicked on after the inputs has been provided
     document.getElementById("nextInstance").disabled = false;
+    
+    //alert("## " +document.getElementById("selectedInput").value);
 
     //hide inputs div and show answersDivcontainer
     document.getElementById("inputsDiv").style.display = "none";
-    document.getElementById("answersDivContainer").style.display = "block";
+    document.getElementById("answersDiv").style.display = "block";
+    //setupAnswerControllers also
+    var answersDiv = document.getElementById("answersDiv");
 
-    //the answer type can be an "interface" type or an inbuilt type
-    if ((task.answer.type === "interface")) {
+
+    var labelText = "Provide the Correct Answer: ";
+
+    setUpAnswerControllers(task.answer.type,task.answer.options, answersDiv, labelText);
+    
+     //the answer type can be an "interface" type or an inbuilt type
+    if ((task.answer.type.toLowerCase() === "interface")) {
         // do this if it is an interface type
-
         document.getElementById("answer-from-visualization").style.display = "block";
-        document.getElementById("answer-by-typing").style.display = "none";
+        
     }
-    else if (task.answer.type === "options(dynamic)") {//if it is options dynamic
+    else if (task.answer.type.toLowerCase() === "options(dynamic)") {//if it is options dynamic
         //we will ask the user to specify the options, and then select the correct option as answer
         document.getElementById("dynamic-optionsDiv").style.display = "block";
     }
     //TODO: What do we do if the type of the answer is options(fixed).
-    //
-    //else if(task.answer.type === "options(fixed)"){}
-    else {
-        //the user will type their answer using a text box.
-        document.getElementById("answer-from-visualization").style.display = "none";
-        document.getElementById("answer-by-typing").style.display = "block";
-    }
+    
 }
 
 /*
@@ -187,26 +196,27 @@ function saveInputs() {
     //if there is an input, save it.
     currentInput = "";
 
-    var inputMedium = task.inputs[inputsCnt].inputMedium;
+    //var inputMedium = ;
 
-    if (inputMedium === "from-visualization") {
+    if (task.inputs[inputsCnt].specifyInVis === "yes") {
+
+
         getSelectedInput();
         currentInput = document.getElementById("selectedInput").value;
-        if (currentInput.trim() === "" && does) {
+        if (currentInput.trim() === "") {
             alert("No inputs have been provided");
             return false;
         }
         document.getElementById("selectedInput").value = "";
-        document.getElementById("selectedInput").style.display = "none";
+        document.getElementById("selectedInputSpan").style.display = "none";
 
         resetSelectedInput();
     }
-    else if (inputMedium === "by-typing") {
+    else {
         // alert("here we are---bytypeing");
         currentInput = document.getElementById("typedInput").value;
 
         // alert("currentInput is "+currentInput);
-
         if (currentInput.trim() === "") {
             alert("No inputs have been provided");
             return false;
@@ -216,12 +226,9 @@ function saveInputs() {
 
     instanceInputs.push(currentInput);
     inputsCnt++;
-
-
-
     //set up the field for the next inputs 
     if (inputsCnt < task.inputs.length) {
-        createInputDescriptions();
+        setInputTypeAndInputDescriptions();
     }
 
 
@@ -280,15 +287,13 @@ function saveInstance() {
 
         //1. save inputs if this task required inputs
         if (task.inputs.length > 0) {
-            var inputMedium = task.inputs[inputsCnt].inputMedium;
-
             var currentInput = "";
 
-            if (inputMedium === "from-visualization") {
+            if (task.inputs[inputsCnt].specifyInVis === "yes") {
                 getSelectedInput();
                 currentInput = document.getElementById("selectedInput").value;
             }
-            else if (inputMedium === "by-typing") {
+            else {
                 currentInput = document.getElementById("typedInput").value;
             }
 
@@ -307,44 +312,40 @@ function saveInstance() {
     }
     //compose the instance object and send it to be updated on the server.
     var instance = {};
-    instance.taskName = taskName;
-    instance.viewerName = viewerName;
-    instance.datasetName = dataName;
     instance.inputs = instanceInputs;
     instance.answer = ianswer;
     instance.options = instanceOptions;
 
-    updateTaskInstance(instance);
+    updateTaskInstance(taskName, viewerName, dataName, instance, function() {
+        taskInstanceCreated(1);
+    });
     //reset the instanceInputs and cnt
     instanceInputs = [];
     inputsCnt = 0;
+    instanceOptions = [];
 
-    if (task.answer.type === "options(dynamic)") {
-        // alert("about to save the dynamic answer types");
-        //allOptionsArr.push(allOptions);
-
-        //TODO: Let's get all the options.
-               //resetting the options also
+    if (task.answer.type.toLowerCase() === "options(dynamic)") {
+        
     }
-
-    //unselect the previous answers
-    if (task.answer.type.trim() === "interface") {
+     //unselect the previous answers
+    if (task.answer.type.toLowerCase() === "interface") {
         //we will be resetting the answer selected in the visualization
-
         var omutatorMethod = "set" + capitalizeFirstLetter(task.answer.customTypeName);
-
         var iframe = document.getElementById("taskInstanceViewerFrame");
 
         if (typeof iframe.contentWindow.window[omutatorMethod] == "function") {
-            iframe.contentWindow.window[omutatorMethod]("");
+            iframe.contentWindow.window[omutatorMethod]("");            
+            document.getElementById("selectedAnswerFromVis").value = "";
         }
         else {
             alert("Your visualization does not implement the mutator method --" + omutatorMethod + "() for this input");
         }
+        
+        document.getElementById("selectedAnswerFromVis").value = " ";
     }
     else {
 
-        document.getElementById("typedAnswer").value = "";
+        document.getElementById("providedAnswer").value = "";
 
     }
 
@@ -352,15 +353,17 @@ function saveInstance() {
     incrementTaskInstanceCounter();
 
     //hide answersDivcontainer and show the inputs div    
-    document.getElementById("answersDivContainer").style.display = "none";
+    document.getElementById("answersDiv").style.display = "none";
+    document.getElementById("answer-from-visualization").style.display = "none";
+   document.getElementById("selectedInput").value = "";
+          
+    document.getElementById("typedInput").value = "";
+    
 
     //disable the next instance button
     document.getElementById("nextInstance").disabled = true;
 
     //now let's create the input description for the next instance.
-
-    // setUpAnswerControllers(taskAnswerType);
-
     if (task.inputs.length > 0) { //create the next input stringsif this task has an input
         document.getElementById("inputsDiv").style.display = "block";
         setInputTypeAndInputDescriptions();
@@ -383,50 +386,27 @@ function getInstanceAnswer() {
     /*NB: if the answer medium is an interface, the answer can either come
      * from the visualization, or the user can choose to manually type the answers.
      */
-    if (task.answer.type === "interface") {
+    if (task.answer.type.toLowerCase() === "interface") {
 
         getSelectedAnswer();
 
-        var answerFromVis = document.getElementById("selectedAnswerFromVis").value;
+        var answer = document.getElementById("selectedAnswerFromVis").value;
 
-        var answermedium = document.getElementById("answerMedium").value;
+        
 
-        var answerbytyping = "";
-        if (answermedium === "by-typing" &&
-                (document.getElementById("selectedAnswerFromTyping").value).trim() !== "")
-            answerbytyping = document.getElementById("selectedAnswerFromTyping").value;
-
-
-        document.getElementById("selectedAnswerFromVis").value = "";
-        document.getElementById("selectedAnswerFromTyping").value = "";
-
-        document.getElementById("selectedAnswerFromVis").style.display = "none";
-        document.getElementById("selectedAnswerFromVis").style.display = "none";
-        document.getElementById("answerMedium").value = "";
-
-
-        if (answerbytyping !== "") {
-            answer = answerbytyping;
-        }
-        else {
-            answer = answerFromVis;
-        }
+        
     }
     else {
-        // alert("+++");
         //check if its dynamic options
-        if (task.answer.type.trim() === "options(dynamic)") {
+        if (task.answer.type.toLowerCase() === "options(dynamic)") {
             saveOptionsAndAnswer();
-            answer = document.getElementById("selectedAnswer").value;
+            
         }
-        //TODO: for options(fixed), we will find the selected answer
-
-        else {
-            //the answer will be the typed ansewr
-            answer = document.getElementById("typedAnswer").value;
-        }
+        
+        answer = document.getElementById("providedAnswer").value;
     }
 
+    
     return answer;
 }
 
@@ -439,10 +419,10 @@ function getInstanceAnswer() {
 function getSelectedAnswer() {
     //get the answer from the visualization and set it 
     //first get the output interface name, and use it to call and get the answer
-    var outputAccessorMethod = getOutputAccessorMethod();
-
-    //now we will actuallly get the answer from the visualization
-    var iframe = document.getElementById("viewerFrame");
+    var outputAccessorMethod = "get" + capitalizeFirstLetter(task.answer.customTypeName);
+            
+     //now we will actuallly get the answer from the visualization
+    var iframe = document.getElementById("taskInstanceViewerFrame");
     if (typeof iframe.contentWindow.window[outputAccessorMethod] == "function") {
         var selectedAnswer = iframe.contentWindow.window[outputAccessorMethod]();
 
@@ -452,8 +432,6 @@ function getSelectedAnswer() {
         alert("The output method that returns the output is not implemented.");
     }
 }
-
-
 
 function showAnswerByTyping() {
     //alert("here");
@@ -475,11 +453,13 @@ function getAndShowSelectedAnswer() {
 //TODO
 function getSelectedInput() {
 
-    var inputAccessorName = getInputAccessorMethods() [inputsCnt];
+      var inputAccessorName = "get" + capitalizeFirstLetter(task.inputs[inputsCnt].typeName);
 
-    var iframe = document.getElementById("viewerFrame");
+    var iframe = document.getElementById("taskInstanceViewerFrame");
+    
     if (typeof iframe.contentWindow.window[inputAccessorName] == "function") {
         var input = iframe.contentWindow.window[inputAccessorName]();
+        //alert("the input is "+ input);
         document.getElementById("selectedInput").value = input;
     }
     else {
@@ -490,12 +470,16 @@ function getSelectedInput() {
 //TODO:
 function resetSelectedInput() {
 
+    
+    var inputMutatorName = "set" + capitalizeFirstLetter(task.inputs[inputsCnt].typeName);
 
-    var inputMutatorName = getInputMutatorMethods() [inputsCnt];
-
-    var iframe = document.getElementById("viewerFrame");
+    var iframe = document.getElementById("taskInstanceViewerFrame");
     if (typeof iframe.contentWindow.window[inputMutatorName] == "function") {
-        var input = iframe.contentWindow.window[inputMutatorName]("");
+        iframe.contentWindow.window[inputMutatorName]("");
+        
+      
+        document.getElementById("selectedInput").value = "";
+        
     }
     else {
         alert("Your visualization does not implement the necessary mutator method --" + inputMutatorName + "() for this input");
@@ -505,7 +489,7 @@ function resetSelectedInput() {
 //TODO: 
 function setDynamicOptionAnswer(element) {
     var value = element.value;
-    document.getElementById("selectedAnswer").value = document.getElementById("option" + value).value;
+    document.getElementById("providedAnswer").value = document.getElementById("option" + value).value;
     document.getElementById("selectedOption").value = value;
 }
 
@@ -514,63 +498,49 @@ function saveOptionsAndAnswer() {
     //get the size of the options that were provided
     var optionsSize = document.getElementById("numberOfOptions").value;
 
-    allOptions = "";
-    optionsAnswer = "";
-
-
-    var answer = document.getElementById("selectedAnswer").value;
+    var answer = document.getElementById("providedAnswer").value;
     var selectedOption = document.getElementById("selectedOption").value;
     var selectedOptionValue = "";
 
 
     //if selected option has not been selected return false
-
-    if (selectedOption.trim() === "" && doesTaskHaveCorrectAnswer === "yes") {
+    if (selectedOption.trim() === "" && task.answer.correctness === "yes") {
         return false;
     }
-    else if (doesTaskHaveCorrectAnswer === "yes") {
+    else if (task.answer.correctness === "yes") {
         selectedOptionValue = document.getElementById("option" + selectedOption).value;
     }
 
-    if ((answer.trim() === "" || selectedOptionValue.trim() === "") && doesTaskHaveCorrectAnswer === "yes") {
+    if ((answer.trim() === "" || selectedOptionValue.trim() === "") && task.answer.correctness === "yes") {
         //alert("Provide the correct option before proceeding");
         return false;
     }
 
-    optionsAnswer = answer;
+  
 
     var cnt = 0;
 
     //alert("optionSize is "+ optionsSize);
-
+    instanceOptions = [];
     for (var i = 0; i < optionsSize; i++) {
         var option = document.getElementById("option" + (i + 1)).value;
 
         if (option.trim() !== "") {
-            cnt++;
-
-            if (cnt === 1) {
-                allOptions = option;
-            }
-            else {
-                allOptions += " :: " + option;
-            }
+            instanceOptions.push(option);
         }
     }
 
 
     //reset all the other variables we used here
-    //try to remove an additional child if any
+    //try to remove any additional child if any
 
     if (optionsSize > 4) {
-        var optionsDiv = document.getElementById("optionsDiv").value;
+        var optionsDiv = document.getElementById("optionsDiv");
 
         for (var i = 5; i < optionsSize; i++) {
             optionsDiv.removeChild(document.getElementById("option" + i));
             optionsDiv.removeChild(document.getElementById("optionRadio" + i));
         }
-        //reduce the inputCnt
-
     }
     //reset the values for the options
     for (var i = 0; i < 4; i++) {
@@ -589,7 +559,7 @@ function saveOptionsAndAnswer() {
 
 
     //do this if an answer was given
-    if (doesTaskHaveCorrectAnswer === "yes") {
+    if (task.answer.correctness === "yes") {
 
         var optionDiv = document.getElementById("div_option" + selectedOption);
         removeDivChildren(optionDiv);
@@ -619,6 +589,9 @@ function saveOptionsAndAnswer() {
         document.getElementById("numberOfOptions").value = 4;
         document.getElementById("selectedOption").value = "";
     }
+    
+    //now hide the div.
+     document.getElementById("dynamic-optionsDiv").style.display = "none";
 
     return true;
 }
@@ -632,3 +605,38 @@ function incrementTaskInstanceCounter() {
     tnum.innerHTML = taskInstancesCounter;
 }
 
+function addMoreDynamicOptions() {
+    //first get the highest number of boxes,
+    //add a new box, and increment the highest number of boxes.
+    var optionsSize = parseInt(document.getElementById("numberOfOptions").value);
+    optionsSize++;
+
+    
+    //get the option's div
+    var optionsDiv = document.getElementById("optionsDiv");
+    
+    //create a new option and add it to it.
+    var currentOptionsDiv = document.createElement("div");
+    currentOptionsDiv.setAttribute("id", "div_option" + optionsSize);
+    //now lets re-add the radio button and the option text box.
+    var parag = document.createElement("p");
+    var radioBtn = document.createElement("input");
+    radioBtn.setAttribute("type", "radio");
+    radioBtn.setAttribute("id", "optionRadio" + optionsSize);
+    radioBtn.setAttribute("name", "answerOption");
+    radioBtn.setAttribute("value", optionsSize);
+    radioBtn.setAttribute("onclick", "setDynamicOptionAnswer(this)");
+
+    var input = document.createElement("input");
+    input.setAttribute("type", "text");
+    input.setAttribute("id", "option" + optionsSize);
+    input.setAttribute("size", "15");
+
+    parag.appendChild(radioBtn);
+    parag.appendChild(input);
+
+    currentOptionsDiv.appendChild(parag);
+    optionsDiv.appendChild(currentOptionsDiv);
+
+    document.getElementById("numberOfOptions").value = optionsSize;
+}
