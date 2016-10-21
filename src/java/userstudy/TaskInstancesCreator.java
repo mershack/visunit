@@ -115,7 +115,7 @@ public class TaskInstancesCreator extends HttpServlet {
 
                     //now create the Gson object 
                     taskinstancedetails = gson.fromJson(br, TaskInstancesDetails.class);
-
+                    br.close();
                     //now increment the taskCounter by 1.
                     taskinstancedetails.incrementInstanceCount();
                 } else {
@@ -188,7 +188,7 @@ public class TaskInstancesCreator extends HttpServlet {
                     br.close();
                     if (newInstances != null && newInstances.getInstances().length > 0) {
                         mergeTaskInstanceFiles(userid, taskName, viewerName, datasetName, newInstances);
-                        
+
                         numOfInstances = newInstances.getInstances().length;
                     }
                     //now delete the file
@@ -197,6 +197,45 @@ public class TaskInstancesCreator extends HttpServlet {
 
                 //now we will return the count of instances that were saved.
                 out.println(numOfInstances);
+            } else if (command.equalsIgnoreCase("removeTaskInstanceFile")) {
+                //we will remove the task instance file and remove the task instance definition file too. 
+                String taskName = request.getParameter("taskName");
+                String datasetName = request.getParameter("datasetName");
+                String viewerName = request.getParameter("viewerName");
+
+                System.out.println("taskName: " + taskName);
+
+                //compose taskInstance Name;
+                String taskInstanceName = taskName;
+                taskInstanceName += (datasetName.trim().isEmpty() 
+                        || datasetName.trim().equalsIgnoreCase("nodata")) ? "_" + viewerName : "_" + datasetName;
+
+                userid = DEFAULT_USER;
+
+                String taskInstanceFilePath = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator
+                        + "taskInstanceFiles" + File.separator + taskInstanceName + ".json";
+
+                String taskInstanceDetailPath = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator
+                        + "taskInstances" + File.separator + taskInstanceName + ".json";
+
+                File taskInstanceFile = new File(getServletContext().getRealPath(taskInstanceFilePath));
+
+                
+                File taskInstanceDetail = new File(getServletContext().getRealPath((taskInstanceDetailPath)));
+                //delete the files
+                if(taskInstanceFile.exists())                {
+                    taskInstanceFile.delete();
+                }
+                if(taskInstanceDetail.exists()){
+                    taskInstanceDetail.delete();
+                }
+                
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+
             }
 
         } catch (Exception ex) {
@@ -214,27 +253,27 @@ public class TaskInstancesCreator extends HttpServlet {
 
             //doing the merging by first reading the existing task instances.
             TaskInstances existingTaskInstances = getTaskInstanceData(taskName, viewerName, datasetName, userid);
-            
-            System.out.println("Size of Existing is : "+ existingTaskInstances.getInstances().length);
-            System.out.println("Size of new is : "+ newInstances.getInstances().length);
+
+            System.out.println("Size of Existing is : " + existingTaskInstances.getInstances().length);
+            System.out.println("Size of new is : " + newInstances.getInstances().length);
             //now add the newinstances to the old instances.{
-            for(int i=0; i<newInstances.getInstances().length; i++){
+            for (int i = 0; i < newInstances.getInstances().length; i++) {
                 existingTaskInstances.addNewInstance(newInstances.getInstances()[i]);
             }
-            
+
             //now write the merged instances to file. 
-             String jsonStr = "";
+            String jsonStr = "";
 
-                jsonStr = gson.toJson(existingTaskInstances);
+            jsonStr = gson.toJson(existingTaskInstances);
 
-               String filePath = "users" + File.separator + userid + File.separator
-                        + "_config_files" + File.separator
-                        + "taskInstanceFiles" + File.separator + taskInstanceName + ".json";
+            String filePath = "users" + File.separator + userid + File.separator
+                    + "_config_files" + File.separator
+                    + "taskInstanceFiles" + File.separator + taskInstanceName + ".json";
 
-                FileWriter writer = new FileWriter(getServletContext().getRealPath(filePath));
-                writer.write(jsonStr);
-                writer.close();
-            
+            FileWriter writer = new FileWriter(getServletContext().getRealPath(filePath));
+            writer.write(jsonStr);
+            writer.close();
+
             //Updating task instance counter in the taskinstancedetails object
             String taskInstanceDetailsFilename = "users" + File.separator + userid + File.separator
                     + "_config_files" + File.separator
@@ -248,7 +287,7 @@ public class TaskInstancesCreator extends HttpServlet {
 
                 BufferedReader br = new BufferedReader(reader);
                 //now create the Gson object 
-                
+
                 taskinstancedetails = gson.fromJson(br, TaskInstancesDetails.class);
                 br.close();
 

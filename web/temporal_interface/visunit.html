@@ -194,26 +194,38 @@
             #taskInstanceViewerFrame{
                 display: block;
                 border: 2px solid black;
-                margin-left: 20px;
-                height: 700px;
-                width: 900px;
+                margin: 0px;
+                padding: 0px;
+                height: 750px;
+                width: 100%;
                 background: white;
             }
             #taskInstanceViewerFrameDiv{
                 float: left;
-                height: 700px;
-                width: 900px;
+                height: 800px;
+                width: 68%;
             }
             
              #propControl{
                 float: right;
-                width: 400px;
-                height: 680px;
+                width: 28%;
+                height: 730px;
                 border: solid #000;
                 padding: 10px;   
-                margin-right: 20px;
+                margin-right: 10px;
                 background: white;
             }
+            
+            #taskinstanceform_taskcreator{
+                min-width: 925px;
+                height: 800px;
+                background-color:lightgray;
+            }
+             
+            
+            
+            
+            
 
 
 
@@ -232,7 +244,7 @@
             var currentDataset = null;
             var currentTaskproto = null;
             var currrentTaskinstance = null;
-            var currentIntro = null
+            var currentIntro = null;
             var currentTest = null;
 
             var studies = [];
@@ -316,20 +328,20 @@
                     $("#homediv").slideUp(200, function() {
                         $("#homedivheader").animate({opacity: '0.5'}, 300, function() {
                             $("#homedivheader").animate({opacity: '1'}, 300, function() {
-                                if (tileType == "study") {
+                                if (tileType === "study") {
                                     $("#studyform").show(300);
                                 }
-                                else if (tileType == "viewer")
+                                else if (tileType === "viewer")
                                     $("#viewerform").show(300);
-                                else if (tileType == "dataset")
+                                else if (tileType === "dataset")
                                     $("#datasetform").show(300);
-                                else if (tileType == "taskproto")
+                                else if (tileType === "taskproto")
                                     $("#taskprotoform").show(300);
-                                else if (tileType == "taskinstance")
+                                else if (tileType === "taskinstance")
                                     $("#taskinstanceform").show(300);
-                                else if (tileType == "intro")
+                                else if (tileType === "intro")
                                     $("#introform").show(300);
-                                else if (tileType == "test")
+                                else if (tileType === "test")
                                     $("#testform").show(300);
                             })
                         })
@@ -337,31 +349,31 @@
                     });
 
 
-                    if (tileType == "study") {
+                    if (tileType === "study") {
                         putStudyDataInForm(study);
                         currentStudy = $(this)[0];
                     }
-                    else if (tileType == "viewer") {
+                    else if (tileType === "viewer") {
                         putDataInForm("viewerform", study);
                         currentViewer = $(this)[0];
                     }
-                    else if (tileType == "dataset") {
+                    else if (tileType === "dataset") {
                         putDataInForm("datasetform", study);
                         currentDataset = $(this)[0];
                     }
-                    else if (tileType == "taskproto") {
+                    else if (tileType === "taskproto") {
                         putTaskprotoDataInForm(study);
                         currentTaskproto = $(this)[0];
                     }
-                    else if (tileType == "taskinstance") {
+                    else if (tileType === "taskinstance") {
                         putTaskinstanceDataInForm(study);
                         currentTaskinstance = $(this)[0];
                     }
-                    else if (tileType == "intro") {
+                    else if (tileType === "intro") {
                         putDataInForm("introform", study);
                         currentIntro = $(this)[0];
                     }
-                    else if (tileType == "test") {
+                    else if (tileType === "test") {
                         putDataInForm("testform", study);
                         currentTest = $(this)[0];
                     }
@@ -393,30 +405,30 @@
             function processButtonClick(which) {
                 split = which.split("_||_");
 
-                if (split[0] == "home") //a button in the main, home, panel was clicked
+                if (split[0] === "home") //a button in the main, home, panel was clicked
                     homeAction(split);
-                else if (split[0] == "studyform") //a button in the studyform was clicked
+                else if (split[0] === "studyform") //a button in the studyform was clicked
                     studyFormAction(split);
-                else if (split[0] == "viewerform") //a button in the studyform was clicked
+                else if (split[0] === "viewerform") //a button in the studyform was clicked
                     formAction(split);
-                else if (split[0] == "datasetform") //a button in the studyform was clicked
+                else if (split[0] === "datasetform") //a button in the studyform was clicked
                     formAction(split);
-                else if (split[0] == "taskprotoform") //a button in the studyform was clicked
+                else if (split[0] === "taskprotoform") //a button in the studyform was clicked
                     taskprotoFormAction(split);
-                else if (split[0] == "taskinstanceform") //a button in the studyform was clicked
+                else if (split[0] === "taskinstanceform") //a button in the studyform was clicked
                     taskinstanceFormAction(split);
-                else if (split[0] == "resultform") //a button in the studyform was clicked
+                else if (split[0] === "resultform") //a button in the studyform was clicked
                     resultFormAction(split);
-                else if (split[0] == "introform")
+                else if (split[0] === "introform")
                     formAction(split);
-                else if (split[0] == "testform")
+                else if (split[0] === "testform")
                     formAction(split);
-                else if (split[0] == "adddirform")
+                else if (split[0] === "adddirform")
                     formAction(split);
             }
 
             function homeAction(split) {
-                if (split[1] == "delstudy")
+                if (split[1] === "delstudy")
                     removeStudy(split[2]);
                 else if (split[1] == "copystudy")
                     copyStudy(split[2]);
@@ -858,16 +870,35 @@
             }
 
             function createTaskinstanceIconContent(data) {
-
+                //alert(data.taskproto);
+               // alert(data.viewer);
                 var html = "Task:" + data.taskproto + "<br>" + "Dataset:" + data.dataset + "<br>" + data.instanceCount + " instances";
                 html += "<div style='text-align:right'>";
-                html += "<span class=button id=home_||_deltaskinstance_||_" + data.taskproto + "_||_" + data.dataset + "><img src='x-icon.png' height=12 width=12></span>";
+                if(data.dataset === "no data"){
+                    data.dataset = "nodata";
+                }
+                html += "<span class=button id=home__deltaskinstance__" + data.taskproto + "__" + data.dataset + "__" + data.viewer + ">"
+                               +"<a onclick=\"removeTaskInstance('"+ data.taskproto+ "','" + data.dataset+ "','" + data.viewer +"')\"> <img src='x-icon.png' height=12 width=12> </a> </span>";
 
                 return html;
             }
 
-            function removeTaskInstance(which) {
-                alert("(not implemented) Remove taskinstanec " + which);
+
+            function removeTaskInstance(taskproto, dataset, viewer) {                
+              removeTaskInstanceFile(taskproto, dataset, viewer, function(success){
+                 //we will remove the taskinstance widget from the gui.
+                 if(success){
+                     //alert("home_||_deltaskinstance_||_" + taskproto + "_||_" + dataset);
+                     var element = document.getElementById("home__deltaskinstance__" + taskproto.trim() + "__" + dataset.trim() + "__"+ viewer);
+                     //remove the task instance element.
+                     
+                     var parent = element.parentNode.parentNode;
+                     parent.style.display="none";
+                     
+                     removeDivChildren(parent);
+                 }
+              });
+              
             }
 
             function addNewTaskinstance() {
@@ -886,8 +917,8 @@
                     $("#homedivheader").animate({opacity: '0.5'}, 300, function() {
                         $("#homedivheader").animate({opacity: '1'}, 300, function() {
                             $("#taskinstanceform").show(300);
-                        })
-                    })
+                        });
+                    });
                 });
 
                 currentTaskinstance = createTaskinstanceIcon(newtasks);
@@ -3061,7 +3092,7 @@
                                                                                                                                                                                                         </td>
                                                                                                                                                                                                         </tr></table>
 
-                                                                                                                                                                                                        <div id="taskinstanceform_taskcreator" style="width:1000; height:850px; background-color:lightgray">
+                                                                                                                                                                                                        <div id="taskinstanceform_taskcreator">
                                                                                                                                                                                                         <br>
                                                                                                                                                                                                         <div id="taskInstanceViewerFrameDiv"></div>
                                                                                                                                                                                                         <!--
@@ -3247,25 +3278,8 @@
                                                                                                                                                                                                         and does not have a correct answer, there is no need to create 
                                                                                                                                                                                                         task instance for this task.
                                                                                                                                                                                                         </div>
-
-
-
-
-
+                                                                                                                                                                                                        
                                                                                                                                                                                                         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
                                                                                                                                                                                                         </div>
 
                                                                                                                                                                                                         <br>

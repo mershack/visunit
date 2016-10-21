@@ -26,6 +26,12 @@ function removeDivChildren(div) {
         div.removeChild(last);
 }
 
+
+function removeHTMLElement(element){
+    
+}
+
+
 function setUserId(func) {
     var command = "getUserId";
 

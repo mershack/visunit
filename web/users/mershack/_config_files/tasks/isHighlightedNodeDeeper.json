@@ -5,7 +5,7 @@
 	"question": "Is the highlighted node deeper than $2 ?",
 	"description": "User will determine if a highlighted node is deeper than a different node",
 	"inputs": [
-				{"typeName": "node", "description": "node to be highlighted", "specifyInVis": "yes",  "showInVis": "yes"},
-				{"typeName": "node2", "description": "node not to be highlighted", "specifyInVis": "yes",  "showInVis": "yes"}
+				{"typeName": "node", "description": "node to be highlighted", "specifyInVis": "no",  "showInVis": "yes"},
+				{"typeName": "node2", "description": "node not to be highlighted", "specifyInVis": "no",  "showInVis": "yes"}
 			  ]
 }

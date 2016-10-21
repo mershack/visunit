@@ -731,7 +731,6 @@ function loadTaskXMLFile(file, callback) {
     callback(true, "", taskObj);
 }
 
-
 function updateTaskInstanceWithAJSONFile(instanceDetail, file, whendone) {
     var taskName = instanceDetail.taskName;
     var dataName = instanceDetail.dataName;
@@ -760,3 +759,24 @@ function updateTaskInstanceWithAJSONFile(instanceDetail, file, whendone) {
 
 }
 
+//this function will remove the taskinstance file on the server, and return
+//success or failure
+function removeTaskInstanceFile(taskName, datasetName, viewerName, whendone){
+    var theURL = "../TaskInstancesCreator?command=removeTaskInstanceFile";
+    theURL += "&taskName=" + taskName + "&viewerName=" + viewerName + "&datasetName=" + datasetName;
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data, status) {
+            whendone(true);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was when removing the taskInstance on the server"
+                    + " ___ STATUS: " + status);
+            
+            whendone(false);
+        }
+    });
+}
