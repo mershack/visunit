@@ -24,6 +24,7 @@ public class Study {
     private Task[] tasks;
     private Task[] entryTasks;
     private Task[] exitTasks;
+    private int resultsCount;
     
     public Study(String name, String description, String viewerDesign,
             String dataDesign, String width, String height, UserFile[] viewers, UserFile[] datasets,
@@ -147,4 +148,14 @@ public class Study {
     public void setExitTasks(Task[] exitTasks) {
         this.exitTasks = exitTasks;
     }
+
+    public int getResultsCount() {
+        return resultsCount;
+    }
+
+    public void setResultsCount(int resultsCount) {
+        this.resultsCount = resultsCount;
+    }
+    
+    
 }

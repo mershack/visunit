@@ -219,6 +219,7 @@ public class StudySetup extends HttpServlet {
                     }
 
                 }
+
                 jsonAllViewers += "\n]";
 
                 // System.out.println(jsonAllViewers);
@@ -414,9 +415,7 @@ public class StudySetup extends HttpServlet {
                 allJsons += ",\"task\": " + taskJson;
                 allJsons += "}";
 
-               // System.out.println("allJson is :\n" + allJsons);
-                
-
+                // System.out.println("allJson is :\n" + allJsons);
 //
                 //System.out.println(jsonAllTests);
                 //now we will be sending the json object to the client
@@ -671,6 +670,57 @@ public class StudySetup extends HttpServlet {
 
                 out.print(allNames);
 
+            } else if (command.equalsIgnoreCase("removeViewerFile")) {
+                //we will remove the viewer
+
+                String viewerName = request.getParameter("viewerName");
+
+                userid = DEFAULT_USER;
+
+                String viewerFilePath = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator
+                        + "viewers" + File.separator + viewerName + ".json";
+
+                File viewerFile = new File(getServletContext().getRealPath(viewerFilePath));
+                System.out.println(getServletContext().getRealPath(viewerFilePath));
+                //delete the file if it exists
+                if (viewerFile.exists()) {
+                    viewerFile.delete();
+                    System.out.println("viewer deleted");
+                    BufferedReader br = new BufferedReader(new FileReader(viewerFile));
+
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        System.out.println("__" + line);
+                    }
+                    br.close();
+                }
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+            } else if (command.equalsIgnoreCase("removeTestFile")) {
+
+                String testName = request.getParameter("testName");
+
+                userid = DEFAULT_USER;
+
+                String testFilePath = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator
+                        + "tests" + File.separator + testName + ".json";
+
+                File testFile = new File(getServletContext().getRealPath(testFilePath));
+                System.out.println(getServletContext().getRealPath(testFilePath));
+
+                //delete the file if it exists
+                if (testFile.exists()) {
+                    System.out.println("tests have been deleted");
+                    testFile.delete();
+                }
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");
             } else if (command.equalsIgnoreCase("deleteStudy")) {
                 //get the study name and delete it.
                 String studyname = request.getParameter("studyname").toString();
@@ -1023,9 +1073,36 @@ public class StudySetup extends HttpServlet {
             BufferedReader br = new BufferedReader(reader);
 
             Study studyObj = gson.fromJson(br, Study.class);
-            jsonStr = gson.toJson(studyObj);
 
             br.close();
+
+            int resultsCount = 0;
+
+            //now let's read the result temporarily
+            filePath = "users" + File.separator + userid + File.separator
+                    + "_config_files" + File.separator
+                    + "studies" + File.separator + studyname
+                    + File.separator + "data" + File.separator
+                    + "basicResultsData.json";
+
+            f = new File(getServletContext().getRealPath(filePath));
+
+            if (f.exists()) {
+                reader = new FileReader(f);
+
+                gson = new Gson();
+
+                br = new BufferedReader(reader);
+                ResultsData resultsObj = gson.fromJson(br, ResultsData.class);
+
+                if (resultsObj.getRegular().length > 0) {
+                    resultsCount = resultsObj.getRegular()[0].getBasicData().length;
+                }
+                br.close();
+            }
+            
+            studyObj.setResultsCount(resultsCount);
+            jsonStr = gson.toJson(studyObj);
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -1091,17 +1168,16 @@ public class StudySetup extends HttpServlet {
             BufferedReader br = new BufferedReader(new FileReader(f));
 
             UserFile viewerObj = gson.fromJson(br, UserFile.class);
+            br.close();
 
             //compose the url of the viewerObject.
-            String url = getServerUrl(request) + "/users/" + userid + "/" + viewerObj.getSourceDirectory() 
+            String url = getServerUrl(request) + "/users/" + userid + "/" + viewerObj.getSourceDirectory()
                     + "/" + viewerObj.getSourceFile();
             viewerObj.setUrl(url);
-            
+
             viewerJSON = gson.toJson(viewerObj);
 
             //close the bufferedreader 
-            br.close();
-
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1241,11 +1317,11 @@ public class StudySetup extends HttpServlet {
             //compose the url of the viewerObject.            
             UserFile dsObj = gson.fromJson(br, UserFile.class);
 
-            String url = getServerUrl(request) + "/users/" + userid + "/" + dsObj.getSourceDirectory() 
+            String url = getServerUrl(request) + "/users/" + userid + "/" + dsObj.getSourceDirectory()
                     + "/" + dsObj.getSourceFile();
-            
+
             dsObj.setUrl(url);
-            
+
             datasetJSON += gson.toJson(dsObj);
             //close the bufferedreader 
             br.close();

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>
+
+.resultheader{
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:underline;
+}
+.expand{
+	background-color: rgba(0,0,0,0.1);
+	border-radius: 2px;
+	padding: 1px 2px 0px 2px;
+	border-width: 1px;
+	border-style: solid;
+	display : inline-block;
+	border-color: gray;
+}
+.expandover{
+	background-color: rgba(0,0,0,0.2);
+	border-color: black;
+}
+.expandclick{
+	background-color: rgba(200,0,0,0.4);
+	border-color: rgb(100,0,0);
+}
+
+td{
+	text-align : center;
+}
+
+.taskeven{
+	background-color : #ADD8E6;
+}
+.taskodd{
+	background-color : #EFE5DA;
+}
+.instanceeveneven{
+	background-color : #BDEBF6;
+}
+.instanceevenodd{
+	background-color : #BDE8FF;
+}
+.instanceoddeven{
+	background-color : #FAF0E6;
+}
+.instanceoddodd{
+	background-color : #FAF5E6;
+}
+
+
+.tab{
+	background-color : linen;
+	padding : 1px 5px 1px 5px;
+	border-width : 1px;
+	border-color : gray;
+	border-style : solid;
+	border-radius : 4px 4px 1px 1px;
+}
+
+.sectionHeader{
+	background-color : lightblue;
+    text-align: center;
+	display : block;
+}
+
+.box {
+	  font: 10px sans-serif;
+}
+
+.box line,
+.box rect,
+.box circle {
+  fill: #fff;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.box .center {
+  stroke-dasharray: 3,3;
+}
+
+.box .outlier {
+  fill: none;
+  stroke: #ccc;
+}
+	
+	
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="d3/d3.min.js"></script>
+<script src="box.js"></script>
+<script>
+
+var expandStatId = 0;
+var conditionColors = ["white", "rgb(179,217,250)", "rgb(44,151,224)", "rgb(7,77,101)", "rgb(57,146,131)", "rgb(150,231,154)", "rgb(13,243,143)", "rgb(25,167,31)", "rgb(112,142,48)"];
+var nextColor = 0;
+var condColMatch = [];
+var studyType = "Between";
+
+function blah(){
+	
+}
+
+$(document).ready(function(){
+  getTskClss();
+  
+	
+	
+	
+	
+	d3.json("basicResultsData.json", function(error, data) {
+		
+		var tasks = formatTaskData(data);
+		
+		//let's load the accuracy stats
+		d3.json("accuracy_stats.json", function(error, data) {
+			
+			for (var i=0; i<data.length; i++){ //go through tasks
+				
+				var taskIndex = -1;			
+				for (var j=0; j<tasks.length; j++)
+					if (tasks[j].name === data[i].taskName){
+						taskIndex = j;
+						break;
+					}
+				tasks[taskIndex].stats = data[i];
+			}
+			
+			//let's load the time stats
+			d3.json("time_stats.json", function(error, data) {
+				
+				for (var i=0; i<data.length; i++){ //go through tasks
+					
+					var taskIndex = -1;			
+					for (var j=0; j<tasks.length; j++)
+						if (tasks[j].name === data[i].taskName){
+							taskIndex = j;
+							break;
+						}
+					tasks[taskIndex].timeStats = data[i];
+				}
+		
+				//once this is done, create the display matrix. This will contain svg and div slots
+				//in which we will drop the graphs in the next step
+				var html = createMatrix(tasks);
+				$("#charts").html(html);
+				
+				//now create the graphs in the appropriate slots (these have been created already in the matrix)
+				for (var i=0; i<tasks.length; i++){
+					if (tasks[i].instances.length > 1){ //create the summary stuff
+						createBoxplot("#slot_accuracy_boxplot_" + i + "_s", prepDataForPlot(tasks[i], function(condition){return condition.accuracies;}), colorsForConditions(tasks[i].conditions));
+						createBarchart("#slot_accuracy_chart_" + i + "_s", prepDataForPlot(tasks[i], function(condition){return condition.accuracies;}), colorsForConditions(tasks[i].conditions));
+						
+						createBoxplot("#slot_time_boxplot_" + i + "_s", prepDataForPlot(tasks[i], function(condition){return condition.times;}), colorsForConditions(tasks[i].conditions));
+						createBarchart("#slot_time_chart_" + i + "_s", prepDataForPlot(tasks[i], function(condition){return condition.times;}), colorsForConditions(tasks[i].conditions));
+					}
+					
+					//create the instance stuff
+					  //first, responses
+					for (var j=0; j<tasks[i].instances.length; j++){
+						if (tasks[i].responseType === "numeric")
+							createBarchart("#slot_response_charthisto_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition){return condition.responses;}), tasks[i].taskType === "task" ? colorsForConditions(tasks[i].instances[j].conditions) : ["white"]);
+						else
+							createHisto("#slot_response_charthisto_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition){return condition.responses;}), tasks[i].taskType === "task" ? colorsForConditions(tasks[i].instances[j].conditions) : ["white"]);
+						
+						if (tasks[i].taskType === "task"){
+							createBoxplot("#slot_accuracy_boxplot_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition){return condition.accuracies;}), colorsForConditions(tasks[i].instances[j].conditions));
+							createBarchart("#slot_accuracy_chart_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition){return condition.accuracies;}), colorsForConditions(tasks[i].instances[j].conditions));
+							
+							createBoxplot("#slot_time_boxplot_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition){return condition.times;}), colorsForConditions(tasks[i].instances[j].conditions));
+							createBarchart("#slot_time_chart_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition){return condition.times;}), colorsForConditions(tasks[i].instances[j].conditions));
+						}
+
+		
+					}
+				}
+				
+				$('#showResponses').click(function() { $(".responseFields").toggle(this.checked);});
+				$('#showAccuracyStats').click(function() { $(".accuracyStatsFields").toggle(this.checked);});
+				$('#showAccuracyGraphs').click(function() { $(".accuracyGraphFields").toggle(this.checked);});
+				$('#showTimeStats').click(function() { $(".timeStatsFields").toggle(this.checked);});
+				$('#showTimeGraphs').click(function() { $(".timeGraphFields").toggle(this.checked);});
+				
+				$(".boxplot").hide();
+				$('#graphtype').on('change', function() {
+					  if (this.value === "Bar chart"){
+						  $(".barchart").show();
+						  $(".boxplot").hide();
+					  }
+					  else{
+						  $(".barchart").hide();
+						  $(".boxplot").show();
+					}
+					});
+				
+				 $(".expand").mouseenter(function(){
+				    	$(this).addClass("expandover");
+				    });
+				    $(".expand").mouseleave(function(){
+				    	$(this).removeClass("expandover");
+				    });
+				    
+				    $(".statdetail").hide();
+				    
+				    $(".expand").click(function(evt){
+					    	$(this).addClass("expandclick");
+					    	$(this).animate({opacity: '1'}, 100, function(){
+								$(this).removeClass("expandclick");
+								var id = $(this).attr("id");
+								var split = id.split("_");
+								if (split[0] === "expandStat"){
+									$("#stat" + split[1]).toggle();
+								}
+								else
+									expandTask(split[1]);
+							});
+				    	
+				    	evt.stopImmediatePropagation();
+				    });
+			});
+		});
+	});
+
+});
+
+//tasks data comes from the server in one format (data) and needs to be translated into this format:
+//an array of tasks; each task contains name, taskType (can be 'task', 'entry', 'exit'), an array of task instances,
+//and the response Type (numeric, or otherwise); 
+//each instance will in turn have a list of conditions
+//each condition will be defined by a viewer name, a dataset name, and then array of accuraciese, responses, and times 
+//which contain the values of these measurements for each user
+//So: tasks[i].name, tasks[i].taskType, tasks[i].responseType, tasks[i].instances, 
+//tasks[i].instances[j].conditions, tasks[i].instances[j].conditions[k].viewer, .dataset, .responses[0..n], .accuracies[0..n], .time[0..n]
+function formatTaskData(data){
+	var tasks = [];
+	for (var i=0; i<data.length; i++){
+		//going through tasks_types x conditions
+		
+		var taskIndex = -1;			
+		for (var j=0; j<tasks.length; j++)
+			if (tasks[j].name === data[i].taskName){
+				taskIndex = j;
+				break;
+			}
+		
+		if (taskIndex < 0){
+			tasks.push({name : data[i].taskName, taskType : data[i].taskType, instances: [], responseType : data[i].responseType});
+			taskIndex = tasks.length-1;
+		}
+		var task = tasks[taskIndex];
+		
+		for (var j=0; j<data[i].basicData.length; j++){
+			//going through users
+			for (var k=0; k<data[i].basicData[j].responses.length; k++){
+				//going through task instances
+				if (k > task.instances.length-1)
+					task.instances.push({conditions : []});
+				
+				//check if the current condition exists
+				var cond = null;
+				for (var l=0; l<task.instances[k].conditions.length; l++)
+					if (task.instances[k].conditions[l].viewer === data[i].viewer && task.instances[k].conditions[l].data === data[i].dataset){
+						cond = task.instances[k].conditions[l];
+						break;
+					}
+				if (cond == null){
+					cond = {viewer:data[i].viewer, data:data[i].dataset, responses:[], accuracies:[], times: []};
+					task.instances[k].conditions.push(cond);
+				}					
+				cond.responses.push(data[i].basicData[j].responses[k].response);
+				cond.accuracies.push(parseFloat(data[i].basicData[j].responses[k].accuracy));
+				cond.times.push(parseFloat(data[i].basicData[j].responses[k].time));
+			}
+		}
+	}
+	
+	//let's compute summaries
+	for (var i=0; i<tasks.length; i++){
+		if (tasks[i].instances.length == 1) continue; //if there's just one instance, the summary is the instance
+		
+		tasks[i].conditions = [];
+		for (var j=0; j<tasks[i].instances[0].conditions.length; j++){
+			var c = tasks[i].instances[0].conditions[j];
+			tasks[i].conditions.push({viewer:c.viewer, data:c.data, responses:[], accuracies:[], times:[]});
+		}
+		
+		for (var c = 0; c < tasks[i].conditions.length; c++){
+			//for each condition we are going through all responses/accuracies/times and
+			//average them over instances
+			for (var j=0; j<tasks[i].instances[0].conditions[c].accuracies.length; j++){
+				var avac = 0;
+				var avtm = 0;
+				for (var k=0; k<tasks[i].instances.length; k++){
+					avac += tasks[i].instances[k].conditions[c].accuracies[j];
+					avtm += tasks[i].instances[k].conditions[c].times[j];
+				}
+				avac /= tasks[i].instances.length;
+				avtm /= tasks[i].instances.length;
+				tasks[i].conditions[c].accuracies.push(avac);
+				tasks[i].conditions[c].times.push(avtm);
+				
+			}
+		}
+	}
+	
+	return tasks;
+
+}
+
+
+function expandTask(task){
+	$(".instance."+task).toggle();
+}
+
+function prepDataForPlot(instance, f){
+	var r = [];
+	for (var i=0; i<instance.conditions.length; i++){
+		var rc = [];
+		var what = f(instance.conditions[i]);
+		for (var j=0; j<what.length; j++)
+			rc.push(what[j]);
+		r.push(rc);
+	}
+	return r;
+}
+
+function getTskClss(i){
+	return i%2 == 0 ? "taskeven" : "taskodd";
+}
+function getInstClss(i,j){
+	return (i%2 == 0 ? (j%2==0 ? "instanceeveneven" : "instanceevenodd") : (j%2==0 ? "instanceoddeven" : "instanceoddodd"));
+}
+
+function createMatrix(tasks){
+	
+	var html = "<table>";
+	
+	//task names
+	html = createRowTaskNames(tasks, html);
+	
+	//instance names
+	html = createRowInstanceNames(tasks, html);
+	
+	//conditions
+	html = createRowConditions(tasks, html);
+	
+	//responses (for instances, nothing for everything else)
+	html = createRowResponses(tasks, html);
+	
+	
+	//accuracy stats (for summaries, nothing for everything else)
+	html = createRowStats(tasks, html, "accuracy");
+			
+	//boxplot and barchart accuracy slots for summaries
+	html = createRowGraphs(tasks, html, "accuracy");
+	
+	html = createRowStats(tasks, html, "time");
+	
+	html = createRowGraphs(tasks, html, "time");
+	
+	return html;
+}
+
+function createRowTaskNames(tasks, html){
+	html += "<tr>";
+	for (var i=0; i<tasks.length; i++){
+		var cs = 0;
+		if (tasks[i].instances.length == 1)
+			cs = tasks[i].instances[0].conditions.length;
+		else
+			cs = tasks[i].instances[0].conditions.length * (tasks[i].instances.length + 1);
+		
+		html += "<td colspan=" + cs + " class=" + getTskClss(i) + ">" + tasks[i].name + "</td>";
+	}
+	html += "</tr>";
+	return html;
+}
+
+function createRowInstanceNames(tasks, html){
+	html += "<tr>";
+	for (var i=0; i<tasks.length; i++){
+		if (tasks[i].instances.length == 1)
+			html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getTskClss(i) + "></td>";
+		else{
+			html += "<td colspan=" + tasks[i].instances[i].conditions.length + " class=" + getTskClss(i) + "> <table width='100%'><tr><td>All instances</td><td width='11px' ><span class=expand id='button_" + tasks[i].name + "'><img src='expand-icon.png' width=10px heigh=10px></img></span></td></tr></table></td>";
+			for (var j=0; j<tasks[i].instances.length; j++)
+				html += "<td colspan=" + tasks[i].instances[i].conditions.length + " class=" + getInstClss(i,j) + "><div class='instance " + tasks[i].name + "'> I" + (j+1) + "</div></td>";
+		}
+	}
+	html += "</tr>";
+	return html;
+}
+
+function createRowConditions(tasks, html){
+	html += "<tr>";
+	for (var i=0; i<tasks.length; i++){
+		var nrcol1 = tasks[i].instances.length + 1;
+		if (tasks[i].instances.length == 1)
+			nrcol1 = 1;
+		
+		for (var j=0; j<nrcol1; j++){
+			var hideable = "instance ";
+			if (j==0) hideable = "";
+			var cond = null;
+			if (tasks[i].instances.length > 1 && j==0) cond = tasks[i].conditions;
+			else if (tasks[i].instances.length == 1) cond = tasks[i].instances[j].conditions;
+			else cond = tasks[i].instances[j-1].conditions;
+			
+			if (cond.length == 1){
+				html += "<td class=" + getTskClss(i) + "></td>";
+			}
+			else		
+				for (var k=0; k<cond.length; k++){
+					var col = getConditionColor(cond[k]);
+					html += "<td style='font-size:11px; background-color:" + col + "'>" + "<div style='width:100px' class='" + hideable + tasks[i].name + "'>" + formatCondition(cond[k].viewer, cond[k].data) + "</div></td>";
+				}
+		}
+	} html += "</tr>";
+	return html;
+}
+
+function createRowResponses(tasks, html){
+	html += "<tr>";
+	for (var i=0; i<tasks.length; i++){
+			var width = Math.max(tasks[i].conditions * 100,250);
+			if (tasks[i].instances.length > 1)
+				html += "<td colspan=" + tasks[i].conditions.length + " class=" + getTskClss(i)+ "><div class='responseFields'><div class=resultheader>responses</div>NA</td></td>";
+			for (var j=0; j<tasks[i].instances.length; j++)
+				html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getInstClss(i,j)+ "><div class='responseFields'><div class='instance " + tasks[i].name + "'><div class=resultheader>responses</div><svg style='width:" + (tasks[i].instances[j].conditions.length*100) + "px' id=slot_response_charthisto_" + i + "_" + j + "></svg></div></td></td>";
+	} html += "</tr>";
+	return html;
+}
+
+function createRowStats(tasks, html, accurtime){
+	html += "<tr>";
+	for (var i=0; i<tasks.length; i++){
+		var stats = (accurtime === "accuracy" ? tasks[i].stats : tasks[i].timeStats);
+		if (tasks[i].instances.length == 1){
+			if (tasks[i].taskType === "task")
+				html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getTskClss(i) + "><div class='" + accurtime + "StatsFields'><div class=resultheader>" + accurtime + "(stats)</div>" + processStats(tasks[i], stats) + "</div></td>";
+			else
+				html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getTskClss(i) + "><div class='" + accurtime + "StatsFields'><div class=resultheader>" + accurtime + "(stats)</div>N/A</div></td>";
+		}
+		else{
+			html += "<td colspan=" + tasks[i].conditions.length + " class=" + getTskClss(i) + "><div class='" + accurtime + "StatsFields'><div class=resultheader>" + accurtime + "(stats)</div>" + processStats(tasks[i], stats) + "</div></td>";
+			for (var j=0; j<tasks[i].instances.length; j++)
+				html += "<td colspan=" + tasks[i].instances[j].conditions.length + " class=" + getInstClss(i,j) + "><div class='" + accurtime + "StatsFields'><div class='instance " + tasks[i].name + "'><div class=resultheader>" + accurtime + "(stats)</div>N/A</div></div></td>";
+		}
+	} html += "</tr>";	
+	return html;
+}
+
+function createRowGraphs(tasks, html, accurtime){	
+	html += "<tr>";
+	for (var i=0; i<tasks.length; i++){
+		if (tasks[i].instances.length == 1){
+			if (tasks[i].taskType === "task"){
+				var width = Math.max(tasks[i].instances[0].conditions * 100,250);
+				html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getTskClss(i)+ "><div class='" + accurtime + "GraphFields'><div class=resultheader>" + accurtime + "</div>";
+				html += "<div class='boxplot' style='width:" + width + "px' id=slot_" + accurtime + "_boxplot_" + i + "_s></div>";
+				html += "<svg class='barchart' style='width:" + width + "px' id=slot_" + accurtime + "_chart_" + i + "_s></svg></div></td>"
+			}
+			else
+				html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getTskClss(i) + "><div class='" + accurtime + "GraphFields'><div class=resultheader>" + accurtime + "</div>N/A</div></td>";
+		}
+		else{
+			var width = Math.max(tasks[i].conditions * 100,250);
+			html += "<td colspan=" + tasks[i].conditions.length + " class=" + getTskClss(i)+ "><div class='" + accurtime + "GraphFields'><div class=resultheader>" + accurtime + "</div>";
+			html += "<div class='boxplot' style='width:" + width + "px' id=slot_" + accurtime + "_boxplot_" + i + "_s></div>";
+			html += "<svg class='barchart' style='width:" + width + "px' id=slot_" + accurtime + "_chart_" + i + "_s></svg></td></td>";
+			
+			for (var j=0; j<tasks[i].instances.length; j++){
+				html += "<td colspan=" + tasks[i].instances[j].conditions.length + " class=" + getInstClss(i) + "><div class='" + accurtime + "GraphFields'><div class='instance " + tasks[i].name + "'><div class=resultheader>" + accurtime + "</div>";
+				html += "<div class='boxplot' style='width:" + width + "px' id=slot_" + accurtime + "_boxplot_" + i + "_" + j + "></div>";
+				html += "<svg class='barchart' style='width:" + width + "px' id=slot_" + accurtime + "_chart_" + i + "_" + j + "></svg></div></div></td>"			}
+		}
+	} html += "</tr>";
+	return html;
+}
+
+function createRowEmpty(tasks, html){
+	html += "<tr>";
+	var totalCol = 0;
+	for (var i=0; i<tasks.length; i++){
+		var nrcol1 = tasks[i].instances.length + 1;
+		if (tasks[i].instances.length == 1)
+			nrcol1 = 1;		
+		for (var j=0; j<nrcol1; j++){
+			var cond = null;
+			if (tasks[i].instances.length > 1 && j==0) totalCol += tasks[i].conditions.length;
+			else if (tasks[i].instances.length == 1) totalCol += tasks[i].instances[j].conditions.length;
+			else totalCol += tasks[i].instances[j-1].conditions.length;
+		}
+	} html += "<td colspan=" + totalCol + "><div style='height:20px'></div></td></tr>";
+
+	return html;
+}
+
+function getConditionColor(cond){
+	var key = cond.viewer + cond.data;
+	var retCol = null;
+	for (var i=0; i<condColMatch.length; i++)
+		if (condColMatch[i].viewer === cond.viewer && condColMatch[i].data === cond.data)
+			return condColMatch[i].color;
+	if (retCol == null)
+		condColMatch.push({viewer:cond.viewer, data:cond.data, color:conditionColors[nextColor++]});
+	return condColMatch[condColMatch.length-1].color;
+}
+
+function colorsForConditions(conds){
+	var res = [];
+	for (var i=0; i<conds.length; i++)
+		res.push(getConditionColor(conds[i]));
+	return res;
+}
+function processStats(task, stats){
+	
+	if (stats == null) return "Null stats";
+	
+	var res = "<div style='font-size:12px; text-align:left'>";
+	
+	res += "<div style='margin-bottom:10px'>";
+	if (studyType === "Within")
+		res += "A total of " + task.conditions[0].accuracies.length + " participants completed this task in " + (task.conditions.length == 1 ? "one condition." : ("all " + task.conditions.length) + "conditions");
+	else if (studyType === "Between"){
+		res += "A total of " + d3.sum(task.conditions, function(d){return d.accuracies.length}) + " participants solved this task. Each participant solved the task in a single condition."
+		for (var i=0; i<task.conditions.length; i++)
+			res += "<div style='margin-top:2px; margin-left:10px'>" + formatCondition(task.conditions[i].viewer, task.conditions[i].dataset) + " : " + task.conditions[i].accuracies.length + " participants</div>";
+	}
+	res += "</div>";
+	
+	
+	var normdetail = "<div class=statdetail id='stat" + expandStatId + "'>&nbspShapiro Wilk: <br>";
+	var normal = true;
+	for (var i=0; i<stats.normality.length; i++){
+		normdetail +=  "<div style='margin-left:10px; margin-top:2px'>" + formatCondition(stats.normality[i].viewer,stats.normality[i].dataset) + " : " + (stats.normality[i].p<0.05 ? "not norm. distrib." : "norm. distrib.") + "(p=" + stats.normality[i].p + ")</div>";
+		if (stats.normality[i].condition < 0.05) normal = false;
+	}
+	normdetail += "</div>";
+	
+	res += "<div  style='margin-bottom:10px'>"
+	if (normal)
+		res += "The data is normally distributed. <span class=expand id='expandStat_" + (expandStatId++) + "'>...</span>" + normdetail;
+	else
+		res += "The data is  not normally distributed. <span class=expand id='expandStat_" + (expandStatId++) + "'>...</span>" + normdetail;
+	res += "</div>";
+	
+	res += "<div  style='margin-bottom:10px'> Overall, the differences in the means shown in the charts below are statistically " + (stats.comparative.outputs[0] < 0.05 ? (" signficant with " + stringForEffectSize(stats.comparative.outputs[1]) + " effect size.") : "  not significant.") + " <span class='expand' id='expandStat_" + expandStatId + "'>...</span>";
+	res += "<div class=statdetail id='stat" + (expandStatId++) + "'>" + stringForStatType(stats.comparative) + "</div></div>";
+	
+	if (stats.posthoc != null){
+		res += "<div style='margin-bottom:10px'>";
+		res += "Specifically, a posthoc Mann-Whitney analysis (with Bonferoni correction) shows";
+		var diff = false;
+		for (var i=0; i<stats.posthoc.results.length; i++)
+			if (stats.posthoc.results[i].outputs[0] < 0.05)
+				diff = true;
+		
+		if (diff){
+			res += " statistically significant differences between these conditions: <br>";
+			for (var i=0; i<stats.posthoc.results.length; i++)
+				if (stats.posthoc.results[i].outputs[0] < 0.05)
+					res += "<div style='margin-left:10px; margin-top:2px'>" + formatCondition(stats.posthoc.results[i].viewer1, stats.posthoc.results[i].dataset1) + " and " + formatCondition(stats.posthoc.results[i].viewer2, stats.posthoc.results[i].dataset2) + ": (p=" + stats.posthoc.results[i].outputs[0] + ", r=" + stats.posthoc.results[i].outputs[1] + ", Z=" + stats.posthoc.results[i].outputs[2] + ")<br></div>";
+		}
+		else
+			res += " no statistically significant differences between conditions";
+		res += "</div>";
+	}
+	
+	res += "</div>";
+	return res;
+}
+
+function formatCondition(v,d){
+	return "(" + v + ", " + d + ")";
+}
+function stringForEffectSize(r){
+	if (r <= 0.2) return "small";
+	if (r >= 0.8) return "large";
+	return "medium";
+}
+	
+function stringForStatType(stat){
+	var res = stat.test + ":<br>";
+	
+	if (stat.test === "t-test")
+		return "&nbsp T-test <br> &nbsp&nbsp&nbsp t(" + stat.outputs[3] + ")=" + stat.outputs[2] + ", r=" + stat.outputs[1] + ", p=" + stat.outputs[0];
+	else if (stat.test = "wilcoxon rank sum")
+		return "&nbsp Wilcoxon rank sum <br>&nbsp&nbsp&nbsp Z=" + stat.outputs[2] + ", r=" + stat.outputs[1] + ", p=" + stat.outputs[0];
+	return res;
+}
+	
+
+function createBoxplot(div, data, cols){
+
+	if (typeof $(div).css("width") == 'undefined'){
+		return;
+	}
+	
+	var conditionWidth = parseInt($(div).css("width").replace("px","")) / data.length;
+	
+	var min = Infinity;
+	var max = -Infinity;
+	for (var i=0; i<data.length; i++){
+		var mxc = d3.max(data[i], function(d){return +d});
+		var mnc = d3.min(data[i], function(d){return +d});
+		if (mxc > max) max = mxc;
+		if (mnc < min) min = mnc;
+	}
+	
+	var margin = {top: 10, right: 40, bottom: 10, left: 40},
+	width = conditionWidth - margin.left - margin.right,
+	height = 300 - margin.top - margin.bottom;
+
+
+	//$(div).css("width",(conditionWidth * data.length) + "px");
+	
+	var chart = d3.box(cols)
+	.whiskers(iqr(1.5))
+	.width(width)
+	.height(height);
+
+	chart.domain([min, max]);
+	
+	var div = d3.select(div)
+    	.attr("width", conditionWidth * data.length)
+    	.attr("height", height);
+	
+	var svg = div.selectAll("svg")
+	  .data(data)
+	.enter().append("svg")
+	  .attr("class", "box")
+	  .attr("width", width + margin.left + margin.right)
+	  .attr("height", height + margin.bottom + margin.top)
+	.append("g")
+	  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+	  .call(chart);
+}
+
+
+function createBarchart(svg, data, cols){
+
+
+	var conditionWidth = parseInt($(svg).css("width").replace("px","")) / data.length;
+	
+	
+	var derivedData = [];
+	for (var i=0; i<data.length; i++){
+		var av = d3.mean(data[i]);
+		var stde = d3.deviation(data[i]) / Math.sqrt(1.0 * data[i].length);
+		derivedData.push({value : av, stderr : stde});
+	}
+	var barWidth = conditionWidth,
+    height = 200;
+
+	var y = d3.scaleLinear()
+    	.range([height, 0]);
+
+var chart = d3.select(svg)
+    .attr("height", height);
+
+	y.domain([0, d3.max(derivedData, function(d){ return d.value+d.stderr})]);
+
+
+	var bar = chart.selectAll("g")
+      		.data(derivedData)
+      		.enter().append("g")
+      		.attr("transform", function(d, i) { return "translate(" + (i * barWidth) + ",0)"; });
+
+	bar.append("rect")
+      .attr("y", function(d) { return y(d.value); })
+      .attr("x", 10)
+      .attr("height", function(d) { return height - y(d.value); })
+      .attr("fill", function(d,i) {return cols[i];})
+      .attr("stroke","black")
+      .attr("stroke-width", "2")
+      .attr("width", barWidth-20);
+	
+	bar.append("line")
+		.attr("y1", function(d) { return y(d.value-d.stderr);})
+		.attr("y2", function(d) { return y(d.value+d.stderr);})
+		.attr("x1", barWidth/2)
+		.attr("x2", barWidth/2)
+		.attr("stroke-width", "1")
+		.attr("stroke","gray");
+	
+	bar.append("line")
+	.attr("y1", function(d) { return y(d.value-d.stderr);})
+	.attr("y2", function(d) { return y(d.value-d.stderr);})
+	.attr("x1", 0.25*barWidth)
+	.attr("x2", 0.75*barWidth)
+	.attr("stroke-width", "1")
+	.attr("stroke","gray");
+	
+	bar.append("line")
+	.attr("y1", function(d) { return y(d.value+d.stderr);})
+	.attr("y2", function(d) { return y(d.value+d.stderr);})
+	.attr("x1", 0.25*barWidth)
+	.attr("x2", 0.75*barWidth)
+	.attr("stroke-width", "1")
+	.attr("stroke","gray");
+
+	bar.append("text")
+      .attr("x", 12)
+      .attr("y", function(d) { return y(d.value) + 3; })
+      .attr("dy", ".75em")
+      .attr("font-size", "11px")
+      .text(function(d) { return d3.format(",.2f")(d.value); });
+}
+
+
+
+function createHisto(svg, data, cols){
+
+	//create a frequency table
+	var freq = [];
+	for (var i=0; i<data.length; i++){
+		for (var j=0; j<data[i].length; j++){
+			var resp = data[i][j];
+			var cond = i;
+			
+			var f = null;
+			for (var k=0; k<freq.length; k++){
+				if (resp === freq[k].response)
+					f = freq[k];
+			}
+
+			if (f == null){
+				f = {response : resp, conditionFreq : []};
+				for (var l=0; l<data.length; l++) f.conditionFreq.push(0);
+				freq.push(f);
+			}
+			
+			f.conditionFreq[i]++;
+		}
+	}
+	
+	for (var i=0; i<freq.length; i++){
+		var mx = d3.max(freq[i].conditionFreq);
+		freq[i].max = mx;
+	}
+	
+	//sort the frequency table by max over conditionFreq
+	freq.sort(function(a,b){
+		return b.max - a.max;
+	});
+	
+
+    var height = 200;
+    var barWidth = 12;
+    var responseWidth = data.length * barWidth + 10;
+    var width = freq.length * responseWidth;
+    
+   
+    
+	var y = d3.scaleLinear()
+    	.range([height, 15]);
+
+	var chart = d3.select(svg)
+    	.attr("height", height);
+
+	y.domain([0, freq[0].max]);
+
+	var bar = chart.selectAll("g")
+      		.data(freq)
+      		.enter().append("g")
+      		.attr("transform", function(d, i) { return "translate(" + (i * responseWidth) + ",0)"; });
+	
+	
+	for (var i=0; i<data.length; i++){
+		bar.append("rect")
+			.attr("y", function(d) { return d.conditionFreq[i] == 0 ? height-16 : y(d.conditionFreq[i]); })
+			.attr("x", i*barWidth)
+			.attr("fill", cols[i])
+			.attr("height", function(d) { return d.conditionFreq[i] == 0 ? 1 : height - y(d.conditionFreq[i])-15; })
+			.attr("stroke","gray")
+			.attr("stroke-width", "1")
+			.attr("width", barWidth-2);
+		
+		bar.append("text")
+	    .attr("x", i*barWidth + 2)
+	    .attr("y",  function(d) { return d.conditionFreq[i] == 0 ? height-26 : y(d.conditionFreq[i]) + 2; })
+	    .attr("width", responseWidth)
+	    .attr("dy", ".75em")
+	    .attr("font-size", "11px")
+	    .text(function(d) { return d.conditionFreq[i]; });
+	}
+	
+	bar.append("text")
+    .attr("x", 0)
+    .attr("y", height-10)
+    .attr("dy", ".75em")
+    .attr("font-size", "11px")
+    .text(function(d) { return d.response; }).each(function(){wrap(d3.select(this),responseWidth-3);})
+    .append("svg:title")
+    .text(function(d) { return d.response; });
+	
+	//bar.selectAll
+	
+}
+
+function wrap(self, width) {
+    var textLength = self.node().getComputedTextLength(),
+        text = self.text();
+    while (textLength > (width) && text.length > 0) {
+        text = text.slice(0, -1);
+        self.text(text + '...');
+        textLength = self.node().getComputedTextLength();
+    }
+} 
+
+//Returns a function to compute the interquartile range.
+function iqr(k) {
+	return function(d, i) {
+	var q1 = d.quartiles[0],
+	    q3 = d.quartiles[2],
+	    iqr = (q3 - q1) * k,
+	    i = -1,
+	    j = d.length;
+	while (d[++i] < q1 - iqr);
+	while (d[--j] > q3 + iqr);
+	return [i, j];
+	};
+}
+
+
+</script>
+</head>
+<body>
+
+      <span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Responses <input type="checkbox" id="showResponses" checked></input></span> 
+      <span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Accuracy stats <input type="checkbox" id="showAccuracyStats" checked></input></span>
+      <span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Accuracy graphs <input type="checkbox" id="showAccuracyGraphs" checked></input></span>
+      <span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Time stats <input type="checkbox" id="showTimeStats" checked></input></span>
+      <span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Time graphs <input type="checkbox" id="showTimeGraphs" checked></input></span>
+      
+      
+      &nbsp&nbsp<span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Use <select id="graphtype">
+      	<option value="Bar charts" selected>Bar charts</option>
+      	<option value="Box plots">Box plots</option>
+      </select></span>
+      
+      <br><br>
+<div id='charts'>
+</div>
+
+
+
+
+</body>
+</html>

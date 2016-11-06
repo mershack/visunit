@@ -780,3 +780,63 @@ function removeTaskInstanceFile(taskName, datasetName, viewerName, whendone){
         }
     });
 }
+
+function removeViewerFile(viewerName, whendone){
+    var theURL = "../StudySetup?command=removeViewerFile";
+    theURL += "&viewerName=" + viewerName;
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data, status) {
+            whendone(true);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was when removing the viewer file on the server"
+                    + " ___ STATUS: " + status);
+            
+            whendone(false);
+        }
+    });
+}
+
+function removeTestFile(testName, whendone){
+     var theURL = "../StudySetup?command=removeTestFile";
+    theURL += "&testName=" + testName;
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data, status) {
+            whendone(true);
+        },
+        error: function(data, status) {
+            alert("there was when removing the test file on the server"
+                    + " ___ STATUS: " + status);
+            
+            whendone(false);
+        }
+    });
+}
+
+//get the results of the study
+function getResults(studyName){
+    var theURL = "../StudyResults?command=getResults";
+    theURL += "&studyName=" + studyName;
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data, status) {
+            whendone(true);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was when removing the viewer file on the server"
+                    + " ___ STATUS: " + status);
+            
+            whendone(false);
+        }
+    });
+}
