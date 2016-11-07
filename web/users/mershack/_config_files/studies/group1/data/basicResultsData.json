@@ -1,211 +1,572 @@
 {
-	"regular": 
-	  [
-		{
-			"taskName": "selectNodeWithHighestDegree2",
-			"viewer": "group-node-link",
-			"dataset": "receipe_small",
-			"basicData": [
-								{
-									"responses": [
-													{"response": "herring", "accuracy": "1", "time": "10"},
-                                                    {"response": "chive",   "accuracy": "1", "time": "5"},
-                                                    {"response": "jasmine", "accuracy": "1", "time": "5"},
-                                                    {"response": "orange",  "accuracy": "1", "time": "9"},
-													{"response": "gelatin", "accuracy": "1", "time": "6"},
-													{"response": "lettuce", "accuracy": "1", "time": "6"},
-													{"response": "wasabi",  "accuracy": "1", "time": "12"},
-													{"response": "cider",   "accuracy": "1", "time": "5"},
-													{"response": "fennel",  "accuracy": "1", "time": "7"},
-													{"response": "cabbage", "accuracy": "1", "time": "8"}									
-												]
-								},
-								{
-									"responses": [
-													{"response": "herring",  "accuracy": "1", "time": "11"},
-                                                    {"response": "chive",    "accuracy": "1", "time": "9"},
-                                                    {"response": "jasmine",  "accuracy": "1", "time": "14"},
-                                                    {"response": "orange",   "accuracy": "1", "time": "9"},
-													{"response": "gelatin",  "accuracy": "1", "time": "12"},
-													{"response": "red_algae","accuracy": "0", "time": "11"},
-													{"response": "mackerel", "accuracy": "0", "time": "6"},
-													{"response": "red_wine", "accuracy": "0", "time": "15"},
-													{"response": "olive",    "accuracy": "0", "time": "12"},
-													{"response": "cabbage",  "accuracy": "1", "time": "15"}	
-									           ]
-								},
-								{
-									"responses": [
-													{"response": "herring", "accuracy": "1", "time": "12"},
-                                                    {"response": "chive",   "accuracy": "1", "time": "7"},
-                                                    {"response": "jasmine", "accuracy": "1", "time": "8"},
-                                                    {"response": "orange",  "accuracy": "1", "time": "14"},
-													{"response": "gelatin", "accuracy": "1", "time": "4"},
-													{"response": "lettuce", "accuracy": "1", "time": "8"},
-													{"response": "wasabi",  "accuracy": "1", "time": "5"},
-													{"response": "cider",   "accuracy": "1", "time": "5"},
-													{"response": "fennel",  "accuracy": "1", "time": "6"},
-													{"response": "cabbage", "accuracy": "1", "time": "12"}	
-											     ]
-								},
-								{
-									"responses": [
-													{"response": "herring", "accuracy": "1", "time": "15"},
-                                                    {"response": "timedout","accuracy": "0", "time": "15"},
-                                                    {"response": "jasmine", "accuracy": "1", "time": "14"},
-                                                    {"response": "orange",  "accuracy": "1", "time": "11"},
-													{"response": "gelatin", "accuracy": "1", "time": "10"},
-													{"response": "lettuce", "accuracy": "1", "time": "9"},
-													{"response": "wasabi",  "accuracy": "1", "time": "9"},
-													{"response": "cider",   "accuracy": "1", "time": "8"},
-													{"response": "fennel",  "accuracy": "1", "time": "8"},
-													{"response": "cabbage", "accuracy": "1", "time": "7" }													
-									           ]
-								},
-								{
-									"responses": [									
-													{"response": "herring", "accuracy": "1", "time": "12"},
-                                                    {"response": "chive",   "accuracy": "1", "time": "7"},
-                                                    {"response": "jasmine", "accuracy": "1", "time": "13"},
-                                                    {"response": "avocado", "accuracy": "0", "time": "3"},
-													{"response": "peach",   "accuracy": "0", "time": "6"},
-													{"response": "lettuce", "accuracy": "1", "time": "12"},
-													{"response": "wasabi",  "accuracy": "1", "time": "5"},
-													{"response": "red_wine","accuracy": "0", "time": "3"},
-													{"response": "fennel",  "accuracy": "1", "time": "3"},
-													{"response": "hazelnut","accuracy": "0", "time": "3"}												
-												]
-								}
-								
-							]			
-		},
-		{
-			"taskName": "selectAllNeigbhorsOf1Node",
-			"viewer": "group-node-link",
-			"dataset": "receipe_small",
-			"basicData": [
-								{
-									"responses": [
-													{"response": "rice;;pimento;;saffron;;carrot",                "accuracy": "1", "time": "25"},
-													{"response": "coffee;;peppermint;;fig;;malt;;brandy;;cognac", "accuracy": "1", "time": "14"},
-													{"response": "oyster;;soy_sauce;;sesame_oil;;meat",           "accuracy": "1", "time": "13"},
-													{"response": "yam;;leek;;beet;;flower;;pimenta",              "accuracy": "0.6", "time": "25"},
-													{"response": "nectarine;;grape;;raspberry;;melon;;kiwi;;blueberry", "accuracy": "1", "time": "16"},
-													{"response": "butter;;vanilla;;milk;;lard;;yeast",                  "accuracy": "1", "time": "10"},
-													{"response": "mace;;currant;;pear;;lamb;;veal;;cider",        "accuracy": "1", "time": "15"},
-													{"response": "brandy;;yam;;peppermint",       "accuracy": "1", "time": "17"}, 
-													{"response": "rum;;mango",                    "accuracy": "1", "time": "15"}, 
-													{"response": "yam;;cider",                    "accuracy": "1", "time": "12"} 
-									            ] 
-								},
-								{
-									"responses": [
-													{"response":  "rice;;carrot;;saffron;;pimento",     "accuracy": "1", "time": "22"},
-													{"response":  "brandy;;cognac;;malt;;peppermint",   "accuracy": "0.6", "time": "25"},
-													{"response":  "oyster;;soy_sauce;;sesame_oil;;meat","accuracy": "1", "time": "20"},
-													{"response":  "leek;;yam;;beet;;endive;;liver;;corn_grit;;flower",   "accuracy": "0.8", "time": "25"},
-													{"response":  "melon;;kiwi;;blueberry;;raspberry;;grape;;nectarine", "accuracy": "1", "time": "22"},
-													{"response":  "butter;;vanilla;;milk;;lard;;yeast",  "accuracy": "1", "time": "17"},
-													{"response":  "currant;;mace;;pear;;lamb;;smoke",    "accuracy": "0.7", "time": "25"},
-													{"response":  "peppermint;;brandy;;yam",   "accuracy": "1", "time": "15"},
-													{"response":  "mango;;rum",                "accuracy": "1", "time": "14"},
-													{"response":  "yam;;cider",                "accuracy": "1", "time": "14"}
-									            ] 
-								},
-								{
-									"responses": [
-									
-													{"response":  "pimento;;saffron;;carrot;;rice", "accuracy": "1", "time": "21"},
-													{"response":  "timedout", 			    "accuracy": "0", "time": "25"},
-													{"response":  "meat;;soy_sauce;;oyster", "accuracy": "0.6", "time": "10"},
-													{"response":  "beet;;yam;;endive;;liver;;lentil",   "accuracy": "0.6", "time": "12"},
-													{"response":  "raspberry;;grape;;nectarine;;kiwi",  "accuracy": "0.5", "time": "15"},
-													{"response":  "yeast;;lard;;milk;;vanilla;;butter", "accuracy": "1", "time": "12"},
-													{"response":  "mace;;currant;;cider;;veal;;pear",   "accuracy": "1", "time": "13"},
-													{"response":  "peppermint;;yam;;brandy",      "accuracy": "1", "time": "13"},
-													{"response":  "mango;;rum",                   "accuracy": "1", "time": "9"},
-													{"response":  "yam;;cider",                   "accuracy": "1", "time": "13"}
-									           ] 
-								},
-								{
-									"responses": [
-													{"response":  "rice;;carrot",    "accuracy": "0.5", "time": "25"},
-													{"response":  "coffee;;peppermint;;malt;;cognac;;brandy", "accuracy": "0.8", "time": "22"},
-													{"response":  "oyster;;soy_sauce;;sesame_oil;;meat",      "accuracy": "1", "time": "16"},
-													{"response":  "lentil;;flower;;yam;;beet;;liver",         "accuracy": "0.8", "time": "22"},
-													{"response":  "blueberry;;grape;;raspberry;;melon;;nectarine", "accuracy": "0.8", "time": "25"},
-													{"response":  "vanilla;;butter;;milk;;lard;;yeast", "accuracy": "1", "time": "15"},
-													{"response":  "pear;;mace;;lamb;;veal;;cider",      "accuracy": "0.8", "time": "20"},
-													{"response":  "brandy;;yam",  "accuracy": "0.6", "time": "11"},
-													{"response":  "mango;;rum",   "accuracy": "1", "time": "19"},
-													{"response":  "yam;;cider",   "accuracy": "1", "time": "14"}
-									
-									           ]
-								},
-								{
-									"responses": [
-													{"response":  "vinegar", "accuracy": "0", "time": "25"},
-													{"response":  "timedout", "accuracy": "0", "time": "25"},
-													{"response":  "oyster;;soy_sauce;;sesame_oil", "accuracy": "0.8", "time": "21"},
-													{"response":  "lentil", "accuracy": "0.2", "time": "24"},
-													{"response":  "melon;;raspberry", "accuracy": "0.3", "time": "17"},
-													{"response":  "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "25"},
-													{"response":  "timedout", "accuracy": "0", "time": "25"},
-													{"response":  "yam;;lemongrass", "accuracy": "0.5", "time": "16"},
-													{"response":  "rum", "accuracy": "0.5", "time": "16"},
-													{"response":  "yam;;potato", "accuracy": "0.5", "time": "23"}
-									            ] 
-								}
-								
-							]
-			
-		}
-     ],
-	"entry": 
-	  [
-		{  
-			"taskName": "age",
-			"basicData": [
-                    			{"response": "18"},
-								{"response": "15"},
-								{"response": "30"},
-								{"response": "16"},
-								{"response": "19"}								
-						]
-		}
-	  ],
-	  
-	"exit":
-	  [
-		{
-			"taskName": "rateExperience",
-			"basicData": [
-							{"response": "5"},
-							{"response": "4"},
-							{"response": "3"},
-							{"response": "4"},
-							{"response": "5"}							
-						 ]
-		}		
-	  ],
-	"standardized": 
-	  [
-		{			
-			"taskName": "color_test",
-			"basicData": [
-							{"response": "12,29,3,14,27,6,19,13", "accuracy": "0.3"}, 
-							{"response": "3,12,23,7,74,45,42,73", "accuracy": "0"},
-							{"response": "12,29,3,74,45,7,73,42", "accuracy": "1"},
-							{"response": "12,29,3,74,45,7,73,42", "accuracy": "1"},	
-							{"response": "12,29,3,74,4,7,73,42", "accuracy": "1"}												
-						]
-		}
-	  ]	
+	"results": 
+
+[
+    {
+        "taskName": "participantAge",
+        "responseType": "numeric",
+        "taskType": "entry",
+        "viewer": "na",
+        "dataset": "na",
+        "basicData": [
+            {
+                "responses": [
+                    {"response": "25"}
+
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "30"}
+
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "28"}
+
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "20"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "40"}
+                ]
+            }
+
+        ]
+    },
+    {
+        "taskName": "selectNodeWithHighestDegree2",
+        "responseType": "string",
+        "taskType": "task",
+        "viewer": "group-node-link",
+        "dataset": "receipe_small",
+        "basicData": [
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "10"},
+                    {"response": "chive", "accuracy": "1", "time": "5"},
+                    {"response": "jasmine", "accuracy": "1", "time": "5"},
+                    {"response": "orange", "accuracy": "1", "time": "9"},
+                    {"response": "gelatin", "accuracy": "1", "time": "6"},
+                    {"response": "lettuce", "accuracy": "1", "time": "6"},
+                    {"response": "wasabi", "accuracy": "1", "time": "12"},
+                    {"response": "cider", "accuracy": "1", "time": "5"},
+                    {"response": "fennel", "accuracy": "1", "time": "7"},
+                    {"response": "cabbage", "accuracy": "1", "time": "8"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "11"},
+                    {"response": "chive", "accuracy": "1", "time": "9"},
+                    {"response": "jasmine", "accuracy": "1", "time": "14"},
+                    {"response": "orange", "accuracy": "1", "time": "9"},
+                    {"response": "gelatin", "accuracy": "1", "time": "12"},
+                    {"response": "red_algae", "accuracy": "0", "time": "11"},
+                    {"response": "mackerel", "accuracy": "0", "time": "6"},
+                    {"response": "red_wine", "accuracy": "0", "time": "15"},
+                    {"response": "olive", "accuracy": "0", "time": "12"},
+                    {"response": "cabbage", "accuracy": "1", "time": "15"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "12"},
+                    {"response": "chive", "accuracy": "1", "time": "7"},
+                    {"response": "jasmine", "accuracy": "1", "time": "8"},
+                    {"response": "orange", "accuracy": "1", "time": "14"},
+                    {"response": "gelatin", "accuracy": "1", "time": "4"},
+                    {"response": "lettuce", "accuracy": "1", "time": "8"},
+                    {"response": "wasabi", "accuracy": "1", "time": "5"},
+                    {"response": "cider", "accuracy": "1", "time": "5"},
+                    {"response": "fennel", "accuracy": "1", "time": "6"},
+                    {"response": "cabbage", "accuracy": "1", "time": "12"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "15"},
+                    {"response": "timedout", "accuracy": "0", "time": "15"},
+                    {"response": "jasmine", "accuracy": "1", "time": "14"},
+                    {"response": "orange", "accuracy": "1", "time": "11"},
+                    {"response": "gelatin", "accuracy": "1", "time": "10"},
+                    {"response": "lettuce", "accuracy": "1", "time": "9"},
+                    {"response": "wasabi", "accuracy": "1", "time": "9"},
+                    {"response": "cider", "accuracy": "1", "time": "8"},
+                    {"response": "fennel", "accuracy": "1", "time": "8"},
+                    {"response": "cabbage", "accuracy": "1", "time": "7"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "12"},
+                    {"response": "chive", "accuracy": "1", "time": "7"},
+                    {"response": "jasmine", "accuracy": "1", "time": "13"},
+                    {"response": "avocado", "accuracy": "0", "time": "3"},
+                    {"response": "peach", "accuracy": "0", "time": "6"},
+                    {"response": "lettuce", "accuracy": "1", "time": "12"},
+                    {"response": "wasabi", "accuracy": "1", "time": "5"},
+                    {"response": "red_wine", "accuracy": "0", "time": "3"},
+                    {"response": "fennel", "accuracy": "1", "time": "3"},
+                    {"response": "hazelnut", "accuracy": "0", "time": "3"}
+                ]
+            }
+
+        ]
+    },
+    {
+        "taskName": "selectAllNeigbhorsOf1Node",
+        "responseType": "string",
+        "taskType": "task",
+        "viewer": "group-node-link",
+        "dataset": "receipe_small",
+        "basicData": [
+            {
+                "responses": [
+                    {"response": "rice;;pimento;;saffron;;carrot", "accuracy": "1", "time": "25"},
+                    {"response": "coffee;;peppermint;;fig;;malt;;brandy;;cognac", "accuracy": "1", "time": "14"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1", "time": "13"},
+                    {"response": "yam;;leek;;beet;;flower;;pimenta", "accuracy": "0.6", "time": "25"},
+                    {"response": "nectarine;;grape;;raspberry;;melon;;kiwi;;blueberry", "accuracy": "1", "time": "16"},
+                    {"response": "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "10"},
+                    {"response": "mace;;currant;;pear;;lamb;;veal;;cider", "accuracy": "1", "time": "15"},
+                    {"response": "brandy;;yam;;peppermint", "accuracy": "1", "time": "17"},
+                    {"response": "rum;;mango", "accuracy": "1", "time": "15"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "12"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "rice;;carrot;;saffron;;pimento", "accuracy": "1", "time": "22"},
+                    {"response": "brandy;;cognac;;malt;;peppermint", "accuracy": "0.6", "time": "25"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1", "time": "20"},
+                    {"response": "leek;;yam;;beet;;endive;;liver;;corn_grit;;flower", "accuracy": "0.8", "time": "25"},
+                    {"response": "melon;;kiwi;;blueberry;;raspberry;;grape;;nectarine", "accuracy": "1", "time": "22"},
+                    {"response": "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "17"},
+                    {"response": "currant;;mace;;pear;;lamb;;smoke", "accuracy": "0.7", "time": "25"},
+                    {"response": "peppermint;;brandy;;yam", "accuracy": "1", "time": "15"},
+                    {"response": "mango;;rum", "accuracy": "1", "time": "14"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "14"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "pimento;;saffron;;carrot;;rice", "accuracy": "1", "time": "21"},
+                    {"response": "timedout", "accuracy": "0", "time": "25"},
+                    {"response": "meat;;soy_sauce;;oyster", "accuracy": "0.6", "time": "10"},
+                    {"response": "beet;;yam;;endive;;liver;;lentil", "accuracy": "0.6", "time": "12"},
+                    {"response": "raspberry;;grape;;nectarine;;kiwi", "accuracy": "0.5", "time": "15"},
+                    {"response": "yeast;;lard;;milk;;vanilla;;butter", "accuracy": "1", "time": "12"},
+                    {"response": "mace;;currant;;cider;;veal;;pear", "accuracy": "1", "time": "13"},
+                    {"response": "peppermint;;yam;;brandy", "accuracy": "1", "time": "13"},
+                    {"response": "mango;;rum", "accuracy": "1", "time": "9"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "13"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "rice;;carrot", "accuracy": "0.5", "time": "25"},
+                    {"response": "coffee;;peppermint;;malt;;cognac;;brandy", "accuracy": "0.8", "time": "22"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1", "time": "16"},
+                    {"response": "lentil;;flower;;yam;;beet;;liver", "accuracy": "0.8", "time": "22"},
+                    {"response": "blueberry;;grape;;raspberry;;melon;;nectarine", "accuracy": "0.8", "time": "25"},
+                    {"response": "vanilla;;butter;;milk;;lard;;yeast", "accuracy": "1", "time": "15"},
+                    {"response": "pear;;mace;;lamb;;veal;;cider", "accuracy": "0.8", "time": "20"},
+                    {"response": "brandy;;yam", "accuracy": "0.6", "time": "11"},
+                    {"response": "mango;;rum", "accuracy": "1", "time": "19"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "14"}
+
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "vinegar", "accuracy": "0", "time": "25"},
+                    {"response": "timedout", "accuracy": "0", "time": "25"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil", "accuracy": "0.8", "time": "21"},
+                    {"response": "lentil", "accuracy": "0.2", "time": "24"},
+                    {"response": "melon;;raspberry", "accuracy": "0.3", "time": "17"},
+                    {"response": "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "25"},
+                    {"response": "timedout", "accuracy": "0", "time": "25"},
+                    {"response": "yam;;lemongrass", "accuracy": "0.5", "time": "16"},
+                    {"response": "rum", "accuracy": "0.5", "time": "16"},
+                    {"response": "yam;;potato", "accuracy": "0.5", "time": "23"}
+                ]
+            }
+
+        ]
+
+    },
+    {
+        "taskName": "selectNodeWithHighestDegree2",
+        "responseType": "string",
+        "taskType": "task",
+        "viewer": "adjency",
+        "dataset": "receipe_small",
+        "basicData": [
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "10"},
+                    {"response": "chive", "accuracy": "1", "time": "5"},
+                    {"response": "jasmine", "accuracy": "1", "time": "5"},
+                    {"response": "orange", "accuracy": "1", "time": "9"},
+                    {"response": "gelatin", "accuracy": "1", "time": "6"},
+                    {"response": "lettuce", "accuracy": "1", "time": "6"},
+                    {"response": "wasabi", "accuracy": "1", "time": "12"},
+                    {"response": "cider", "accuracy": "1", "time": "5"},
+                    {"response": "fennel", "accuracy": "1", "time": "7"},
+                    {"response": "cabbage", "accuracy": "1", "time": "8"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "11"},
+                    {"response": "chive", "accuracy": "1", "time": "9"},
+                    {"response": "jasmine", "accuracy": "1", "time": "14"},
+                    {"response": "orange", "accuracy": "1", "time": "9"},
+                    {"response": "gelatin", "accuracy": "1", "time": "12"},
+                    {"response": "red_algae", "accuracy": "0", "time": "11"},
+                    {"response": "mackerel", "accuracy": "0", "time": "6"},
+                    {"response": "red_wine", "accuracy": "0", "time": "15"},
+                    {"response": "olive", "accuracy": "0", "time": "12"},
+                    {"response": "cabbage", "accuracy": "1", "time": "15"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "12"},
+                    {"response": "chive", "accuracy": "1", "time": "7"},
+                    {"response": "jasmine", "accuracy": "1", "time": "8"},
+                    {"response": "orange", "accuracy": "1", "time": "14"},
+                    {"response": "gelatin", "accuracy": "1", "time": "4"},
+                    {"response": "lettuce", "accuracy": "1", "time": "8"},
+                    {"response": "wasabi", "accuracy": "1", "time": "5"},
+                    {"response": "cider", "accuracy": "1", "time": "5"},
+                    {"response": "fennel", "accuracy": "1", "time": "6"},
+                    {"response": "cabbage", "accuracy": "1", "time": "12"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "15"},
+                    {"response": "timedout", "accuracy": "0", "time": "15"},
+                    {"response": "jasmine", "accuracy": "1", "time": "14"},
+                    {"response": "orange", "accuracy": "1", "time": "11"},
+                    {"response": "gelatin", "accuracy": "1", "time": "10"},
+                    {"response": "lettuce", "accuracy": "1", "time": "9"},
+                    {"response": "wasabi", "accuracy": "1", "time": "9"},
+                    {"response": "cider", "accuracy": "1", "time": "8"},
+                    {"response": "fennel", "accuracy": "1", "time": "8"},
+                    {"response": "cabbage", "accuracy": "1", "time": "7"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "12"},
+                    {"response": "chive", "accuracy": "1", "time": "7"},
+                    {"response": "jasmine", "accuracy": "1", "time": "13"},
+                    {"response": "avocado", "accuracy": "0", "time": "3"},
+                    {"response": "peach", "accuracy": "0", "time": "6"},
+                    {"response": "lettuce", "accuracy": "1", "time": "12"},
+                    {"response": "wasabi", "accuracy": "1", "time": "5"},
+                    {"response": "red_wine", "accuracy": "0", "time": "3"},
+                    {"response": "fennel", "accuracy": "1", "time": "3"},
+                    {"response": "hazelnut", "accuracy": "0", "time": "3"}
+                ]
+            }
+
+        ]
+    },
+    {
+        "taskName": "selectAllNeigbhorsOf1Node",
+        "responseType": "string",
+        "taskType": "task",
+        "viewer": "adjency",
+        "dataset": "receipe_small",
+        "basicData": [
+            {
+                "responses": [
+                    {"response": "rice;;pimento;;saffron;;carrot", "accuracy": "1", "time": "25"},
+                    {"response": "coffee;;peppermint;;fig;;malt;;brandy;;cognac", "accuracy": "1", "time": "14"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1", "time": "13"},
+                    {"response": "yam;;leek;;beet;;flower;;pimenta", "accuracy": "0.6", "time": "25"},
+                    {"response": "nectarine;;grape;;raspberry;;melon;;kiwi;;blueberry", "accuracy": "1", "time": "16"},
+                    {"response": "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "10"},
+                    {"response": "mace;;currant;;pear;;lamb;;veal;;cider", "accuracy": "1", "time": "15"},
+                    {"response": "brandy;;yam;;peppermint", "accuracy": "1", "time": "17"},
+                    {"response": "rum;;mango", "accuracy": "1", "time": "15"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "12"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "rice;;carrot;;saffron;;pimento", "accuracy": "1", "time": "22"},
+                    {"response": "brandy;;cognac;;malt;;peppermint", "accuracy": "0.6", "time": "25"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1", "time": "20"},
+                    {"response": "leek;;yam;;beet;;endive;;liver;;corn_grit;;flower", "accuracy": "0.8", "time": "25"},
+                    {"response": "melon;;kiwi;;blueberry;;raspberry;;grape;;nectarine", "accuracy": "1", "time": "22"},
+                    {"response": "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "17"},
+                    {"response": "currant;;mace;;pear;;lamb;;smoke", "accuracy": "0.7", "time": "25"},
+                    {"response": "peppermint;;brandy;;yam", "accuracy": "1", "time": "15"},
+                    {"response": "mango;;rum", "accuracy": "1", "time": "14"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "14"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "pimento;;saffron;;carrot;;rice", "accuracy": "1", "time": "21"},
+                    {"response": "timedout", "accuracy": "0", "time": "25"},
+                    {"response": "meat;;soy_sauce;;oyster", "accuracy": "0.6", "time": "10"},
+                    {"response": "beet;;yam;;endive;;liver;;lentil", "accuracy": "0.6", "time": "12"},
+                    {"response": "raspberry;;grape;;nectarine;;kiwi", "accuracy": "0.5", "time": "15"},
+                    {"response": "yeast;;lard;;milk;;vanilla;;butter", "accuracy": "1", "time": "12"},
+                    {"response": "mace;;currant;;cider;;veal;;pear", "accuracy": "1", "time": "13"},
+                    {"response": "peppermint;;yam;;brandy", "accuracy": "1", "time": "13"},
+                    {"response": "mango;;rum", "accuracy": "1", "time": "9"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "13"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "rice;;carrot", "accuracy": "0.5", "time": "25"},
+                    {"response": "coffee;;peppermint;;malt;;cognac;;brandy", "accuracy": "0.8", "time": "22"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1", "time": "16"},
+                    {"response": "lentil;;flower;;yam;;beet;;liver", "accuracy": "0.8", "time": "22"},
+                    {"response": "blueberry;;grape;;raspberry;;melon;;nectarine", "accuracy": "0.8", "time": "25"},
+                    {"response": "vanilla;;butter;;milk;;lard;;yeast", "accuracy": "1", "time": "15"},
+                    {"response": "pear;;mace;;lamb;;veal;;cider", "accuracy": "0.8", "time": "20"},
+                    {"response": "brandy;;yam", "accuracy": "0.6", "time": "11"},
+                    {"response": "mango;;rum", "accuracy": "1", "time": "19"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "14"}
+
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "vinegar", "accuracy": "0", "time": "25"},
+                    {"response": "timedout", "accuracy": "0", "time": "25"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil", "accuracy": "0.8", "time": "21"},
+                    {"response": "lentil", "accuracy": "0.2", "time": "24"},
+                    {"response": "melon;;raspberry", "accuracy": "0.3", "time": "17"},
+                    {"response": "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "25"},
+                    {"response": "timedout", "accuracy": "0", "time": "25"},
+                    {"response": "yam;;lemongrass", "accuracy": "0.5", "time": "16"},
+                    {"response": "rum", "accuracy": "0.5", "time": "16"},
+                    {"response": "yam;;potato", "accuracy": "0.5", "time": "23"}
+                ]
+            }
+
+        ]
+
+    },
+    {
+        "taskName": "selectNodeWithHighestDegree2",
+        "responseType": "string",
+        "taskType": "task",
+        "viewer": "thirdviewerr",
+        "dataset": "receipe_small",
+        "basicData": [
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "10"},
+                    {"response": "chive", "accuracy": "1", "time": "5"},
+                    {"response": "jasmine", "accuracy": "1", "time": "5"},
+                    {"response": "orange", "accuracy": "1", "time": "9"},
+                    {"response": "gelatin", "accuracy": "1", "time": "6"},
+                    {"response": "lettuce", "accuracy": "1", "time": "6"},
+                    {"response": "wasabi", "accuracy": "1", "time": "12"},
+                    {"response": "cider", "accuracy": "1", "time": "5"},
+                    {"response": "fennel", "accuracy": "1", "time": "7"},
+                    {"response": "cabbage", "accuracy": "1", "time": "8"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "11"},
+                    {"response": "chive", "accuracy": "1", "time": "9"},
+                    {"response": "jasmine", "accuracy": "1", "time": "14"},
+                    {"response": "orange", "accuracy": "1", "time": "9"},
+                    {"response": "gelatin", "accuracy": "1", "time": "12"},
+                    {"response": "red_algae", "accuracy": "0", "time": "11"},
+                    {"response": "mackerel", "accuracy": "0", "time": "6"},
+                    {"response": "red_wine", "accuracy": "0", "time": "15"},
+                    {"response": "olive", "accuracy": "0", "time": "12"},
+                    {"response": "cabbage", "accuracy": "1", "time": "15"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "12"},
+                    {"response": "chive", "accuracy": "1", "time": "7"},
+                    {"response": "jasmine", "accuracy": "1", "time": "8"},
+                    {"response": "orange", "accuracy": "1", "time": "14"},
+                    {"response": "gelatin", "accuracy": "1", "time": "4"},
+                    {"response": "lettuce", "accuracy": "1", "time": "8"},
+                    {"response": "wasabi", "accuracy": "1", "time": "5"},
+                    {"response": "cider", "accuracy": "1", "time": "5"},
+                    {"response": "fennel", "accuracy": "1", "time": "6"},
+                    {"response": "cabbage", "accuracy": "1", "time": "12"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "15"},
+                    {"response": "timedout", "accuracy": "0", "time": "15"},
+                    {"response": "jasmine", "accuracy": "1", "time": "14"},
+                    {"response": "orange", "accuracy": "1", "time": "11"},
+                    {"response": "gelatin", "accuracy": "1", "time": "10"},
+                    {"response": "lettuce", "accuracy": "1", "time": "9"},
+                    {"response": "wasabi", "accuracy": "1", "time": "9"},
+                    {"response": "cider", "accuracy": "1", "time": "8"},
+                    {"response": "fennel", "accuracy": "1", "time": "8"},
+                    {"response": "cabbage", "accuracy": "1", "time": "7"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "herring", "accuracy": "1", "time": "12"},
+                    {"response": "chive", "accuracy": "1", "time": "7"},
+                    {"response": "jasmine", "accuracy": "1", "time": "13"},
+                    {"response": "avocado", "accuracy": "0", "time": "3"},
+                    {"response": "peach", "accuracy": "0", "time": "6"},
+                    {"response": "lettuce", "accuracy": "1", "time": "12"},
+                    {"response": "wasabi", "accuracy": "1", "time": "5"},
+                    {"response": "red_wine", "accuracy": "0", "time": "3"},
+                    {"response": "fennel", "accuracy": "1", "time": "3"},
+                    {"response": "hazelnut", "accuracy": "0", "time": "3"}
+                ]
+            }
+
+        ]
+    },
+    {
+        "taskName": "selectAllNeigbhorsOf1Node",
+        "responseType": "string",
+        "taskType": "task",
+        "viewer": "thirdviewerr",
+        "dataset": "receipe_small",
+        "basicData": [
+            {
+                "responses": [
+                    {"response": "rice;;pimento;;saffron;;carrot", "accuracy": "1", "time": "25"},
+                    {"response": "coffee;;peppermint;;fig;;malt;;brandy;;cognac", "accuracy": "1", "time": "14"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1", "time": "13"},
+                    {"response": "yam;;leek;;beet;;flower;;pimenta", "accuracy": "0.6", "time": "25"},
+                    {"response": "nectarine;;grape;;raspberry;;melon;;kiwi;;blueberry", "accuracy": "1", "time": "16"},
+                    {"response": "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "10"},
+                    {"response": "mace;;currant;;pear;;lamb;;veal;;cider", "accuracy": "1", "time": "15"},
+                    {"response": "brandy;;yam;;peppermint", "accuracy": "1", "time": "17"},
+                    {"response": "rum;;mango", "accuracy": "1", "time": "15"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "12"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "rice;;carrot;;saffron;;pimento", "accuracy": "1", "time": "22"},
+                    {"response": "brandy;;cognac;;malt;;peppermint", "accuracy": "0.6", "time": "25"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1", "time": "20"},
+                    {"response": "leek;;yam;;beet;;endive;;liver;;corn_grit;;flower", "accuracy": "0.8", "time": "25"},
+                    {"response": "melon;;kiwi;;blueberry;;raspberry;;grape;;nectarine", "accuracy": "1", "time": "22"},
+                    {"response": "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "17"},
+                    {"response": "currant;;mace;;pear;;lamb;;smoke", "accuracy": "0.7", "time": "25"},
+                    {"response": "peppermint;;brandy;;yam", "accuracy": "1", "time": "15"},
+                    {"response": "mango;;rum", "accuracy": "1", "time": "14"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "14"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "pimento;;saffron;;carrot;;rice", "accuracy": "1", "time": "21"},
+                    {"response": "timedout", "accuracy": "0", "time": "25"},
+                    {"response": "meat;;soy_sauce;;oyster", "accuracy": "0.6", "time": "10"},
+                    {"response": "beet;;yam;;endive;;liver;;lentil", "accuracy": "0.6", "time": "12"},
+                    {"response": "raspberry;;grape;;nectarine;;kiwi", "accuracy": "0.5", "time": "15"},
+                    {"response": "yeast;;lard;;milk;;vanilla;;butter", "accuracy": "1", "time": "12"},
+                    {"response": "mace;;currant;;cider;;veal;;pear", "accuracy": "1", "time": "13"},
+                    {"response": "peppermint;;yam;;brandy", "accuracy": "1", "time": "13"},
+                    {"response": "mango;;rum", "accuracy": "1", "time": "9"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "13"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "rice;;carrot", "accuracy": "0.5", "time": "25"},
+                    {"response": "coffee;;peppermint;;malt;;cognac;;brandy", "accuracy": "0.8", "time": "22"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil;;meat", "accuracy": "1", "time": "16"},
+                    {"response": "lentil;;flower;;yam;;beet;;liver", "accuracy": "0.8", "time": "22"},
+                    {"response": "blueberry;;grape;;raspberry;;melon;;nectarine", "accuracy": "0.8", "time": "25"},
+                    {"response": "vanilla;;butter;;milk;;lard;;yeast", "accuracy": "1", "time": "15"},
+                    {"response": "pear;;mace;;lamb;;veal;;cider", "accuracy": "0.8", "time": "20"},
+                    {"response": "brandy;;yam", "accuracy": "0.6", "time": "11"},
+                    {"response": "mango;;rum", "accuracy": "1", "time": "19"},
+                    {"response": "yam;;cider", "accuracy": "1", "time": "14"}
+
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "vinegar", "accuracy": "0", "time": "25"},
+                    {"response": "timedout", "accuracy": "0", "time": "25"},
+                    {"response": "oyster;;soy_sauce;;sesame_oil", "accuracy": "0.8", "time": "21"},
+                    {"response": "lentil", "accuracy": "0.2", "time": "24"},
+                    {"response": "melon;;raspberry", "accuracy": "0.3", "time": "17"},
+                    {"response": "butter;;vanilla;;milk;;lard;;yeast", "accuracy": "1", "time": "25"},
+                    {"response": "timedout", "accuracy": "0", "time": "25"},
+                    {"response": "yam;;lemongrass", "accuracy": "0.5", "time": "16"},
+                    {"response": "rum", "accuracy": "0.5", "time": "16"},
+                    {"response": "yam;;potato", "accuracy": "0.5", "time": "23"}
+                ]
+            }
+
+        ]
+
+    },
+    {
+        "taskName": "preferance",
+        "responseType": "string",
+        "taskType": "exit",
+        "viewer": "na",
+        "dataset": "na",
+        "basicData": [
+            {
+                "responses": [
+                    {"response": "first"}
+
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "second"}
+
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "second"}
+
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "second"}
+                ]
+            },
+            {
+                "responses": [
+                    {"response": "first"}
+                ]
+            }
+
+        ]
+    }
+]
+
 }
-
-
-
-
 
 
 

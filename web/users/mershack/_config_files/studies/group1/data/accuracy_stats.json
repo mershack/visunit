@@ -1,0 +1,70 @@
+[
+	{
+		"taskName": "selectNodeWithHighestDegree2",
+		"normality": [
+					{
+						"viewer" : "viewer 1",
+						"dataset" : "dataset 1",
+						"test" : "shapiro-wilk",
+						"p" : "0.81"
+					},
+					{
+						"viewer" : "viewer 2",
+						"dataset" : "dataset 2",
+						"test" : "shapiro-wilk",
+						"p" : "0.01"
+					}
+				],
+		"comparative": {
+					"test" : "wilcoxon rank sum",
+					"outputs" : [0.04, 0.5, 50]
+				},
+		"posthoc" : {
+				"test" : "Mann-Whitney w. Bonferoni",
+				"results" : 
+				[
+					{
+					"viewer1" : "viewer 1",
+					"dataset1" : "dataset 1",
+					"viewer2" : "viewer 2",
+					"dataset2" : "dataset 2",
+					 "outputs" : [0.01, 50, 0.5]
+					}
+				]
+			}
+	},
+	{
+		"taskName" : "selectAllNeigbhorsOf1Node",
+		"normality": [
+					{
+						"test" : "shapiro-wilk",
+						"viewer" : "viewer 1",					
+						"dataset" : "dataset 1",						
+						"p" : "0.81"
+					},
+					{	
+						"test" : "shapiro-wilk",
+						"viewer" : "viewer 1",
+						"dataset" : "dataset 1",						
+						"p" : "0.01"
+					}
+				],
+		"comparative": {
+					"test" : "welch two sample t-test",
+					"outputs" : [0.04, 0.5, 50, 10]
+				},
+		"posthoc" : {
+				"test" : "Mann-Whitney w. Bonferoni",
+				"results" :
+				[
+					{
+					"viewer1" : "viewer 1",
+					"dataset1" : "dataset 1",
+					"viewer2" : "viewer 2",
+					"dataset2" : "dataset 2",
+					 "outputs" : [0.01, 0.5, 50]
+					}
+				]
+			}
+	}
+]

@@ -11,7 +11,10 @@ package userstudy;
  * @author Mershack
  */
 public class RegularResult {
+    
     private String taskName;
+    private String responseType;
+    private String taskType;
     private String viewer;
     private String dataset;
     private BasicResponse[] basicData;
@@ -35,6 +38,22 @@ public class RegularResult {
         this.taskName = taskName;
     }
 
+    public String getResponseType() {
+        return responseType;
+    }
+
+    public void setResponseType(String responseType) {
+        this.responseType = responseType;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+    
     public String getViewer() {
         return viewer;
     }

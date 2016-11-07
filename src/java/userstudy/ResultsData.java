@@ -12,24 +12,24 @@ package userstudy;
  */
 public class ResultsData {
     
-    private RegularResult[] regular;
-    private EntryExitResult[] entry;
+    private RegularResult[] results;
+   /* private EntryExitResult[] entry;
     private EntryExitResult[] exit;
-    private StandardizedTestResult[]  standardized; 
+    private StandardizedTestResult[]  standardized;   */
     
     public ResultsData(){
        
     }
 
-    public RegularResult[] getRegular() {
-        return regular;
+    public RegularResult[] getResults() {
+        return results;
     }
 
-    public void setRegular(RegularResult[] regular) {
-        this.regular = regular;
+    public void setResults(RegularResult[] results) {
+        this.results = results;
     }
 
-    public EntryExitResult[] getEntry() {
+   /* public EntryExitResult[] getEntry() {
         return entry;
     }
 
@@ -52,6 +52,7 @@ public class ResultsData {
     public void setStandardized(StandardizedTestResult[] standardized) {
         this.standardized = standardized;
     }    
+    */
 }
 
 

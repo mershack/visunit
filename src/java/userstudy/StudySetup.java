@@ -133,6 +133,9 @@ public class StudySetup extends HttpServlet {
                 PrintWriter out2 = response.getWriter();
 
                 out2.print(jsonOfAllStudies);
+                
+                //save the sesssion id 
+                session.setAttribute("userid", userid);
 
             } else if (command.equalsIgnoreCase("loadDirectories")) {
                 /*We will load all the directories of the user, and return a JSON
@@ -1095,8 +1098,8 @@ public class StudySetup extends HttpServlet {
                 br = new BufferedReader(reader);
                 ResultsData resultsObj = gson.fromJson(br, ResultsData.class);
 
-                if (resultsObj.getRegular().length > 0) {
-                    resultsCount = resultsObj.getRegular()[0].getBasicData().length;
+                if (resultsObj.getResults().length > 0) {
+                    resultsCount = resultsObj.getResults()[0].getBasicData().length;
                 }
                 br.close();
             }

@@ -1,811 +1,145 @@
-/**
- * This function makes a request to the setup servlet to display the demo page.
- * @returns {undefined}
- */
-var uploadedHtmls = [];
-var answers = []; //an array to hold answers of task instances
-var taskInstances = []; //
-var taskAnswerType = "";
-var taskInstancesCounter = 1;
-var inputs = [];
-var inputSize = 0;
+var viewerDatasetInterval;
 var inputsCnt = 0;
-var inputMedium = "";
-var answerMedium = "";
-var currentInput = "";
-var dynamicOptionsArr = [];
+var task;
+var instanceInputs = [];
+var instanceOptions = [];
+var instanceAnswers = [];
+var taskInstancesInputs = []; //
+
+var taskInstancesCounter = 1;
+var taskName;
+var dataName;
+var viewerName;
+
+function createTasksInstancesManually() {
+    //first remove the div.
+    taskName = $("#taskinstanceform_availabletasks").val();
+    dataName = $("#taskinstanceform_availabledatasets").val();
+    viewerName = $("#taskinstanceform_availableviewers").val();
+
+
+
+    getViewerDatasetTask(viewerName, dataName, taskName, function(success, data) {
+        var viewer = data.viewer;
+        task = data.task;
+        var dataset = data.dataset;
+
+        var ts_viewerDiv = document.getElementById("taskInstanceViewerFrameDiv");
+        removeDivChildren(ts_viewerDiv);
+
+        var myframe = document.createElement("iframe");
+        myframe.setAttribute("id", "taskInstanceViewerFrame");
+        myframe.setAttribute("src", viewer.url); //NB: the .. is because of temporal_interface
+        ts_viewerDiv.appendChild(myframe);
+
+        //now set the dataset.
+        viewerDatasetInterval = setInterval(function() {
+            setFrameDataset(dataset.url);
+        }, 200);
+
+        //set the task question
+        setTheTaskQuestion();
+        //create the input type and descriptions
+        setInputTypeAndInputDescriptions(task);
+        //setupAnswerControllers also
+//        var answersDiv = document.getElementById("answersDiv");
+//        var labelText = "Provide Correct Answer: ";
+//        setUpAnswerControllers(task.answer, answersDiv, labelText);
+    });
+
+    getCountOfTaskInstanceData(taskName, viewerName, dataName, function(data) {
+        //set the taskInstance Counter  (add 1 to the existing count).
+        //taskInstancesCounter = parseInt(data.count) + 1;
+        //var tnum = document.getElementById("taskInstanceNumber");
+        //tnum.innerHTML = taskInstancesCounter;
+    });
+
+    //$("#taskinstanceform_taskcreator").html('Your task instance generating html');
+    $("#taskinstanceform_taskcreator").show();
 
-var allOptionsArr = [];
 
-var allOptions = "";
-var optionsAnswer = "";
-
-var doesTaskHaveCorrectAnswer = "";
-
-
-function preparePage() {
-    var div = document.getElementById("qnDiv");
-    // loadTasks(div, "Task Type");
-
-    loadTasks(div, "label", "1", "taskType");
-
-
-    loadDatasets("1");
-    getExistingDirectoryNamesAndHTMLFilenames();
-
-    //getNewTempName();
-}
-
-
-//function to get the new temp name
-/*function getNewTempName() {
-
-    var command = "getTempName";
-    var url = "TaskInstancesCreator?command=" + command;
-    var xmlHttpRequest = getXMLHttpRequest();
-    xmlHttpRequest.onreadystatechange = function()
-    {
-        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-        {
-            document.getElementById("tempname").value = xmlHttpRequest.responseText;
-        }
-    };
-    xmlHttpRequest.open("GET", url, true);
-    xmlHttpRequest.send();
-}
-*/
-
-
-function startTaskInstances() {
-
-    //get the viewer directory name
-    var viewerdir = document.getElementById("existingViewerDirName1").value;
-    //get the viewer url selected by the users
-    var viewerURL = document.getElementById("condition1").value;
-//get the dataset
-    var dataset = document.getElementById("dataset1").value;
-
-    //get the datasetFormat
-    var datasetFormat = document.getElementById("datasetFormat1").value;
-
-    //alert(datasetFormat);
-
-    //get the user id.
-    var userid = document.getElementById("userid").value;
-    //get the task also
-    var task = document.getElementById("taskType1").value;
-    //call task instances and submit these details.
-
-    /*alert("viewer dir: "+viewerdir
-     +"\nurl: "+viewerURL
-     +"\ndataset: "+dataset
-     +"\nuserid: "+userid
-     +"\ntask: "+task);*/
-
-    var command = "submitParametersToBegin";
-
-    var url = "TaskInstancesCreator?command=" + command
-            + "&userid=" + userid
-            + "&dataset=" + dataset
-            + "&datasetFormat=" + datasetFormat
-            + "&viewerDirectory=" + viewerdir
-            + "&viewerURL=" + viewerURL
-            + "&task=" + task;
-
-    var xmlHttpRequest = getXMLHttpRequest();
-    xmlHttpRequest.onreadystatechange = function()
-    {
-        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-        {
-            //  alert(xmlHttpRequest.responseText);
-
-
-
-            var visPage = "TaskInstancesCreator?command=showVis";
-            window.open(visPage);
-        }
-    };
-    xmlHttpRequest.open("POST", url, false);
-    xmlHttpRequest.send();
-
-
-    /* var tempname = document.getElementById("tempname").value;
-     var visPage = "TaskInstancesCreator?tempname=" + tempname
-     + "&command=showVis";
-     window.open(visPage);  */
-}
-
-
-/*function uploadFiles() {
- var tempname = document.getElementById("tempname").value;
- var viewer = document.getElementById("viewer").value;
- var dataset = document.getElementById("dataset").value;
- var task = document.getElementById("quantitativeTasks").value;
- var userid = document.getElementById("userid").value;
- 
- var thefiles = document.getElementById("thefiles").files;
- var url = "TaskInstancesCreator?tempname=" + tempname
- + "&command=submitForm"
- + "&dataset=" + dataset
- + "&task=" + task
- + "&userid=" + userid
- + "&viewer=" + viewer;
- 
- 
- var formData = new FormData();
- for (var i = 0; i < thefiles.length; i++)
- formData.append("File", thefiles[i]);
- 
- var xmlHttpRequest = getXMLHttpRequest();
- xmlHttpRequest.onreadystatechange = function()
- {
- if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
- {
- var visPage = "TaskInstancesCreator?tempname=" + tempname
- + "&command=showVis";
- window.open(visPage);
- }
- };
- xmlHttpRequest.open("POST", url, false);
- xmlHttpRequest.send(formData);
- }*/
-
-function getUploadedFileNames(thefiles) {
-    var files = thefiles.files;
-    //remove items in the uploadedHtml array;    
-    while (uploadedHtmls.length > 0) {
-        uploadedHtmls.pop();
-    }
-
-    for (var i = 0; i < files.length; i++) {
-        //if the filename has an extension .html, .htm, xhtml, or .jsp we will add it to uploadedHtmls arrray       
-        var name = files[i].name;
-        if (name.indexOf(".html") > 0 || name.indexOf(".htm") > 0 || name.indexOf(".xhtml") > 0 || name.indexOf(".jsp") > 0) {
-            uploadedHtmls.push(name);
-        }
-    }
-    //there is only one viewer 
-    var cond = document.getElementById("viewer");
-    populateConditionOptions(cond);
-}
-
-function populateConditionOptions(div) {
-    removeDivChildren(div);
-    var opt1 = document.createElement("option");
-    opt1.setAttribute("value", "");
-    opt1.innerHTML = "Select An Uploaded File";
-
-    div.appendChild(opt1);
-
-    for (var i = 0; i < uploadedHtmls.length; i++) {
-        var opt = document.createElement("option");
-        opt.setAttribute("value", uploadedHtmls[i]);
-        opt.innerHTML = uploadedHtmls[i];
-
-        div.appendChild(opt);
-    }
-}
-
-function getSelectedElements() {
-    var iframe = document.getElementById("viewerFrame");
-    var seStr = "";
-    //we will get the output by calling the interface method to get the output
-    var iframe = document.getElementById("viewerFrame");
-    var outInterfaceName = getOutputInterface();
-    
-    if (typeof iframe.contentWindow.window[outInterfaceName] == "function") {
-        var selectedElements = iframe.contentWindow.window[outInterfaceName]();
-
-        //now give command to unselect the selected items.
-        //Ideally, we will use a user-given interface name, but for now we are assuming
-        //the name of that method is unselectSelectedElements
-        iframe.contentWindow.unSelectSelectedElements();
-
-        for (var i = 0; i < selectedElements.length; i++) {
-            if (i === 0) {
-                seStr = selectedElements[i];
-            }
-            else {
-                seStr += ";;" + selectedElements[i];
-            }
-        }
-
-        if (selectedElements === "") {
-            alert("Please provide a valid answer before continuing");
-            return false;
-        }
-    }
-    else {
-        alert("The output method that returns the output is not implemented.");
-    }
-
-    return seStr;
-}
-
-function getInstanceAnswer() {
-    var answer = "";
-    /*NB: if the answer medium is an interface, the answer can either come
-     * from the visualization, or the user can choose to manually type the answers.
-     */
-    if (getAnswerGroup() === "interface") {
-
-        //  var answermedium = document.getElementById("answerMedium").value;
-
-        //alert("answermedium "+answermedium);
-        getSelectedAnswer();
-
-        var answerFromVis = document.getElementById("selectedAnswerFromVis").value;
-
-        var answermedium = document.getElementById("answerMedium").value;
-
-        var answerbytyping = "";
-        if (answermedium === "by-typing" &&
-                (document.getElementById("selectedAnswerFromTyping").value).trim() !== "")
-            answerbytyping = document.getElementById("selectedAnswerFromTyping").value;
-
-
-        document.getElementById("selectedAnswerFromVis").value = "";
-        document.getElementById("selectedAnswerFromTyping").value = "";
-
-        document.getElementById("selectedAnswerFromVis").style.display = "none";
-        document.getElementById("selectedAnswerFromVis").style.display = "none";
-        document.getElementById("answerMedium").value = "";
-
-
-        if (answerbytyping !== "") {
-            answer = answerbytyping;
-        }
-        else {
-            answer = answerFromVis;
-        }
-    }
-    else {
-        // alert("+++");
-        //check if its dynamic options
-        if (getAnswerDataType().trim() === "options-dynamic") {
-            saveOptionsAndAnswer();
-        }
-        //alert("*(*)*");
-        answer = document.getElementById("selectedAnswer").value;
-
-
-
-
-    }
-
-    return answer;
-}
-
-function showAnswerByTyping() {
-    //alert("here");
-    document.getElementById("selectedAnswerFromTyping").style.display = "inline";
-    document.getElementById("answerMedium").value = "by-typing";
-}
-
-function saveInstance() {
-    //first the answer
-    var ianswer = getInstanceAnswer();
-
-
-    //alert("saving the instances");
-
-    //alert("yeaas");
-
-    if (doesTaskHaveCorrectAnswer === "no") {
-
-        //There are currently two conditions that will warrant task instances for this.
-        //1. If there are inputs to this task.
-        //2. if the answer type is dynamic options.
-
-        //save inputs if this task required inputs
-        if (Number(inputSize) > 0) {
-            var inputmedium = getInputMediums()[inputsCnt];
-            var currentInput = "";
-
-
-            alert(inputmedium);
-
-            if (inputmedium === "from-visualization") {
-                getSelectedInput();
-                currentInput = document.getElementById("selectedInput").value;
-            }
-            else if (inputmedium === "by-typing") {
-                currentInput = document.getElementById("typedInput").value;
-            }
-
-            //save the inputs if there are unsaved inputs.
-            if (currentInput !== "") {
-                saveInputs();
-            }
-        }
-    }
-
-
-
-    if (ianswer.trim() === "" && doesTaskHaveCorrectAnswer === "yes") {
-        //there should be an answer for such ones.
-        alert("Please provide an answer for the current instance before continuing");
-        return false;
-    }
-    else if (doesTaskHaveCorrectAnswer === "yes") {
-        answers.push(ianswer);
-    }
-
-    if (getAnswerDataType().trim() === "options-dynamic") {
-        // alert("about to save the dynamic answer types");
-        allOptionsArr.push(allOptions);
-    }
-
-    //unselect the previous answers and inputs
-    if (getAnswerGroup().trim() === "interface") {
-        var omutatorMethod = getOutputMutatorMethod();
-        var iframe = document.getElementById("viewerFrame");
-        if (typeof iframe.contentWindow.window[omutatorMethod] == "function") {
-            var input = iframe.contentWindow.window[omutatorMethod]("");
-        }
-        else {
-            alert("Your visualization does not implement the mutator method --" + omutatorMethod + "() for this input");
-        }
-    }
-    else {
-        document.getElementById("selectedAnswer").value = "";
-    }
-
-    //get the instance answer
-    incrementTaskInstanceCounter();
-
-    //hide answersDivcontainer and show the inputs div    
-    document.getElementById("answersDivContainer").style.display = "none";
-
-    //disable the next instance button
-    document.getElementById("nextInstance").disabled = true;
-
-    //now let's create the input description for the next instance.
-
-
-    // alert("I'm over here");
-
-    setUpAnswerControllers(taskAnswerType);
-
-    if (inputSize > 0) { //create the next input stringsif this task has an input
-        document.getElementById("inputsDiv").style.display = "block";
-        createInputDescriptions();
-    }
-    else {
-        noInputs();
-    }
-
-
-
-
-
-    return true;
-}
-
-function saveInputs() {
-
-    //check if there is an input value for the medium chosen
-    //if there is an input, save it.
-
-    currentInput = "";
-
-    var inputmedium = getInputMediums()[inputsCnt];
-
-    if (inputmedium === "from-visualization") {
-        getSelectedInput();
-        currentInput = document.getElementById("selectedInput").value;
-        if (currentInput.trim() === "" && does) {
-            alert("No inputs have been provided");
-            return false;
-        }
-        document.getElementById("selectedInput").value = "";
-        document.getElementById("selectedInput").style.display = "none";
-
-        resetSelectedInput();
-    }
-    else if (inputmedium === "by-typing") {
-        // alert("here we are---bytypeing");
-        currentInput = document.getElementById("typedInput").value;
-        if (currentInput.trim() === "") {
-            alert("No inputs have been provided");
-            return false;
-        }
-        document.getElementById("typedInput").value = "";
-    }
-    //  alert(currentInput);
-    inputs.push(currentInput);
-
-    inputsCnt++;
-
-
-
-    //set up the field for the next inputs  
-
-    if (inputsCnt < inputSize) {
-        //   alert("a");
-        createInputDescriptions();
-    }
-    else {
-        //now get the inputs also
-        var inputStr = "";
-
-
-        for (var i = 0; i < inputs.length; i++) {
-            //alert(inputs[i]);
-            if (i === 0) {
-                inputStr = inputs[i];
-            }
-            else {
-                inputStr += ":::" + inputs[i];
-            }
-        }
-        // alert("inputsStr "+inputStr);
-
-        inputs = [];
-        inputsCnt = 0;
-
-        //push the inputs
-        taskInstances.push(inputStr);
-        //alert(taskInstances);
-    }
-
-
-
-    return true;
 
 }
 
-
-function noInputs() {
-    //enable the next button so that it can be clicked on after the inputs has been provided
-    document.getElementById("nextInstance").disabled = false;
-
-    //hide inputs div and show answersDivcontainer
-    document.getElementById("inputsDiv").style.display = "none";
-    document.getElementById("answersDivContainer").style.display = "block";
-
-    //alert("answers group is "+ getAnswerGroup());
-
-    //alert("there are no inputs hooray!");
-
-    //check the answer group
-    if (!(getAnswerGroup().trim() === "widget")) {
-        document.getElementById("answer-from-visualization").style.display = "block";
-        document.getElementById("answer-by-typing").style.display = "none"
-    }
-    else if (getAnswerDataType().trim() === "options-dynamic") {
-        //we will ask the user to specify the options, 
-        //then select the correct option as answer
-        document.getElementById("dynamic-optionsDiv").style.display = "block";
-    }
-    else {
-        //
+function setFrameDataset(dataset) {
+    var iframe = document.getElementById("taskInstanceViewerFrame");
+    var dataset2 = dataset;
+    //check the setdataset type that has been implemented
+    if (typeof iframe.contentWindow.setDataset == "function") {
+        // alert("hey i'm here");
+        iframe.contentWindow.setDataset(dataset2);
+        clearInterval(viewerDatasetInterval);
     }
 }
 
-
-
-function doneWithInputs() {
-
-    //first save the last input provided
-    if (saveInputs() === false) {
-        return false;
-    }
-
-    // alert("taskInstances.length  -- "+taskInstances.length);
-    //enable the next button so that it can be clicked on after the inputs has been provided
-    document.getElementById("nextInstance").disabled = false;
-
-    //hide inputs div and show answersDivcontainer
-    document.getElementById("inputsDiv").style.display = "none";
-    document.getElementById("answersDivContainer").style.display = "block";
-
-    //check the answer group
-    if (!(getAnswerGroup().trim() === "widget")) {
-        document.getElementById("answer-from-visualization").style.display = "block";
-        document.getElementById("answer-by-typing").style.display = "none"
-    }
-    else if (getAnswerDataType().trim() === "options-dynamic") {
-        //we will ask the user to specify the options, 
-        //then select the correct option as answer
-        document.getElementById("dynamic-optionsDiv").style.display = "block";
-    }
+function hideSteps() {
+    document.getElementById("steps").style.display = "none";
+    document.getElementById("showStepsButton").style.display = "block";
+    document.getElementById("hideStepsButton").style.display = "none";
 }
 
-function provideInterfaceAnswerByTyping() {
-    document.getElementById("answer-by-typing").style.display = "block"
-    document.getElementById("answer-from-visualization").style.display = "none";
-}
-
-function answerMediumChanged() {
-    var answermedium = document.getElementById("answerMedium").value;
-
-    if (answermedium.trim() === "from-visualization") {
-        //show the div for that   
-        document.getElementById("answer-from-visualization").style.display = "block";
-        document.getElementById("answer-by-typing").style.display = "none"
-    }
-    else {
-        //show the div for providing answers by typing.
-        document.getElementById("answer-by-typing").style.display = "block"
-        document.getElementById("answer-from-visualization").style.display = "none";
-
-    }
+function showSteps() {
+    document.getElementById("steps").style.display = "block";
+    document.getElementById("showStepsButton").style.display = "none";
+    document.getElementById("hideStepsButton").style.display = "block";
 }
 
 
-
-
-
-function chosenInputMedium(elem) {
-    inputMedium = elem.value;
+function setTheTaskQuestion() {
+    qn = task.question;
+    var taskPara = document.getElementById("task");
+    taskPara.innerHTML = "<strong>Task: </strong>" + qn;
 }
 
-/*
- function chosenAnswerMedium(elem) {
- answerMedium = elem.value;
- }
+/**
+ * Task - task is the task object.
  */
+function setInputTypeAndInputDescriptions() {
+
+    //get the task inputs
+    var inputs = task.inputs;
+
+    //alert("the input typeName is  "+inputs[0].typeName);
 
 
-function saveAllTaskInstances() {
-    //check if the current instance has not been saved, then save it.     
-    var instanceSaved = true;
+    if (inputs.length > 0) {
+        //specify the typeName of the input.
+        document.getElementById("inputType").innerHTML = inputs[inputsCnt].typeName;
+        //specify the description of the input.
+        document.getElementById("inputDescription").innerHTML = inputs[inputsCnt].description;
 
-    if (answers.length < taskInstances.length) {
-        //  alert("over here");
-        //if this is really true save the last instance duh!
-        instanceSaved = saveInstance();
-    }
-    else {
-        // alert("ok");
-        if (taskInstances.length === 0 && (getAnswerGroup() === "widget" || getAnswerGroup() === "interface")) {
-            instanceSaved = saveInstance();
-        }
-    }
-
-
-    if (instanceSaved === false) {
-        alert("couldn't save all tasks");
-        return false;
-    }
-
-    //now let's get the instances and the answers together and save it.
-    //send the taskInstances and answers created to the server
-    var tempname = document.getElementById("tempname").value;
-
-    var instances = "";
-    var ans = "";
-
-    if (taskInstances.length > 0 && answers.length > 0) {
-        for (var i = 0; i < taskInstances.length; i++) {
-            //alert(taskInstances[i]);        
-            if (i === 0) {
-                instances = taskInstances[i];
-                ans = answers[i];
-            }
-            else {
-                instances += "::::" + taskInstances[i];
-                ans += "::::" + answers[i];
-            }
-        }
-    }
-    else if (taskInstances.length > 0) {
-        for (var i = 0; i < taskInstances.length; i++) {
-            //alert(taskInstances[i]);        
-            if (i === 0) {
-                instances = taskInstances[i];
-            }
-            else {
-                instances += "::::" + taskInstances[i];
-            }
-        }
-    }
-    else if (answers.length > 0) {
-        for (var i = 0; i < taskInstances.length; i++) {
-            //alert(taskInstances[i]);        
-            if (i === 0) {
-                ans = answers[i];
-            }
-            else {
-                // instances += "::::" + taskInstances[i];
-                ans += "::::" + answers[i];
-            }
-        }
-    }
-
-    var taskOptions = "";
-    for (var i = 0; i < allOptionsArr.length; i++) {
-        if (i === 0) {
-            taskOptions = allOptionsArr[i];
-        }
-        else {
-            taskOptions += "::::" + allOptionsArr[i];
-        }
-
-    }
-
-
-
-    var userid = document.getElementById("userid").value;
-
-
-    //alert("instances is "+instances);
-
-
-
-    var url = "TaskInstancesCreator?tempname=" + tempname
-            + "&command=saveAllTaskInstances"
-            + "&taskInstances=" + instances
-            + "&answers=" + ans
-            + "&userid=" + userid
-            + "&taskOptions=" + taskOptions;
-
-    var xmlHttpRequest = getXMLHttpRequest();
-    xmlHttpRequest.onreadystatechange = function()
-    {
-        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-        {
-            //alert("tasks has been saved successfully - now your life can go on.");
-
-            //redirect to the successful page.
-            window.location = "task_instances_creation_success.html";
-
-
-        }
-    };
-    xmlHttpRequest.open("POST", url, false);
-    xmlHttpRequest.send();
-}
-
-function getAnswerType() {
-    var command = "getAnswerType";
-    var url = "TaskInstancesCreator?command=" + command;
-
-    var xmlHttpRequest = getXMLHttpRequest();
-
-    xmlHttpRequest.onreadystatechange = function()
-    {
-        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-        {
-            //  alert("hey--hey");
-
-            taskAnswerType = xmlHttpRequest.responseText;
-            setUpAnswerControllers(taskAnswerType);
-
-            if (getAnswerGroup() === "interface") {
-                //show the button that will be used to get the answers
-                // document.getElementById("answerSelectionDiv").style.display = "block";
-                //answerMedium has to be from the visualization
-                document.getElementById("answerMedium").value = "from-visualization";
-            }
-            getInputSize();
-        }
-    };
-    xmlHttpRequest.open("GET", url, false);
-    xmlHttpRequest.send();
-}
-
-
-function getInputTypesAndDescriptions() {
-    var url = "TaskInstancesCreator?command=" + "getInputTypesAndDescriptions";
-    var xmlHttpRequest = getXMLHttpRequest();
-    //alert("here");
-    xmlHttpRequest.onreadystatechange = function()
-    {
-        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-        {
-            //if there is inputs then do the following
-            var inputStr = xmlHttpRequest.responseText;
-
-            if (inputStr.trim() !== "") {
-                setUpInputTypesAndDescriptions(xmlHttpRequest.responseText);
-                createInputDescriptions();
-            }
-            else {
-                //set up the answer controllers
-                // setUpAnswerControllers(taskAnswerType);
-
-
-                setUpAnswerControllers(taskAnswerType);
-                noInputs();
-            }
-
-
-
-        }
-    };
-
-    xmlHttpRequest.open("GET", url, false);
-    xmlHttpRequest.send();
-
-}
-
-
-function getTaskHasCorrectAnswerValue() {
-
-    var url = "TaskInstancesCreator?command=" + "getTaskHasCorrectAnswer";
-    var xmlHttpRequest = getXMLHttpRequest();
-    //alert("here");
-    xmlHttpRequest.onreadystatechange = function()
-    {
-        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-        {
-            //if there is inputs then do the following
-            //alert("see what was returned === " + xmlHttpRequest.responseText);
-
-            doesTaskHaveCorrectAnswer = xmlHttpRequest.responseText;
-
-
-
-            if ((doesTaskHaveCorrectAnswer.trim() === "no")
-                    && (getInputTypes().length === 0) && (getAnswerDataType() !== "options-dynamic")) {
-
-                //notify the evaluator there is no need to create task instances of this task type.
-
-                //hide the div for input and answers.
-
-                document.getElementById("inputsAndAnswers").style.display = "none";
-
-
-
-                //show the div for notification
-                document.getElementById("noNeedForTaskInstances").style.display = "block";
-
-            }
-        }
-    };
-
-    xmlHttpRequest.open("GET", url, false);
-    xmlHttpRequest.send();
-
-}
-
-
-
-function createInputDescriptions() {
-
-    if (getInputTypes().length > 0) {
-        //TODO: this does not have to be 0. note that 
-        document.getElementById("inputType").innerHTML = getInputTypes()[inputsCnt];
-        document.getElementById("inputDescription").innerHTML = getInputDescriptions()[inputsCnt];
-
-        var inputmedium = getInputMediums()[inputsCnt];
-
-
-        //document.getElementById("inputMedium").value = inputmedium;
+        //var inputMedium = ; //the input medium of that input.
 
 
         //NB: currently the input medium can be of two types (i.e. "from-visualization"  and "by-typing".
 
         //depending on the input type, provide the appropriate answering method.
-        if (inputmedium.trim() === "from-visualization") {
+        if (inputs[inputsCnt].specifyInVis=== "yes") {
             //show the input from visualization
             document.getElementById("input-from-visualization").style.display = "block"
             document.getElementById("input-from-typing").style.display = "none";
         }
         else {
-            // alert("kiddo -- ");
             //show the input by typing
             document.getElementById("input-from-visualization").style.display = "none"
             document.getElementById("input-from-typing").style.display = "block";
         }
 
-        // alert(inputsCnt + "___" + (Number(inputSize) - 1))
-        if (inputsCnt < (Number(inputSize))) {
-            if (getInputTypes().length === 1 || inputsCnt === (Number(inputSize) - 1)) {
-                //show the button that will lead to providing answer
+        //Determine if we should ask for the answer now.
+        if (inputsCnt < inputs.length) {
+
+            if (inputs.length === 1 || inputsCnt === (inputs.length - 1)) {
+                 //disable the next input button.
                 document.getElementById("next-input-button").style.display = "none";
 
 
                 //show this button only if this task requires an answer.
-                if (doesTaskHaveCorrectAnswer === "yes") {
+                if (task.answer.correctness === "yes") {
                     document.getElementById("provide-answer-button").style.display = "block";
                 }
                 else {
                     document.getElementById("nextInstance").disabled = false;
                 }
-
             }
             else {
                 //we will show the next input method
@@ -816,43 +150,293 @@ function createInputDescriptions() {
     }
 }
 
-function getInputSize() {
-    var command = "getInputSize";
-    var url = "TaskInstancesCreator?command=" + command;
-    var xmlHttpRequest = getXMLHttpRequest();
 
-    xmlHttpRequest.onreadystatechange = function()
-    {
-        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-        {
-            //alert("input size is " + xmlHttpRequest.responseText);
-            inputSize = xmlHttpRequest.responseText;
+function doneWithInputs() {
+    //first save the last input provided
+    if (saveInputs() === false) {
+        return false;
+    }
 
-            //alert("input-size is :: " +inputSize);
+   //enable the next button so that it can be clicked on after the inputs has been provided
+    document.getElementById("nextInstance").disabled = false;
+    
+    //alert("## " +document.getElementById("selectedInput").value);
 
-            document.getElementById("next-input-button").style.display = "none";
+    //hide inputs div and show answersDivcontainer
+    document.getElementById("inputsDiv").style.display = "none";
+    document.getElementById("answersDiv").style.display = "block";
+    //setupAnswerControllers also
+    var answersDiv = document.getElementById("answersDiv");
 
-            // alert("something--here");
 
-            //alert(doesTaskHaveCorrectAnswer);
+    var labelText = "Provide the Correct Answer: ";
 
-            //show this button only if this task requires an answer.
-            /* if (doesTaskHaveCorrectAnswer === "yes") {
-             document.getElementById("provide-answer-button").style.display = "block";
-             }
-             else {
-             document.getElementById("nextInstance").disabled = false;
-             }*/
-        }
-    };
-    xmlHttpRequest.open("GET", url, false);
-    xmlHttpRequest.send();
+    setUpAnswerControllers(task.answer.type,task.answer.options, answersDiv, labelText);
+    
+     //the answer type can be an "interface" type or an inbuilt type
+    if ((task.answer.type.toLowerCase() === "interface")) {
+        // do this if it is an interface type
+        document.getElementById("answer-from-visualization").style.display = "block";
+        
+    }
+    else if (task.answer.type.toLowerCase() === "options(dynamic)") {//if it is options dynamic
+        //we will ask the user to specify the options, and then select the correct option as answer
+        document.getElementById("dynamic-optionsDiv").style.display = "block";
+    }
+    //TODO: What do we do if the type of the answer is options(fixed).
+    
 }
 
-function incrementTaskInstanceCounter() {
-    taskInstancesCounter++;
-    var tnum = document.getElementById("taskInstanceNumber");
-    tnum.innerHTML = taskInstancesCounter;
+/*
+ * Saving the inputs the user has selected.
+ */
+function saveInputs() {
+    //check if there is an input value for the medium chosen
+
+    //if there is an input, save it.
+    currentInput = "";
+
+    //var inputMedium = ;
+
+    if (task.inputs[inputsCnt].specifyInVis === "yes") {
+
+
+        getSelectedInput();
+        currentInput = document.getElementById("selectedInput").value;
+        if (currentInput.trim() === "") {
+            alert("No inputs have been provided");
+            return false;
+        }
+        document.getElementById("selectedInput").value = "";
+        document.getElementById("selectedInputSpan").style.display = "none";
+
+        resetSelectedInput();
+    }
+    else {
+        // alert("here we are---bytypeing");
+        currentInput = document.getElementById("typedInput").value;
+
+        // alert("currentInput is "+currentInput);
+        if (currentInput.trim() === "") {
+            alert("No inputs have been provided");
+            return false;
+        }
+        document.getElementById("typedInput").value = "";
+    }
+
+    instanceInputs.push(currentInput);
+    inputsCnt++;
+    //set up the field for the next inputs 
+    if (inputsCnt < task.inputs.length) {
+        setInputTypeAndInputDescriptions();
+    }
+
+
+    return true;
+
+}
+
+/**
+ * What to do if the task does not have inputs
+ * @returns {undefined}
+ */
+function noInputs() {
+
+    alert("there were no inputs for this task -- check the noInputs() function implementation");
+
+//    //enable the next button so that it can be clicked on after the inputs has been provided
+//    document.getElementById("nextInstance").disabled = false;
+//
+//    //hide inputs div and show answersDivcontainer
+//    document.getElementById("inputsDiv").style.display = "none";
+//    document.getElementById("answersDivContainer").style.display = "block";
+//
+//    //alert("answers group is "+ getAnswerGroup());
+//
+//    //alert("there are no inputs hooray!");
+//
+//    //check the answer group
+//    if (!(getAnswerGroup().trim() === "widget")) {
+//        document.getElementById("answer-from-visualization").style.display = "block";
+//        document.getElementById("answer-by-typing").style.display = "none"
+//    }
+//    else if (getAnswerDataType().trim() === "options-dynamic") {
+//        //we will ask the user to specify the options, 
+//        //then select the correct option as answer
+//        document.getElementById("dynamic-optionsDiv").style.display = "block";
+//    }
+//    else {
+//        //
+//    }
+}
+
+
+/** 
+ * How to save a task instance. 
+ * @returns {Boolean}
+ */
+function saveInstance() {
+    //first the answer
+    var ianswer = getInstanceAnswer();
+
+    //does task have correct answer
+    if (task.answer.correctness === "no") {
+        //There are currently two conditions that will warrant task instances for this.
+        //1. If there are inputs to this task.
+        //2. if the answer type is dynamic options.
+
+        //1. save inputs if this task required inputs
+        if (task.inputs.length > 0) {
+            var currentInput = "";
+
+            if (task.inputs[inputsCnt].specifyInVis === "yes") {
+                getSelectedInput();
+                currentInput = document.getElementById("selectedInput").value;
+            }
+            else {
+                currentInput = document.getElementById("typedInput").value;
+            }
+
+            //save the inputs if there are unsaved inputs.
+            if (currentInput !== "") {
+                saveInputs();
+            }
+        }
+        //TODO: 2. What to do if the answer type is dynamic options 
+    }
+
+    //Make sure an answer is provided for tasks that have correct answer.
+    if (ianswer.trim() === "" && task.answer.correctness === "yes") {
+        alert("Please provide an answer for the current instance before continuing");
+        return false;
+    }
+    //compose the instance object and send it to be updated on the server.
+    var instance = {};
+    instance.inputs = instanceInputs;
+    instance.answer = ianswer;
+    instance.options = instanceOptions;
+
+    updateTaskInstance(taskName, viewerName, dataName, instance, function() {
+        taskInstanceCreated(1);
+    });
+    //reset the instanceInputs and cnt
+    instanceInputs = [];
+    inputsCnt = 0;
+    instanceOptions = [];
+
+    if (task.answer.type.toLowerCase() === "options(dynamic)") {
+        
+    }
+     //unselect the previous answers
+    if (task.answer.type.toLowerCase() === "interface") {
+        //we will be resetting the answer selected in the visualization
+        var omutatorMethod = "set" + capitalizeFirstLetter(task.answer.customTypeName);
+        var iframe = document.getElementById("taskInstanceViewerFrame");
+
+        if (typeof iframe.contentWindow.window[omutatorMethod] == "function") {
+            iframe.contentWindow.window[omutatorMethod]("");            
+            document.getElementById("selectedAnswerFromVis").value = "";
+        }
+        else {
+            alert("Your visualization does not implement the mutator method --" + omutatorMethod + "() for this input");
+        }
+        
+        document.getElementById("selectedAnswerFromVis").value = " ";
+    }
+    else {
+
+        document.getElementById("providedAnswer").value = "";
+
+    }
+
+    //get the instance answer
+    incrementTaskInstanceCounter();
+
+    //hide answersDivcontainer and show the inputs div    
+    document.getElementById("answersDiv").style.display = "none";
+    document.getElementById("answer-from-visualization").style.display = "none";
+   document.getElementById("selectedInput").value = "";
+          
+    document.getElementById("typedInput").value = "";
+    
+
+    //disable the next instance button
+    document.getElementById("nextInstance").disabled = true;
+
+    //now let's create the input description for the next instance.
+    if (task.inputs.length > 0) { //create the next input stringsif this task has an input
+        document.getElementById("inputsDiv").style.display = "block";
+        setInputTypeAndInputDescriptions();
+    }
+    else {
+        noInputs();
+    }
+
+
+
+    return true;
+}
+
+/**
+ * get the answer for the instance that was specified by the user
+ * @returns 
+ */
+function getInstanceAnswer() {
+    var answer = "";
+    /*NB: if the answer medium is an interface, the answer can either come
+     * from the visualization, or the user can choose to manually type the answers.
+     */
+    if (task.answer.type.toLowerCase() === "interface") {
+
+        getSelectedAnswer();
+
+        var answer = document.getElementById("selectedAnswerFromVis").value;
+
+        
+
+        
+    }
+    else {
+        //check if its dynamic options
+        if (task.answer.type.toLowerCase() === "options(dynamic)") {
+            saveOptionsAndAnswer();
+            
+        }
+        
+        answer = document.getElementById("providedAnswer").value;
+    }
+
+    
+    return answer;
+}
+
+
+/**
+ * This function gets the selected answer from the visualization
+ * @returns {undefined}
+ */
+
+function getSelectedAnswer() {
+    //get the answer from the visualization and set it 
+    //first get the output interface name, and use it to call and get the answer
+    var outputAccessorMethod = "get" + capitalizeFirstLetter(task.answer.customTypeName);
+            
+     //now we will actuallly get the answer from the visualization
+    var iframe = document.getElementById("taskInstanceViewerFrame");
+    if (typeof iframe.contentWindow.window[outputAccessorMethod] == "function") {
+        var selectedAnswer = iframe.contentWindow.window[outputAccessorMethod]();
+
+        document.getElementById("selectedAnswerFromVis").value = selectedAnswer;
+    }
+    else {
+        alert("The output method that returns the output is not implemented.");
+    }
+}
+
+function showAnswerByTyping() {
+    //alert("here");
+    document.getElementById("selectedAnswerFromTyping").style.display = "inline";
+    document.getElementById("answerMedium").value = "by-typing";
 }
 
 function getAndShowSelectedInput() {
@@ -860,13 +444,22 @@ function getAndShowSelectedInput() {
     document.getElementById("selectedInputSpan").style.display = "inline";
 }
 
+function getAndShowSelectedAnswer() {
+    getSelectedAnswer();
+    document.getElementById("selectedAnswerFromVis").style.display = "inline";
+}
+
+
+//TODO
 function getSelectedInput() {
 
-    var inputAccessorName = getInputAccessorMethods() [inputsCnt];
+      var inputAccessorName = "get" + capitalizeFirstLetter(task.inputs[inputsCnt].typeName);
 
-    var iframe = document.getElementById("viewerFrame");
+    var iframe = document.getElementById("taskInstanceViewerFrame");
+    
     if (typeof iframe.contentWindow.window[inputAccessorName] == "function") {
         var input = iframe.contentWindow.window[inputAccessorName]();
+        //alert("the input is "+ input);
         document.getElementById("selectedInput").value = input;
     }
     else {
@@ -874,87 +467,80 @@ function getSelectedInput() {
     }
 }
 
+//TODO:
 function resetSelectedInput() {
 
+    
+    var inputMutatorName = "set" + capitalizeFirstLetter(task.inputs[inputsCnt].typeName);
 
-    var inputMutatorName = getInputMutatorMethods() [inputsCnt];
-
-    var iframe = document.getElementById("viewerFrame");
+    var iframe = document.getElementById("taskInstanceViewerFrame");
     if (typeof iframe.contentWindow.window[inputMutatorName] == "function") {
-        var input = iframe.contentWindow.window[inputMutatorName]("");
+        iframe.contentWindow.window[inputMutatorName]("");
+        
+      
+        document.getElementById("selectedInput").value = "";
+        
     }
     else {
         alert("Your visualization does not implement the necessary mutator method --" + inputMutatorName + "() for this input");
     }
 }
 
+//TODO: 
 function setDynamicOptionAnswer(element) {
     var value = element.value;
-    document.getElementById("selectedAnswer").value = document.getElementById("option" + value).value;
+    document.getElementById("providedAnswer").value = document.getElementById("option" + value).value;
     document.getElementById("selectedOption").value = value;
 }
 
+//TODO: 
 function saveOptionsAndAnswer() {
     //get the size of the options that were provided
     var optionsSize = document.getElementById("numberOfOptions").value;
 
-    allOptions = "";
-    optionsAnswer = "";
-
-
-    var answer = document.getElementById("selectedAnswer").value;
+    var answer = document.getElementById("providedAnswer").value;
     var selectedOption = document.getElementById("selectedOption").value;
     var selectedOptionValue = "";
 
 
     //if selected option has not been selected return false
-
-    if (selectedOption.trim() === "" && doesTaskHaveCorrectAnswer === "yes") {
+    if (selectedOption.trim() === "" && task.answer.correctness === "yes") {
         return false;
     }
-    else if (doesTaskHaveCorrectAnswer === "yes") {
+    else if (task.answer.correctness === "yes") {
         selectedOptionValue = document.getElementById("option" + selectedOption).value;
     }
 
-    if ((answer.trim() === "" || selectedOptionValue.trim() === "") && doesTaskHaveCorrectAnswer === "yes") {
+    if ((answer.trim() === "" || selectedOptionValue.trim() === "") && task.answer.correctness === "yes") {
         //alert("Provide the correct option before proceeding");
         return false;
     }
 
-    optionsAnswer = answer;
+  
 
     var cnt = 0;
 
     //alert("optionSize is "+ optionsSize);
-
+    instanceOptions = [];
     for (var i = 0; i < optionsSize; i++) {
         var option = document.getElementById("option" + (i + 1)).value;
 
         if (option.trim() !== "") {
-            cnt++;
-
-            if (cnt === 1) {
-                allOptions = option;
-            }
-            else {
-                allOptions += " :: " + option;
-            }
+            instanceOptions.push(option);
         }
     }
 
 
     //reset all the other variables we used here
-    //try to remove an additional child if any
+    //try to remove any additional child if any
 
     if (optionsSize > 4) {
-        var optionsDiv = document.getElementById("optionsDiv").value;
+        var optionsDiv = document.getElementById("optionsDiv");
 
         for (var i = 5; i < optionsSize; i++) {
             optionsDiv.removeChild(document.getElementById("option" + i));
             optionsDiv.removeChild(document.getElementById("optionRadio" + i));
         }
-        //reduce the inputCnt
-
     }
     //reset the values for the options
     for (var i = 0; i < 4; i++) {
@@ -973,7 +559,7 @@ function saveOptionsAndAnswer() {
 
 
     //do this if an answer was given
-    if (doesTaskHaveCorrectAnswer === "yes") {
+    if (task.answer.correctness === "yes") {
 
         var optionDiv = document.getElementById("div_option" + selectedOption);
         removeDivChildren(optionDiv);
@@ -1003,16 +589,21 @@ function saveOptionsAndAnswer() {
         document.getElementById("numberOfOptions").value = 4;
         document.getElementById("selectedOption").value = "";
     }
+    
+    //now hide the div.
+     document.getElementById("dynamic-optionsDiv").style.display = "none";
 
     return true;
 }
-
-
-/*
- function doneWithDynamicOptions() {
- document.getElementById("dynamic-option-answerDiv").style.display = "block";
- }
+/**
+ * This will be used to increment the task instance counter
+ * @returns {undefined}
  */
+function incrementTaskInstanceCounter() {
+    taskInstancesCounter++;
+    var tnum = document.getElementById("taskInstanceNumber");
+    tnum.innerHTML = taskInstancesCounter;
+}
 
 function addMoreDynamicOptions() {
     //first get the highest number of boxes,
@@ -1020,18 +611,19 @@ function addMoreDynamicOptions() {
     var optionsSize = parseInt(document.getElementById("numberOfOptions").value);
     optionsSize++;
 
-    //now append it to it.
-    //var optionsDiv = document.getElementById("optionsDiv");
-
-
-    var optionsDiv = document.getElementById("div_option" + optionsSize);
-
+    
+    //get the option's div
+    var optionsDiv = document.getElementById("optionsDiv");
+    
+    //create a new option and add it to it.
+    var currentOptionsDiv = document.createElement("div");
+    currentOptionsDiv.setAttribute("id", "div_option" + optionsSize);
     //now lets re-add the radio button and the option text box.
     var parag = document.createElement("p");
     var radioBtn = document.createElement("input");
     radioBtn.setAttribute("type", "radio");
     radioBtn.setAttribute("id", "optionRadio" + optionsSize);
-    radioBtn.setAttribute("name", "answerOption")
+    radioBtn.setAttribute("name", "answerOption");
     radioBtn.setAttribute("value", optionsSize);
     radioBtn.setAttribute("onclick", "setDynamicOptionAnswer(this)");
 
@@ -1040,56 +632,11 @@ function addMoreDynamicOptions() {
     input.setAttribute("id", "option" + optionsSize);
     input.setAttribute("size", "15");
 
-
     parag.appendChild(radioBtn);
     parag.appendChild(input);
 
-    optionsDiv.appendChild(parag);
-
-
-
-    /* var input = document.createElement("input");
-     input.setAttribute("type", "text");
-     input.setAttribute("id", "option" + optionsSize);
-     input.setAttribute("size", "15");  */
-
-    //optionsDiv.appendChild(input);
+    currentOptionsDiv.appendChild(parag);
+    optionsDiv.appendChild(currentOptionsDiv);
 
     document.getElementById("numberOfOptions").value = optionsSize;
 }
-
-function getAndShowSelectedAnswer() {
-    getSelectedAnswer();
-    document.getElementById("selectedAnswerFromVis").style.display = "inline";
-}
-
-
-function getSelectedAnswer() {
-    //get the answer from the visualization and set it 
-    //first get the output interface name, and use it to call and get the answer
-    var outputAccessorMethod = getOutputAccessorMethod();
-
-    //now we will actuallly get the answer from the visualization
-    var iframe = document.getElementById("viewerFrame");
-    if (typeof iframe.contentWindow.window[outputAccessorMethod] == "function") {
-        var selectedAnswer = iframe.contentWindow.window[outputAccessorMethod]();
-
-        document.getElementById("selectedAnswerFromVis").value = selectedAnswer;
-    }
-    else {
-        alert("The output method that returns the output is not implemented.");
-    }
-}
-
-function showSteps() {
-    document.getElementById("steps").style.display = "block";
-    document.getElementById("showStepsButton").style.display = "none";
-    document.getElementById("hideStepsButton").style.display = "block";
-
-}
-function hideSteps() {
-    document.getElementById("steps").style.display = "none";
-    document.getElementById("showStepsButton").style.display = "block";
-    document.getElementById("hideStepsButton").style.display = "none";
-}
-

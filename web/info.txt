@@ -1,2 +1,0 @@
-<viewerwidth>900</viewerwidth>
-<viewerheight>880</viewerheight>
