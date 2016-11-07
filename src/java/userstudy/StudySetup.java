@@ -222,6 +222,8 @@ public class StudySetup extends HttpServlet {
                     }
 
                 }
+                
+                
 
                 jsonAllViewers += "\n]";
 
@@ -1098,6 +1100,9 @@ public class StudySetup extends HttpServlet {
                 br = new BufferedReader(reader);
                 ResultsData resultsObj = gson.fromJson(br, ResultsData.class);
 
+                System.out.println("the length of the results is "+ resultsObj.getResults().length);
+                
+                
                 if (resultsObj.getResults().length > 0) {
                     resultsCount = resultsObj.getResults()[0].getBasicData().length;
                 }
