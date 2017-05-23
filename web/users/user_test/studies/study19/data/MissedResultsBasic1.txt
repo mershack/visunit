@@ -1,3 +1,0 @@
-Missed_twoNodesConnectionToANamedNode_cond1,,
-Q1,Q2,Q3
-0.0,0.0,0.0

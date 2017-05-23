@@ -1,3 +1,0 @@
-cond1
-cond2
-cond1

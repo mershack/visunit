@@ -1,3 +1,0 @@
-Acc_highestDegreeBetweenTwoNodes_nl,,
-Q1,Q2,Q3
-
