@@ -1,0 +1,1 @@
+{"name":"findNode","question":"Find and select in the network the node labeled: $1$","description":"Find a node given its label.","inputs":[{"typeName":"text","description":"The name of the node to be looked for.","specifyInVis":"no","showInVis":"no"}],"answer":{"type":"Interface/Custom","correctness":"yes","customTypeName":"SelectedNodes"}}

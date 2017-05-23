@@ -29,13 +29,21 @@
 
             td{
                 text-align : center;
+                border-color : black;
+            }
+            
+            table, th, td {
+                border: 0px solid black;
+                border-collapse: collapse;
             }
 
             .taskeven{
-                background-color : #ADD8E6;
+                background-color : rgb(255,250,245);
+                border-color : black;
+                
             }
             .taskodd{
-                background-color : #EFE5DA;
+                background-color : rgb(245,255,255);
             }
             .instanceeveneven{
                 background-color : #BDEBF6;
@@ -55,7 +63,7 @@
                 background-color : linen;
                 padding : 1px 5px 1px 5px;
                 border-width : 1px;
-                border-color : gray;
+                border-color : black;
                 border-style : solid;
                 border-radius : 4px 4px 1px 1px;
             }
@@ -102,13 +110,13 @@
             var condColMatch = [];
             var studyType = "Between";
             var studyName = "";
-
-            function blah() {
-
-            }
+            
+            var rawData = null;
+            
+            var aggregation = getAggregation("Viewer");
 
             $(document).ready(function() {
-
+                
                 //get study id.
                 studyName = getStudyId();
                 getTskClss();
@@ -128,149 +136,185 @@
                     if (success) {
                         //
                         d3.json(resultsUrls.basicResultsUrl, function(error, data) {
-
-                            var tasks = formatTaskData(data.results);
-
-                            //let's load the accuracy stats
-                            d3.json(resultsUrls.accuracyStatsUrl, function(error, data) {
-
-                                for (var i = 0; i < data.length; i++) { //go through tasks
-
-                                    var taskIndex = -1;
-                                    for (var j = 0; j < tasks.length; j++)
-                                        if (tasks[j].name === data[i].taskName) {
-                                            taskIndex = j;
-                                            break;
-                                        }
-                                    tasks[taskIndex].stats = data[i];
-                                }
-
-                                //let's load the time stats
-                                d3.json(resultsUrls.timeStatsUrl, function(error, data) {
-
-                                    for (var i = 0; i < data.length; i++) { //go through tasks
-
-                                        var taskIndex = -1;
-                                        for (var j = 0; j < tasks.length; j++)
-                                            if (tasks[j].name === data[i].taskName) {
-                                                taskIndex = j;
-                                                break;
-                                            }
-                                        tasks[taskIndex].timeStats = data[i];
-                                    }
-
-                                    //once this is done, create the display matrix. This will contain svg and div slots
-                                    //in which we will drop the graphs in the next step
-                                    var html = createMatrix(tasks);
-                                    $("#charts").html(html);
-
-                                    //now create the graphs in the appropriate slots (these have been created already in the matrix)
-                                    for (var i = 0; i < tasks.length; i++) {
-                                        if (tasks[i].instances.length > 1) { //create the summary stuff
-                                            createBoxplot("#slot_accuracy_boxplot_" + i + "_s", prepDataForPlot(tasks[i], function(condition) {
-                                                return condition.accuracies;
-                                            }), colorsForConditions(tasks[i].conditions));
-                                            createBarchart("#slot_accuracy_chart_" + i + "_s", prepDataForPlot(tasks[i], function(condition) {
-                                                return condition.accuracies;
-                                            }), colorsForConditions(tasks[i].conditions));
-
-                                            createBoxplot("#slot_time_boxplot_" + i + "_s", prepDataForPlot(tasks[i], function(condition) {
-                                                return condition.times;
-                                            }), colorsForConditions(tasks[i].conditions));
-                                            createBarchart("#slot_time_chart_" + i + "_s", prepDataForPlot(tasks[i], function(condition) {
-                                                return condition.times;
-                                            }), colorsForConditions(tasks[i].conditions));
-                                        }
-
-                                        //create the instance stuff
-                                        //first, responses
-                                        for (var j = 0; j < tasks[i].instances.length; j++) {
-                                            if (tasks[i].responseType === "numeric")
-                                                createBarchart("#slot_response_charthisto_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition) {
-                                                    return condition.responses;
-                                                }), tasks[i].taskType === "task" ? colorsForConditions(tasks[i].instances[j].conditions) : ["white"]);
-                                            else
-                                                createHisto("#slot_response_charthisto_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition) {
-                                                    return condition.responses;
-                                                }), tasks[i].taskType === "task" ? colorsForConditions(tasks[i].instances[j].conditions) : ["white"]);
-
-                                            if (tasks[i].taskType === "task") {
-                                                createBoxplot("#slot_accuracy_boxplot_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition) {
-                                                    return condition.accuracies;
-                                                }), colorsForConditions(tasks[i].instances[j].conditions));
-                                                createBarchart("#slot_accuracy_chart_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition) {
-                                                    return condition.accuracies;
-                                                }), colorsForConditions(tasks[i].instances[j].conditions));
-
-                                                createBoxplot("#slot_time_boxplot_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition) {
-                                                    return condition.times;
-                                                }), colorsForConditions(tasks[i].instances[j].conditions));
-                                                createBarchart("#slot_time_chart_" + i + "_" + j, prepDataForPlot(tasks[i].instances[j], function(condition) {
-                                                    return condition.times;
-                                                }), colorsForConditions(tasks[i].instances[j].conditions));
-                                            }
-
-
-                                        }
-                                    }
-
-                                    $('#showResponses').click(function() {
-                                        $(".responseFields").toggle(this.checked);
-                                    });
-                                    $('#showAccuracyStats').click(function() {
-                                        $(".accuracyStatsFields").toggle(this.checked);
-                                    });
-                                    $('#showAccuracyGraphs').click(function() {
-                                        $(".accuracyGraphFields").toggle(this.checked);
-                                    });
-                                    $('#showTimeStats').click(function() {
-                                        $(".timeStatsFields").toggle(this.checked);
-                                    });
-                                    $('#showTimeGraphs').click(function() {
-                                        $(".timeGraphFields").toggle(this.checked);
-                                    });
-
-                                    $(".boxplot").hide();
-                                    $('#graphtype').on('change', function() {
-                                        if (this.value === "Bar chart") {
-                                            $(".barchart").show();
-                                            $(".boxplot").hide();
-                                        }
-                                        else {
-                                            $(".barchart").hide();
-                                            $(".boxplot").show();
-                                        }
-                                    });
-
-                                    $(".expand").mouseenter(function() {
-                                        $(this).addClass("expandover");
-                                    });
-                                    $(".expand").mouseleave(function() {
-                                        $(this).removeClass("expandover");
-                                    });
-
-                                    $(".statdetail").hide();
-
-                                    $(".expand").click(function(evt) {
-                                        $(this).addClass("expandclick");
-                                        $(this).animate({opacity: '1'}, 100, function() {
-                                            $(this).removeClass("expandclick");
-                                            var id = $(this).attr("id");
-                                            var split = id.split("_");
-                                            if (split[0] === "expandStat") {
-                                                $("#stat" + split[1]).toggle();
-                                            }
-                                            else
-                                                expandTask(split[1]);
-                                        });
-
-                                        evt.stopImmediatePropagation();
-                                    });
+                            
+                            rawData = data;
+                            createMatrixAndPlots(data, function(){                           
+                                                                        
+                                $('#showResponses').click(function() {
+                                    $(".responseFields").toggle(this.checked);
                                 });
-                            });
-                        });
+                                $('#showAccuracyStats').click(function() {
+                                    $(".accuracyStatsFields").toggle(this.checked);
+                                });
+                                $('#showAccuracyGraphs').click(function() {
+                                    $(".accuracyGraphFields").toggle(this.checked);
+                                });
+                                $('#showTimeStats').click(function() {
+                                    $(".timeStatsFields").toggle(this.checked);
+                                });
+                                $('#showTimeGraphs').click(function() {
+                                    $(".timeGraphFields").toggle(this.checked);
+                                });
+                                $('#showTaskInstances').click(function() {
+                                    $(".taskInstanceFields").toggle(this.checked);
+                                });                                
+
+                                $(".boxplot").hide();
+                                $(".barchart").show();                                    
+                                $('#graphtype').on('change', function() {                                        
+                                    if (this.value === "Bar charts") {                                            
+                                        $(".barchart").show();
+                                        $(".boxplot").hide();
+                                    }
+                                    else {
+                                        $(".barchart").hide();
+                                        $(".boxplot").show();
+                                    }
+                                });
+                                    
+                                $("#conditiontype").on('change', function(){
+                                    aggregation = getAggregation(this.value);
+                                    createMatrixAndPlots(rawData, function(){});
+                                    var graphTypeOption = $("#graphtype").val();
+                                    if (graphTypeOption === "Bar charts") {                                            
+                                        $(".barchart").show();
+                                        $(".boxplot").hide();
+                                    }
+                                    else {
+                                        $(".barchart").hide();
+                                        $(".boxplot").show();
+                                    } 
+                                    var taskInstanceOption = $("#showTaskInstances").is(':checked');
+                                    alert(taskInstanceOption);
+                                    if (taskInstanceOption) $(".taskInstanceFields").show();
+                                    else $(".taskInstanceFields").hide();
+                                });
+
+                                $(".expand").mouseenter(function() {
+                                    $(this).addClass("expandover");
+                                });
+                                $(".expand").mouseleave(function() {
+                                    $(this).removeClass("expandover");
+                                });
+                                $(".statdetail").hide();
+                                $(".expand").click(function(evt) {
+                                    $(this).addClass("expandclick");
+                                    $(this).animate({opacity: '1'}, 100, function() {
+                                        $(this).removeClass("expandclick");
+                                        var id = $(this).attr("id");
+                                        var split = id.split("_");
+                                        if (split[0] === "expandStat") {
+                                            $("#stat" + split[1]).toggle();
+                                        }
+                                        else
+                                            expandTask(split[1]);
+                                    });
+
+                                    evt.stopImmediatePropagation();
+                                });
+                            });       
+                    });
                     }
                 });
+            }
+            
+            function createMatrixAndPlots(data, callback){
+                
+                nextColor = 0;
+                condColMatch = [];
+                
+                var alltasks = formatTaskData(data.basicResults, aggregation.equal);
+                                
+                //once this is done, create the display matrix. This will contain svg and div slots
+                //in which we will drop the graphs in the next step
+                var tests = alltasks[0];
+                var entries = alltasks[1];
+                var tasks = alltasks[2];
+                var exits = alltasks[3];
+                
+                var which = ["tests","entries","tasks","exits"];
+                        
+                var html = createMatrix(tests, entries, tasks, exits);
+                $("#charts").html(html);
+
+                for (var t = 0; t<alltasks.length; t++){
+                    for (var i=0; i<alltasks[t].length; i++){
+                        var conditions;
+                        var colors; 
+                        conditions = alltasks[t][i].conditions;
+                        if (t == 2) colors = colorsForConditions(conditions);
+                        else colors = colorsForGroups(conditions);
+
+                        if (alltasks[t][i].responseType === "numeric")
+                              createBarchart("#slot_response_" + which[t] + "_" + i, 
+                                  prepDataForPlot(conditions, function(response) {
+                                      return response.response;
+                                  }), colors);
+                          else
+                              createHisto("#slot_response_" + which[t] + "_" + i, 
+                                  prepDataForPlot(conditions, function(response) {
+                                      return response.response;
+                                  }), colors);
+
+                          createBoxplot("#slot_box_accuracy_" + which[t] + "_" + i, 
+                              prepDataForPlot(conditions, function(response) {
+                                  return response.accuracy;
+                              }), colors);
+                          createBarchart("#slot_bar_accuracy_" + which[t] + "_" + i, 
+                              prepDataForPlot(conditions, function(response) {
+                                  return response.accuracy;
+                          }), colors);
+
+                          createBoxplot("#slot_box_time_" + which[t] + "_" + i, 
+                              prepDataForPlot(conditions, function(response) {
+                                  return response.time;
+                              }), colors);
+                          createBarchart("#slot_bar_time_" + which[t] + "_" + i, 
+                              prepDataForPlot(conditions, function(response) {
+                                  return response.time;
+                              }), colors);                          
+                    }
+                }                   
+                
+                callback();
+            }
+            
+            function getAggregation(value){
+                if (value === "Viewer"){
+                                            aggregation = new Object();
+                                            aggregation.equal = function(c1,c2){
+                                                if (c1.viewer === c2.viewer) return true;
+                                                return false;
+                                            }
+                                            aggregation.label = function(c){
+                                                return c.viewer;
+                                            }
+                                            aggregation.elements = ["Viewer"];
+                                        }
+                else if (value === "Data"){
+                                            aggregation = new Object();
+                                            aggregation.equal = function(c1,c2){
+                                                if (c1.dataset === c2.dataset) return true;
+                                                return false;
+                                            }
+                                            aggregation.label = function(c){
+                                                return c.dataset;
+                                            }
+                                            aggregation.elements = ["Data"];
+                                        }
+                else if (value === "Viewer and data"){
+                                            aggregation = new Object();
+                                            aggregation.equal = function(c1,c2){
+                                                if (c1.viewer === c2.viewer && c1.dataset === c2.dataset)
+                                                    return true;
+                                                return false;
+                                            }
+                                            aggregation.label = function(c){
+                                                return c.viewer + ", " + c.dataset;
+                                            }
+                                            aggregation.elements = ["Viewer","Data"];
+                }
+                return aggregation;
 
             }
 
@@ -284,110 +328,242 @@
                 return results == null ? null : results[1];
             }
 
+            
+            function formatTaskData(data, cequal) {
+                //cequal is a function; takes two conditions and checks if they are the same
+                //it allows us to split results by viewer, data, data x viewer, and, in the future
+                //by tasks
 
-
-            //tasks data comes from the server in one format (data) and needs to be translated into this format:
-            //an array of tasks; each task contains name, taskType (can be 'task', 'entry', 'exit'), an array of task instances,
-            //and the response Type (numeric, or otherwise); 
-            //each instance will in turn have a list of conditions
-            //each condition will be defined by a viewer name, a dataset name, and then array of accuraciese, responses, and times 
-            //which contain the values of these measurements for each user
-            //So: tasks[i].name, tasks[i].taskType, tasks[i].responseType, tasks[i].instances, 
-            //tasks[i].instances[j].conditions, tasks[i].instances[j].conditions[k].viewer, .dataset, .responses[0..n], .accuracies[0..n], .time[0..n]
-            function formatTaskData(data) {
-
-                // data = data.regular;
-
-                var tasks = [];
-                for (var i = 0; i < data.length; i++) {
-                    //going through tasks_types x conditions
-
+                //first, get the standardized test data
+                var standardizedTests = [];
+                for (var i=0; i<data.length; i++){
+                    if (!data[i].taskType.startsWith("test")) continue;
+                    
                     var taskIndex = -1;
-                    for (var j = 0; j < tasks.length; j++)
-                        if (tasks[j].name === data[i].taskName) {
+                    for (var j = 0; j < standardizedTests.length; j++)
+                        if (standardizedTests[j].testName === data[i].taskType.substring(4)) {
                             taskIndex = j;
                             break;
                         }
 
                     if (taskIndex < 0) {
-                        tasks.push({name: data[i].taskName, taskType: data[i].taskType, instances: [], responseType: data[i].responseType});
-                        taskIndex = tasks.length - 1;
+                        standardizedTests.push({testName: data[i].taskType.substring(4), responseType: data[i].responseType, conditions : []});
+                             taskIndex = standardizedTests.length - 1;
                     }
-                    var task = tasks[taskIndex];
+                    
+                    var test = standardizedTests[taskIndex];
 
-                    for (var j = 0; j < data[i].basicData.length; j++) {
-                        //going through users
-                        for (var k = 0; k < data[i].basicData[j].responses.length; k++) {
-                            //going through task instances
-                            if (k > task.instances.length - 1)
-                                task.instances.push({conditions: []});
-
-                            //check if the current condition exists
-                            var cond = null;
-                            for (var l = 0; l < task.instances[k].conditions.length; l++)
-                                if (task.instances[k].conditions[l].viewer === data[i].viewer && task.instances[k].conditions[l].data === data[i].dataset) {
-                                    cond = task.instances[k].conditions[l];
+                    var condition = {group: data[i].group, viewer:data[i].viewer, dataset:data[i].dataset};
+                    
+                    //find the condition that we should merge this record into
+                    var conIndex = -1;
+                    for (var j=0; j<test.conditions.length; j++)
+                        if (test.conditions[j].group === condition.group){
+                            conIndex = j;
+                            break;
+                        }
+                                            
+                    if (conIndex < 0){
+                        //insert the new conditions, but in lexicographical order (this ensures that conditions
+                        //are presented in the same order for all tasks
+                        var sortIndex =0;
+                        for (sortIndex = 0; sortIndex < test.conditions.length; sortIndex++)
+                            if (data[i].group.localeCompare(test.conditions[sortIndex].group) < 0)
                                     break;
-                                }
-                            if (cond == null) {
-                                cond = {viewer: data[i].viewer, data: data[i].dataset, responses: [], accuracies: [], times: []};
-                                task.instances[k].conditions.push(cond);
-                            }
-                            cond.responses.push(data[i].basicData[j].responses[k].response);
-                            cond.accuracies.push(parseFloat(data[i].basicData[j].responses[k].accuracy));
-                            cond.times.push(parseFloat(data[i].basicData[j].responses[k].time));
+                            test.conditions.splice(sortIndex, 0, {group: data[i].group, viewer:data[i].viewer, dataset:data[i].dataset, responses : []});
+                            conIndex = sortIndex;
+                    }
+                    
+                    for (var j=0; j<data[i].responses.length; j++)
+                        test.conditions[conIndex].responses.push(data[i].responses[j][0]);
+                    
+                        
+                };
+                
+                
+                var entryTasks = [];
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].taskType !== "entry") continue;
+                    
+                    var taskIndex = -1;
+                    for (var j = 0; j < entryTasks.length; j++)
+                        if (entryTasks[j].taskName === data[i].taskName) {
+                            taskIndex = j;
+                            break;
                         }
+
+                    if (taskIndex < 0) {
+                        entryTasks.push({taskName: data[i].taskName, responseType: data[i].responseType, conditions : []});
+                        taskIndex = entryTasks.length - 1;
                     }
-                }
+                    var task = entryTasks[taskIndex];
 
-                //let's compute summaries
-                for (var i = 0; i < tasks.length; i++) {
-                    if (tasks[i].instances.length == 1)
-                        continue; //if there's just one instance, the summary is the instance
-
-                    tasks[i].conditions = [];
-                    for (var j = 0; j < tasks[i].instances[0].conditions.length; j++) {
-                        var c = tasks[i].instances[0].conditions[j];
-                        tasks[i].conditions.push({viewer: c.viewer, data: c.data, responses: [], accuracies: [], times: []});
-                    }
-
-                    for (var c = 0; c < tasks[i].conditions.length; c++) {
-                        //for each condition we are going through all responses/accuracies/times and
-                        //average them over instances
-                        for (var j = 0; j < tasks[i].instances[0].conditions[c].accuracies.length; j++) {
-                            var avac = 0;
-                            var avtm = 0;
-                            for (var k = 0; k < tasks[i].instances.length; k++) {
-                                avac += tasks[i].instances[k].conditions[c].accuracies[j];
-                                avtm += tasks[i].instances[k].conditions[c].times[j];
-                            }
-                            avac /= tasks[i].instances.length;
-                            avtm /= tasks[i].instances.length;
-                            tasks[i].conditions[c].accuracies.push(avac);
-                            tasks[i].conditions[c].times.push(avtm);
-
+                    var condition = {viewer:data[i].viewer, dataset:data[i].dataset, group:data[i].group};
+                    
+                    //find the condition that we should merge this record into
+                    var conIndex = -1;
+                    for (var j=0; j<task.conditions.length; j++)
+                        if (data[i].group === task.conditions[j].group){
+                            conIndex = j;
+                            break;
                         }
+                                            
+                    if (conIndex < 0){
+                            //insert the new conditions, but in lexicographical order (this ensures that conditions
+                            //are presented in the same order for all tasks
+                            var sortIndex =0;
+                            for (sortIndex = 0; sortIndex < task.conditions.length; sortIndex++)
+                                if (data[i].group.localeCompare(task.conditions[sortIndex].group) < 0)
+                                    break;
+                            task.conditions.splice(sortIndex, 0, {viewer:data[i].viewer, dataset:data[i].dataset, group:data[i].group,responses : []});
+                            conIndex = sortIndex;
                     }
-                }
-
-                return tasks;
-
+                    
+                    for (var j=0; j<data[i].responses.length; j++)
+                        task.conditions[conIndex].responses.push(data[i].responses[j][0]);
             }
+            
+            
+                var exitTasks = [];
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].taskType !== "exit") continue;
+                    
+                    var taskIndex = -1;
+                    for (var j = 0; j < exitTasks.length; j++)
+                        if (exitTasks[j].taskName === data[i].taskName) {
+                            taskIndex = j;
+                            break;
+                        }
+
+                    if (taskIndex < 0) {
+                        exitTasks.push({taskName: data[i].taskName, responseType: data[i].responseType, conditions : []});
+                        taskIndex = exitTasks.length - 1;
+                    }
+                    var task = exitTasks[taskIndex];
+
+                    var condition = {viewer:data[i].viewer, dataset:data[i].dataset, group:data[i].group};
+                    
+                    //find the condition that we should merge this record into
+                    var conIndex = -1;
+                    for (var j=0; j<task.conditions.length; j++)
+                        if (data[i].group === task.conditions[j].group){
+                            conIndex = j;
+                            break;
+                        }
+                                            
+                    if (conIndex < 0){
+                            //insert the new conditions, but in lexicographical order (this ensures that conditions
+                            //are presented in the same order for all tasks
+                            var sortIndex =0;
+                            for (sortIndex = 0; sortIndex < task.conditions.length; sortIndex++)
+                                if (data[i].group.localeCompare(task.conditions[sortIndex].group) < 0)
+                                    break;
+                            task.conditions.splice(sortIndex, 0, {viewer:data[i].viewer, dataset:data[i].dataset, group:data[i].group,responses : []});
+                            conIndex = sortIndex;
+                    }
+                    
+                    for (var j=0; j<data[i].responses.length; j++)
+                        task.conditions[conIndex].responses.push(data[i].responses[j][0]);
+            }
+ 
+                       
+                
+                //finally, get all other tasks; split by conditions (use cequal); aggregate instances      
+                var tasks = [];
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].taskType !== "task") continue;
+                    
+                    var addHelper = function(dataRow, aggreg){
+                    
+                        var taskIndex = -1;
+                        for (var j = 0; j < tasks.length; j++)
+                            if (tasks[j].taskName === dataRow.taskName) {
+                                taskIndex = j;
+                                break;
+                            }
+
+                        if (taskIndex < 0) {
+                            tasks.push({taskName: dataRow.taskName, responseType: dataRow.responseType, conditions : [], aggregated:aggreg});
+                             taskIndex = tasks.length - 1;
+                        }
+                        var task = tasks[taskIndex];
+
+                        var condition = {viewer:dataRow.viewer, dataset:dataRow.dataset};
+                    
+                        //find the condition that we should merge this record into
+                        var conIndex = -1;
+                        for (var j=0; j<task.conditions.length; j++)
+                            if (cequal(task.conditions[j], condition)){
+                                conIndex = j;
+                                break;
+                            }
+                                            
+                        if (conIndex < 0){
+                            //insert the new conditions, but in lexicographical order (this ensures that conditions
+                            //are presented in the same order for all tasks
+                            var sortIndex =0;
+                            for (sortIndex = 0; sortIndex < task.conditions.length; sortIndex++)
+                                if (dataRow.viewer.localeCompare(task.conditions[sortIndex].viewer) < 0 ||
+                                        dataRow.dataset.localeCompare(task.conditions[sortIndex].dataset) < 0)
+                                    break;
+                            task.conditions.splice(sortIndex, 0, {viewer:dataRow.viewer, dataset:dataRow.dataset, responses : []});
+                            conIndex = sortIndex;
+                        }
+                    
+                        
+                        for (var j=0; j<dataRow.responses.length; j++){
+                            var avAcc = 0.;
+                            var avTm = 0.;
+                            for (var k=0; k<dataRow.responses[j].length; k++){
+                                avAcc += dataRow.responses[j][k].accuracy;
+                                avTm += dataRow.responses[j][k].time;
+                            }
+                            avAcc /= dataRow.responses[j].length;
+                            avTm /= dataRow.responses[j].length;
+                            
+                            var avResp = "na";
+                            if (!aggreg) avResp = dataRow.responses[j][0].response; 
+                            task.conditions[conIndex].responses.push({response:avResp, accuracy:avAcc, time:avTm});
+                        }
+                    };
+                    
+                    addHelper(data[i], true); //this adds the aggregated task! (true==aggregated)
+                    
+                    //can we add individual task instances?
+                    if (aggregation.elements.indexOf("Data") >= 0){//yes
+                        for (var j=0; j<data[i].responses[0].length; j++){ //go through all instances
+                            var instanceResponses = [];
+                            for (var k=0; k<data[i].responses.length; k++)
+                                instanceResponses.push([data[i].responses[k][j]]);
+                            var instanceRow = {taskName:data[i].taskName+"_"+(j+1), responseType:data[i].responseType,
+                                viewer:data[i].viewer, dataset:data[i].dataset, responses:instanceResponses};
+                            addHelper(instanceRow, false);  //false=instacne
+                        }
+                    }
+            }
+            
+            
+            
+            return [standardizedTests, entryTasks, tasks, exitTasks];
+        }
 
 
             function expandTask(task) {
                 $(".instance." + task).toggle();
             }
 
-            function prepDataForPlot(instance, f) {
+            function prepDataForPlot(conditions, f) {
                 var r = [];
-                for (var i = 0; i < instance.conditions.length; i++) {
+                for (var i = 0; i < conditions.length; i++) {
+                   // alert("condition " + i + " " + conditions[i].responses.length + " resps");
                     var rc = [];
-                    var what = f(instance.conditions[i]);
-                    for (var j = 0; j < what.length; j++)
-                        rc.push(what[j]);
+                    for (var j=0; j<conditions[i].responses.length; j++){
+                        var what = f(conditions[i].responses[j]);                   
+                        rc.push(what);
+                    }
                     r.push(rc);
                 }
+                //alert("prep data for plot: " + conditions.length + "\n" + r.length + "\n" + r);
                 return r;
             }
 
@@ -398,113 +574,144 @@
                 return (i % 2 == 0 ? (j % 2 == 0 ? "instanceeveneven" : "instanceevenodd") : (j % 2 == 0 ? "instanceoddeven" : "instanceoddodd"));
             }
 
-            function createMatrix(tasks) {
+            function createMatrix(tests, entries, tasks, exits) {
+               // alert("cm: " + tests.length);
 
-                var html = "<table>";
+                var html = "<table style='border-color:black'>";
 
                 //task names
-                html = createRowTaskNames(tasks, html);
-
-                //instance names
-                html = createRowInstanceNames(tasks, html);
+                html = createRowTaskNames(tests, entries, tasks, exits, html);
 
                 //conditions
-                html = createRowConditions(tasks, html);
+                html = createRowConditions(tests, entries, tasks, exits, html);
 
                 //responses (for instances, nothing for everything else)
-                html = createRowResponses(tasks, html);
+                html = createRowResponses(tests, entries, tasks, exits, html);
 
 
                 //accuracy stats (for summaries, nothing for everything else)
-                html = createRowStats(tasks, html, "accuracy");
+               // html = createRowStats(tasks, html, "accuracy");
 
                 //boxplot and barchart accuracy slots for summaries
-                html = createRowGraphs(tasks, html, "accuracy");
+                html = createRowGraphs(tests, entries, tasks, exits, html, "accuracy");
 
-                html = createRowStats(tasks, html, "time");
+              //  html = createRowStats(tasks, html, "time");
 
-                html = createRowGraphs(tasks, html, "time");
+                html = createRowGraphs(tests, entries, tasks, exits, html, "time");
 
                 return html;
             }
 
-            function createRowTaskNames(tasks, html) {
+            function createRowTaskNames(tests, entries, tasks, exits, html) {
                 html += "<tr>";
-                for (var i = 0; i < tasks.length; i++) {
-                    var cs = 0;
-                    if (tasks[i].instances.length == 1)
-                        cs = tasks[i].instances[0].conditions.length;
-                    else
-                        cs = tasks[i].instances[0].conditions.length * (tasks[i].instances.length + 1);
-
-                    html += "<td colspan=" + cs + " class=" + getTskClss(i) + ">" + tasks[i].name + "</td>";
+                var cnt = 0;
+                for (var i = 0; i < tests.length; i++){
+                    html += "<td class='" + getTskClss(cnt) + "' colspan=" + tests[i].conditions.length + ">" + tests[i].testName + "</td>";
+                    cnt++;
+                }
+                for (var i = 0; i < entries.length; i++){
+                    html += "<td class='" + getTskClss(cnt) + "' colspan=" + entries[i].conditions.length + ">" + entries[i].taskName + "</td>";
+                    cnt++;
+                }
+                for (var i = 0; i < tasks.length; i++){
+                    var cls = getTskClss(cnt) + (tasks[i].aggregated ? "" : " taskInstanceFields");
+                    html += "<td class='" + cls + "' colspan = " + tasks[i].conditions.length + ">" + tasks[i].taskName + "</td>";                
+                    cnt++;
+                }
+                for (var i = 0; i < exits.length; i++){
+                    html += "<td class='" + getTskClss(cnt) + "' colspan=" + exits[i].conditions.length + ">" + exits[i].taskName + "</td>";
+                    cnt++;
                 }
                 html += "</tr>";
+               // alert("html: " + html);
                 return html;
             }
 
-            function createRowInstanceNames(tasks, html) {
+            function createRowConditions(tests, entries, tasks, exits, html) {
                 html += "<tr>";
+                var cnt=0;
+               for (var i = 0; i < tests.length; i++){
+                   for (var j=0; j<tests[i].conditions.length; j++){
+                       var label = tests[i].conditions[j].group.substring(0,tests[i].conditions[j].group.indexOf("_"));
+                       var col = conditionColors[parseInt(label)];
+                       html += "<td class='" + getTskClss(cnt) + "'>" +
+                               "<div style='margin:5px 5px 5px 5px; background-color:" + col + "'>"  +  "gr" + label + "</div></td>";
+                   }
+                   cnt++;
+               }
+               
+               for (var i = 0; i < entries.length; i++){
+                   for (var j=0; j<entries[i].conditions.length; j++){
+                       var label = entries[i].conditions[j].group.substring(0,entries[i].conditions[j].group.indexOf("_"));
+                       //alert("entry label " + j + " " + label);
+                       var col = conditionColors[parseInt(label)];
+                       html += "<td class='" + getTskClss(cnt) + "'>" +
+                               "<div style='margin:5px 5px 5px 5px; background-color:" + col + "'>"  +  "gr" + label + "</div></td>";
+                   }
+                   cnt++;
+               }
+
                 for (var i = 0; i < tasks.length; i++) {
-                    if (tasks[i].instances.length == 1)
-                        html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getTskClss(i) + "></td>";
-                    else {
-                        html += "<td colspan=" + tasks[i].instances[i].conditions.length + " class=" + getTskClss(i) + "> <table width='100%'><tr><td>All instances</td><td width='11px' ><span class=expand id='button_" + tasks[i].name + "'><img src='expand-icon.png' width=10px heigh=10px></img></span></td></tr></table></td>";
-                        for (var j = 0; j < tasks[i].instances.length; j++)
-                            html += "<td colspan=" + tasks[i].instances[i].conditions.length + " class=" + getInstClss(i, j) + "><div class='instance " + tasks[i].name + "'> I" + (j + 1) + "</div></td>";
+                    for (var j=0; j<tasks[i].conditions.length; j++){
+                        var col = getConditionColor(tasks[i].conditions[j]);
+                        var cls = getTskClss(cnt) + (tasks[i].aggregated ? "" : " taskInstanceFields");
+                        html += "<td class='"+ cls + 
+                                "'><div style='margin:5px 5px 5px 5px; background-color:" + col + "'>" 
+                                + aggregation.label(tasks[i].conditions[j]) + "</div></td>";                  
                     }
+                    cnt++;  
                 }
+               for (var i = 0; i < exits.length; i++){
+                   for (var j=0; j<exits[i].conditions.length; j++){
+                       var label = exits[i].conditions[j].group.substring(0,exits[i].conditions[j].group.indexOf("_"));
+                       var col = conditionColors[parseInt(label)];
+                       html += "<td class='" + getTskClss(cnt) + "'>" +
+                               "<div style='margin:5px 5px 5px 5px; background-color:" + col + "'>"  +  "gr" + label + "</div></td>";
+                   }
+                   cnt++;
+               }
+                
                 html += "</tr>";
                 return html;
             }
 
-            function createRowConditions(tasks, html) {
+            function createRowResponses(tests, entries, tasks, exits, html) {
                 html += "<tr>";
-                for (var i = 0; i < tasks.length; i++) {
-                    var nrcol1 = tasks[i].instances.length + 1;
-                    if (tasks[i].instances.length == 1)
-                        nrcol1 = 1;
-
-                    for (var j = 0; j < nrcol1; j++) {
-                        var hideable = "instance ";
-                        if (j == 0)
-                            hideable = "";
-                        var cond = null;
-                        if (tasks[i].instances.length > 1 && j == 0)
-                            cond = tasks[i].conditions;
-                        else if (tasks[i].instances.length == 1)
-                            cond = tasks[i].instances[j].conditions;
-                        else
-                            cond = tasks[i].instances[j - 1].conditions;
-
-                        if (cond.length == 1) {
-                            html += "<td class=" + getTskClss(i) + "></td>";
-                        }
-                        else
-                            for (var k = 0; k < cond.length; k++) {
-                                var col = getConditionColor(cond[k]);
-                                html += "<td style='font-size:11px; background-color:" + col + "'>" + "<div style='width:100px' class='" + hideable + tasks[i].name + "'>" + formatCondition(cond[k].viewer, cond[k].data) + "</div></td>";
-                            }
-                    }
-                }
+                
+                var createResponseCell = function(naMessage, which, i, cls, nrConditions){
+                    if (naMessage != null)
+                        return "<td title='" + naMessage + "' colspan=" + nrConditions + " class='"+ cls + "'>NA</td>";
+                    
+                    var width = Math.max(nrConditions * 100, 250);
+                    var ret = "";
+                    ret += "<td class='" + cls + "' colspan=" + nrConditions + "><div class='responseFields'>" + 
+                                    "<div class=resultheader>responses</div>" + 
+                                    "<svg style='width:" + width + "px'" +
+                                        "id=slot_response_" + which + "_" + i + ">" + 
+                                    "</svg>" + 
+                            "</div></td>";
+                    return ret;  
+                };
+                var cnt = 0;
+                for (var i = 0; i < tests.length; i++){
+                   html += createResponseCell(null,"tests", i, getTskClss(cnt), tests[i].conditions.length);cnt++;}
+                
+                for (var i = 0; i < entries.length; i++){
+                   html += createResponseCell(null,"entries", i, getTskClss(cnt),  entries[i].conditions.length); cnt++;}
+                
+                for (var i = 0; i < tasks.length; i++){
+                   var cls = getTskClss(cnt) + (tasks[i].aggregated ? "" : " taskInstanceFields"); 
+                   html += createResponseCell(tasks[i].aggregated ? "Aggregated result; cannot show individual responses." : null, 
+                                "tasks", i, cls, tasks[i].conditions.length);cnt++;}
+                
+                for (var i = 0; i < exits.length; i++){
+                   html += createResponseCell(null, "exits", i, getTskClss(cnt),  exits[i].conditions.length); cnt++;
+               }
                 html += "</tr>";
                 return html;
             }
 
-            function createRowResponses(tasks, html) {
-                html += "<tr>";
-                for (var i = 0; i < tasks.length; i++) {
-                    var width = Math.max(tasks[i].conditions * 100, 250);
-                    if (tasks[i].instances.length > 1)
-                        html += "<td colspan=" + tasks[i].conditions.length + " class=" + getTskClss(i) + "><div class='responseFields'><div class=resultheader>responses</div>NA</td></td>";
-                    for (var j = 0; j < tasks[i].instances.length; j++)
-                        html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getInstClss(i, j) + "><div class='responseFields'><div class='instance " + tasks[i].name + "'><div class=resultheader>responses</div><svg style='width:" + (tasks[i].instances[j].conditions.length * 100) + "px' id=slot_response_charthisto_" + i + "_" + j + "></svg></div></td></td>";
-                }
-                html += "</tr>";
-                return html;
-            }
-
-            function createRowStats(tasks, html, accurtime) {
+           /* function createRowStats(tasks, html, accurtime) {
                 html += "<tr>";
                 for (var i = 0; i < tasks.length; i++) {
                     var stats = (accurtime === "accuracy" ? tasks[i].stats : tasks[i].timeStats);
@@ -522,39 +729,74 @@
                 }
                 html += "</tr>";
                 return html;
-            }
+            }*/
 
-            function createRowGraphs(tasks, html, accurtime) {
-                html += "<tr>";
-                for (var i = 0; i < tasks.length; i++) {
-                    if (tasks[i].instances.length == 1) {
-                        if (tasks[i].taskType === "task") {
-                            var width = Math.max(tasks[i].instances[0].conditions * 100, 250);
-                            html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getTskClss(i) + "><div class='" + accurtime + "GraphFields'><div class=resultheader>" + accurtime + "</div>";
-                            html += "<div class='boxplot' style='width:" + width + "px' id=slot_" + accurtime + "_boxplot_" + i + "_s></div>";
-                            html += "<svg class='barchart' style='width:" + width + "px' id=slot_" + accurtime + "_chart_" + i + "_s></svg></div></td>"
-                        }
-                        else
-                            html += "<td colspan=" + tasks[i].instances[0].conditions.length + " class=" + getTskClss(i) + "><div class='" + accurtime + "GraphFields'><div class=resultheader>" + accurtime + "</div>N/A</div></td>";
+            function createRowGraphs(tests, entries, tasks, exits, html, accurtime) {
+                
+                var h = "";
+                h += "<tr>";
+                
+                var createGraphCell = function(naMessage, accurtime, which, i, cls, nrConditions){
+                    if (naMessage != null){
+                        return "<td title='" + naMessage + "' colspan=" + nrConditions + " class='" + cls + "'>NA</td>";
                     }
-                    else {
-                        var width = Math.max(tasks[i].conditions * 100, 250);
-                        html += "<td colspan=" + tasks[i].conditions.length + " class=" + getTskClss(i) + "><div class='" + accurtime + "GraphFields'><div class=resultheader>" + accurtime + "</div>";
-                        html += "<div class='boxplot' style='width:" + width + "px' id=slot_" + accurtime + "_boxplot_" + i + "_s></div>";
-                        html += "<svg class='barchart' style='width:" + width + "px' id=slot_" + accurtime + "_chart_" + i + "_s></svg></td></td>";
+                    var ret = "";
+                    var width = Math.max(nrConditions * 100, 250);
+                    ret += "<td class='" + cls + "' colspan='" + nrConditions + "'><div class='" + accurtime + "GraphFields'>" +
+                                    "<div class=resultheader>" + accurtime + "</div>" +
+                                    "<div class='boxplot' style='width:" + width + "px' id=slot_box_" + accurtime + "_" + which + "_" + i + "></div>" + 
+                                    "<svg class='barchart' style='width:" + width + "px' height='200px' id=slot_bar_" + accurtime + "_" + which + "_" + i + "></svg>" + 
+                            "</td>";
+ 
+                    return ret;  
+                };
+                var cnt = 0;
+                for (var i = 0; i < tests.length; i++){
+                    if (accurtime === "accuracy")
+                        h += createGraphCell((tests[i].conditions[0].responses[0].accuracy < 0) ? "Accuracy was not collected for this task." : null, 
+                                       accurtime, "tests", i,getTskClss(cnt), tests[i].conditions.length);
+                    else               
+                        h += createGraphCell(null,accurtime, "tests", i, getTskClss(cnt), tests[i].conditions.length);
 
-                        for (var j = 0; j < tasks[i].instances.length; j++) {
-                            html += "<td colspan=" + tasks[i].instances[j].conditions.length + " class=" + getInstClss(i) + "><div class='" + accurtime + "GraphFields'><div class='instance " + tasks[i].name + "'><div class=resultheader>" + accurtime + "</div>";
-                            html += "<div class='boxplot' style='width:" + width + "px' id=slot_" + accurtime + "_boxplot_" + i + "_" + j + "></div>";
-                            html += "<svg class='barchart' style='width:" + width + "px' id=slot_" + accurtime + "_chart_" + i + "_" + j + "></svg></div></div></td>"
-                        }
-                    }
+                   cnt++;
+               }
+                
+                for (var i = 0; i < entries.length; i++){
+                   if (accurtime === "accuracy")
+                       h += createGraphCell((entries[i].conditions[0].responses[0].accuracy < 0) ? "Accuracy was not collected for this task." : null, 
+                   accurtime, "entries", i,getTskClss(cnt), entries[i].conditions.length);
+                    else
+                       h += createGraphCell(null, accurtime, "entries", i,getTskClss(cnt), entries[i].conditions.length);
+                    cnt++;
+               }
+                               
+                for (var i = 0; i < tasks.length; i++){
+                    
+                    var cls = getTskClss(cnt) + (tasks[i].aggregated ? "" : " taskInstanceFields");
+                    if (accurtime === "accuracy")
+                        h += createGraphCell((tasks[i].conditions[0].responses[0].accuracy < 0) ? "Accuracy was not collected for this task." : null,
+                           accurtime, "tasks", i, cls, tasks[i].conditions.length);
+                    else
+                        h += createGraphCell(null,accurtime, "tasks", i, cls, tasks[i].conditions.length);
+                    cnt++
                 }
-                html += "</tr>";
+                
+                for (var i = 0; i < exits.length; i++){
+                   if (accurtime === "accuracy")
+                       h += createGraphCell((exits[i].conditions[0].responses[0].accuracy < 0) ? "Accuracy was not collected for this task." : null, 
+                   accurtime, "exits", i, getTskClss(cnt), entries[i].conditions.length);
+                   else
+                       h += createGraphCell(null, accurtime, "exits", i, getTskClss(cnt), entries[i].conditions.length);
+                   cnt++;
+                }
+               
+                h += "</tr>";
+              //  alert(h);
+                html += h;
                 return html;
             }
 
-            function createRowEmpty(tasks, html) {
+ /*           function createRowEmpty(tasks, html) {
                 html += "<tr>";
                 var totalCol = 0;
                 for (var i = 0; i < tasks.length; i++) {
@@ -574,16 +816,15 @@
                 html += "<td colspan=" + totalCol + "><div style='height:20px'></div></td></tr>";
 
                 return html;
-            }
+            }*/
 
             function getConditionColor(cond) {
-                var key = cond.viewer + cond.data;
                 var retCol = null;
                 for (var i = 0; i < condColMatch.length; i++)
-                    if (condColMatch[i].viewer === cond.viewer && condColMatch[i].data === cond.data)
+                    if (aggregation.equal(condColMatch[i].condition,cond))
                         return condColMatch[i].color;
                 if (retCol == null)
-                    condColMatch.push({viewer: cond.viewer, data: cond.data, color: conditionColors[nextColor++]});
+                    condColMatch.push({condition : cond, color: conditionColors[nextColor++]});
                 return condColMatch[condColMatch.length - 1].color;
             }
 
@@ -591,6 +832,15 @@
                 var res = [];
                 for (var i = 0; i < conds.length; i++)
                     res.push(getConditionColor(conds[i]));
+                return res;
+            }
+            function colorsForGroups(conds){
+                var res = [];
+                for (var i=0; i<conds.length; i++){
+                   // alert("hh:" + conds[i].group);
+                    var index = conds[i].group.substr(0, conds[i].group.indexOf("_"));
+                    res.push(conditionColors[parseInt(index)]);
+                }
                 return res;
             }
             function processStats(task, stats) {
@@ -678,6 +928,9 @@
 
 
             function createBoxplot(div, data, cols) {
+               // alert("div boxplot " + div + "\n" + $(div)[0]);
+               if ($(div).length == 0)
+                   return;
 
                 if (typeof $(div).css("width") == 'undefined') {
                     return;
@@ -730,31 +983,40 @@
             }
 
 
-            function createBarchart(svg, data, cols) {
-
-
+            function createBarchart(svg, data, cols) {                
+                
+                if ($(svg).length == 0)
+                    return;
+                
                 var conditionWidth = parseInt($(svg).css("width").replace("px", "")) / data.length;
-
-
+                
                 var derivedData = [];
                 for (var i = 0; i < data.length; i++) {
                     var av = d3.mean(data[i]);
                     var stde = d3.deviation(data[i]) / Math.sqrt(1.0 * data[i].length);
+                    if (data[i].length == 1) stde = 0;
                     derivedData.push({value: av, stderr: stde});
                 }
+               // alert("dd: " + derivedData[0].value + " " + derivedData[0].stderr);
+                           
                 var barWidth = conditionWidth,
-                        height = 200;
-
+                height = 200;
+              
+              
                 var y = d3.scaleLinear()
                         .range([height, 0]);
 
                 var chart = d3.select(svg)
-                        .attr("height", height);
+                        .attr("height", "200px");
+                
+                var mx = d3.max(derivedData, function(d) {
+                        return d.value + d.stderr;
+                    });
+               // alert(mx);
+                if (mx === 0) mx = 1;
 
-                y.domain([0, d3.max(derivedData, function(d) {
-                        return d.value + d.stderr
-                    })]);
-
+                y.domain([0, mx]);
+                
 
                 var bar = chart.selectAll("g")
                         .data(derivedData)
@@ -970,11 +1232,18 @@
         <span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Accuracy graphs <input type="checkbox" id="showAccuracyGraphs" checked /></span>
         <span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Time stats <input type="checkbox" id="showTimeStats" checked /></span>
         <span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Time graphs <input type="checkbox" id="showTimeGraphs" checked /></span>
+        <span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Task instances <input type="checkbox" id="showTaskInstances" /></span>
 
 
         &nbsp&nbsp<span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Use <select id="graphtype">
                 <option value="Bar charts" selected>Bar charts</option>
                 <option value="Box plots">Box plots</option>
+            </select></span>
+        
+        &nbsp&nbsp<span style='background-color:#F0F0F0; margin:2px 2px 2px 2px'>Aggregate by <select id="conditiontype">
+                <option value="Viewer" selected>Viewer</option>
+                <option value="Data">Data</option>
+                <option value="Viewer and data">Viewer and data</option>
             </select></span>
 
         <br><br>

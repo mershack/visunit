@@ -1,48 +1,4 @@
 
-//Loads the list of all directories, then passes that array to a callback function. 
-//Each directory will be characterized by its name and a list of files in it. Json example:
-//{"name" : "directory1", "files":["file1", "file2", "file3"]}
-//The function receives as argument a callback function to be called once the loading is done.
-//This callback function should be called with three paramaters: (i) a bool indicating success (true) or failure (false); and
-//(ii) an error message in case of failure; (iii) the data array.
-function loadDirectories(whendone) {
-
-    var theURL = "StudySetup?command=loadDirectories";
-    $.ajax({
-        url: theURL,
-        success: function(data, status) {
-            whendone(true, "", data);
-        },
-        error: function(data, status) {
-            //handle error
-            alert("there was an error when loading the results" + status);
-        }
-    });
-
-
-
-
-//	$.get("directories.txt", function(data,status){
-//		
-//		var dataLines = data.trim().split("\n");
-//		var dirs = [];
-//		for (var i=0; i<dataLines.length; i++){
-//			var line = dataLines[i].trim().split(" || ");
-//			var dir = new Object();
-//			dir.name = line[0];
-//			dir.files = [];
-//			for (var j=1; j<line.length; j++)
-//				dir.files.push(line[j]);
-//		
-//			dirs.push(dir);
-//		}
-//		
-//		whendone(true,"", dirs);
-//	});
-
-}
-
-
 //Loads the list of all studies managed by a user, then passes them into a callback. 
 //Each study has the following json structure: 
 //			{"name" : "study1", 
@@ -61,13 +17,14 @@ function loadDirectories(whendone) {
 //This callback function should be called with three paramaters: (i) a bool indicating success (true) or failure (false); and
 //(ii) an error message in case of failure; (iii) the data array.
 function loadStudies(whendone) {
-
     var theURL = "StudySetup?command=loadDetailsOfAllStudies";
 
     $.ajax({
         url: theURL,
         success: function(data, status) {
             //handle success. data is [{name:"abc",...}, {name:"bcd",...}]
+            for (var i=0; i<data.length; i++)
+                data[i].resultsCount = parseInt(data[i].resultsCount);
             whendone(true, "", data);
         },
         error: function(data, status) {
@@ -76,87 +33,6 @@ function loadStudies(whendone) {
         }
 
     });
-
-
-
-
-    //some ajax call that gets all the study data
-    /*$.get("studies.txt", function(data,status){
-     
-     var dataLines = data.trim().split("\n");
-     var _studies = [];
-     var ind = 0;
-     
-     for (var i=0; i<dataLines.length; i++){
-     var line = dataLines[i].trim().split(" || ");
-     var study = new Object();
-     study.name = line[0];
-     study.viewers = [];
-     var nrViewers = parseInt(line[1]);
-     for (var j=0; j<nrViewers; j++)
-     study.viewers.push(line[2+j]);
-     study.viewerDesign = line[2 + nrViewers];
-     ind = 2 + nrViewers + 1;
-     
-     study.datasets = [];
-     var nrData = parseInt(line[ind]); ind++;
-     for (var j=0; j<nrData; j++)
-     study.datasets.push(line[ind + j]);
-     study.dataDesign = line[ind + nrData];
-     ind = ind + nrData + 1;
-     
-     var nrTasks = parseInt(line[ind]); ind++;
-     study.tasks = [];
-     for (var j=0; j<nrTasks; j++){
-     var taskobj = new Object();
-     taskobj.name = line[ind + (j*4)];
-     taskobj.count = line[ind + (j*4) + 1];
-     taskobj.time = line[ind + (j*4) + 2];
-     taskobj.training = line[ind +(j*4)+3];
-     study.tasks.push(taskobj);
-     }
-     ind = ind + 4*nrTasks;
-     
-     var nrIntros = parseInt(line[ind]); ind++;
-     study.intros = [];
-     for (var j=0; j<nrIntros; j++){
-     var introObj = new Object();
-     introObj.name = line[ind + j*2];
-     introObj.match = line[ind + j*2 +1];
-     study.intros.push(introObj);
-     
-     }
-     ind = ind + nrIntros*2;
-     
-     var nrTests = parseInt(line[ind]); ind++;
-     study.tests = [];
-     for (var j=0; j<nrTests; j++){
-     var testobj = new Object();
-     testobj.name = line[ind + j*3];
-     testobj.interface1 = line[ind + j*3 +1];
-     testobj.interface2 = line[ind + j*3 +2];
-     study.tests.push(testobj);
-     
-     }
-     ind = ind  + nrTests*3;
-     
-     study.width = line[ind];
-     study.height = line[ind+1];
-     
-     study.results = null;
-     study.entryTasks = ["age task", "experience task"];
-     study.exitTasks = ["liked it task", "comments task"];
-     
-     
-     
-     _studies.push(study);
-     }		
-     //study data loaded
-     
-     
-     whendone(true, "", _studies);
-     });  */
-
 }
 
 
@@ -187,25 +63,6 @@ function loadViewers(whendone) {
             alert("there was an error when loading the viewers ___ STATUS: " + status);
         }
     });
-
-
-//    $.get("viewers.txt", function(data, status) {
-//        var dataLines = data.trim().split("\n");
-//        var _viewers = [];
-//        for (var i = 0; i < dataLines.length; i++) {
-//            var line = dataLines[i].trim().split(" || ");
-//            var viewer = new Object();
-//            viewer.name = line[0];
-//            viewer.description = line[1];
-//            viewer.sourceDirectory = line[2];
-//            viewer.sourceFile = line[3];
-//            _viewers.push(viewer);
-//        }
-//        //viewers loaded
-//
-//
-//        whendone(true, "", _viewers);
-//    });
 }
 
 //Loads the list of all datasets managed by a user into an array, then passes the array to a callback.  
@@ -235,23 +92,6 @@ function loadDatasets(whendone) {
             alert("there was an error when loading the datasets ___ STATUS: " + status);
         }
     });
-
-//    $.get("datasets.txt", function(data, status) {
-//        var dataLines = data.trim().split("\n");
-//        var _datasets = [];
-//        for (var i = 0; i < dataLines.length; i++) {
-//            var line = dataLines[i].trim().split(" || ");
-//            var dataset = new Object();
-//            dataset.name = line[0];
-//            dataset.description = line[1];
-//            dataset.sourceDirectory = line[2];
-//            dataset.sourceFile = line[3];
-//            _datasets.push(dataset);
-//        }
-//        //datasets loaded
-//
-//        whendone(true, "", _datasets);
-//    });
 
 }
 
@@ -288,50 +128,6 @@ function loadTaskprotos(whendone) {
         }
     });
 
-
-
-//
-//    $.get("taskproto.txt", function(data, status) {
-//        var dataLines = data.trim().split("\n");
-//        var _tasks = [];
-//        for (var i = 0; i < dataLines.length; i++) {
-//            var line = dataLines[i].trim().split(" || ");
-//            var task = new Object();
-//            task.name = line[0];
-//            task.description = line[1];
-//            task.question = line[2];
-//            task.inputs = [];
-//            var nrInputs = parseInt(line[3]);
-//            for (var j = 0; j < nrInputs; j++) {
-//                var input = new Object();
-//                input.typeName = line[4 + j * 4];
-//                input.description = line[4 + j * 4 + 1];
-//                input.showInVis = line[4 + j * 4 + 2];
-//                input.specifyInVis = line[4 + j * 4 + 3]
-//                task.inputs.push(input);
-//            }
-//            task.answer = new Object();
-//            task.answer.type = line[4 + nrInputs * 4];
-//            if (task.answer.type === "Options(fixed)") {
-//                task.answer.options = [];
-//                var nrOptions = parseInt(line[4 + nrInputs * 4 + 1]);
-//                for (var j = 0; j < nrOptions; j++)
-//                    task.answer.options.push(line[4 + nrInputs * 4 + 2 + j]);
-//                task.answer.correctness = line[4 + nrInputs * 4 + 2 + nrOptions];
-//            }
-//            else if (task.answer.type === "Interface/Custom") {
-//                task.answer.customTypeName = line[4 + nrInputs * 4 + 1];
-//                task.answer.correctness = line[4 + nrInputs * 4 + 2];
-//            }
-//            else
-//                task.answer.correctness = line[4 + nrInputs * 4 + 1];
-//
-//            _tasks.push(task);
-//        }
-//
-//        whendone(true, "", _tasks);
-//    });
-
 }
 
 //TBD
@@ -352,27 +148,6 @@ function loadTaskinstances(whendone) {
     });
 
 
-
-
-
-//    $.get("taskinstances.txt", function(data, status) {
-//        var dataLines = data.trim().split("\n");
-//        var _tasks = [];
-//        for (var i = 0; i < dataLines.length; i++) {
-//            var line = dataLines[i].trim().split(" || ");
-//            var task = new Object();
-//            task.dataset = line[0];
-//            task.taskproto = line[1];
-//            task.viewer = line[2]
-//            task.instanceCount = parseInt(line[3]);
-//            _tasks.push(task);
-//        }
-//        //task instance info loaded
-//
-//
-//        whendone(true, "", _tasks);
-//    });
-
 }
 
 /**
@@ -386,7 +161,7 @@ function updateTaskInstance(taskName, viewerName, datasetName, instanceData, whe
     theURL += "&taskName=" + taskName + "&viewerName=" + viewerName + "&datasetName=" + datasetName;
     $.ajax({
         url: theURL,
-        type: 'POST',
+        type: 'GET',
         data: {instanceData: JSON.stringify(instanceData)},
         success: function(data, status) {
             whendone();
@@ -453,22 +228,6 @@ function loadIntros(whendone) {
             alert("there was an error when loading the Intros ___ STATUS: " + status);
         }
     });
-//
-//    $.get("intros.txt", function(data, status) {
-//        var dataLines = data.trim().split("\n");
-//        var _intros = [];
-//        for (var i = 0; i < dataLines.length; i++) {
-//            var line = dataLines[i].trim().split(" || ");
-//            var intro = new Object();
-//            intro.name = line[0];
-//            intro.description = line[1];
-//            intro.sourceDirectory = line[2];
-//            intro.sourceFile = line[3];
-//            _intros.push(intro);
-//        }
-//        //intros loaded
-//        whendone(true, "", _intros);
-//    });
 
 }
 
@@ -506,7 +265,9 @@ function loadTests(whendone) {
  */
 function getViewerDatasetTask(viewerName, datasetName, taskName, whendone) {
     var theURL = "StudySetup?command=getViewerDatasetTask";
-    theURL += "&viewerName=" + viewerName + "&datasetName=" + datasetName + "&taskName=" + taskName;
+    theURL += "&taskName=" + taskName;
+    if (viewerName !== "no viewer") theURL += "&viewerName=" + viewerName;
+    if (datasetName !== "no data") theURL += "&datasetName=" + datasetName;
     $.ajax({
         url: theURL,
         success: function(data, status) {
@@ -523,12 +284,13 @@ function getViewerDatasetTask(viewerName, datasetName, taskName, whendone) {
 //to be called when the response arrives; pass two params to this callback: a boolean to indicate success (true) or not (false), and 
 //an error message in case of failure.
 //check the loadStudies for info on the studydata object structure
-function updateStudyDataOnServer(newstudy, studydata, callback) {
+function updateStudyDataOnServer(newstudy, oldname, studydata, callback) {
+    //alert("update study data")
     //we will be sending the study data to the server using ajax
-    var theURL = "StudySetup?command=updateStudyData";
+    var theURL = "StudySetup?command=updateStudyData&new=" + newstudy + "&oldname=" + oldname;
     $.ajax({
         url: theURL,
-        type: 'GET',
+        type: 'POST',
         data: {studyData: JSON.stringify(studydata)},
         dataType: 'json',
         success: function(data, status) {
@@ -547,10 +309,8 @@ function updateStudyDataOnServer(newstudy, studydata, callback) {
 //to be called when the response arrives; pass two params to this callback: a boolean to indicate success (true) or not (false), and 
 //an error message in case of failure.
 //check the loadViewers for info on the viewerData object structure
-function updateViewerDataOnServer(newViewer, viewerData, callback) {
-    //alert("not implemented: updateViewerDataOnServer");
-
-    var theURL = "StudySetup?command=updateViewerData";
+function updateViewerDataOnServer(newViewer, oldname, viewerData, callback) {
+    var theURL = "StudySetup?command=updateViewerData&new=" + newViewer + "&oldname="+oldname;
     $.ajax({
         url: theURL,
         type: 'GET',
@@ -573,10 +333,9 @@ function updateViewerDataOnServer(newViewer, viewerData, callback) {
 //to be called when the response arrives; pass two params to this callback: a boolean to indicate success (true) or not (false), and 
 //an error message in case of failure.
 //check the loadDatasets for info on the datasetdata object structure
-function updateDatasetDataOnServer(newDataset, datasetData, callback) {
+function updateDatasetDataOnServer(newDataset, oldname,datasetData, callback) {
     //alert("not implemented: updateDatasetDataOnServer");
-
-    var theURL = "StudySetup?command=updateDatasetData";
+    var theURL = "StudySetup?command=updateDatasetData&new=" + newDataset + "&oldname="+oldname;
     $.ajax({
         url: theURL,
         type: 'GET',
@@ -621,10 +380,9 @@ function updateTaskprotoDataOnServer(newTask, taskData, callback) {
 //to be called when the response arrives; pass two params to this callback: a boolean to indicate success (true) or not (false), and 
 //an error message in case of failure.
 //check the loadIntros for info on the introData object structure
-function updateIntroDataOnServer(newIntro, introData, callback) {
-    //alert("not implemented: updateIntroDataOnServer");
-
-    var theURL = "StudySetup?command=updateIntroData";
+function updateIntroDataOnServer(newIntro, oldname, introData, callback) {
+    
+    var theURL = "StudySetup?command=updateIntroData&new=" + newIntro+ "&oldname="+oldname;;
     $.ajax({
         url: theURL,
         type: 'GET',
@@ -646,9 +404,9 @@ function updateIntroDataOnServer(newIntro, introData, callback) {
 //to be called when the response arrives; pass two params to this callback: a boolean to indicate success (true) or not (false), and 
 //an error message in case of failure.
 //check the loadTests for info on the testData object structure
-function updateTestDataOnServer(newTest, testData, callback) {
+function updateTestDataOnServer(newTest, oldname, testData, callback) {
 
-    var theURL = "StudySetup?command=updateTestData";
+    var theURL = "StudySetup?command=updateTestData&new=" + newTest + "&oldname="+oldname;;
     $.ajax({
         url: theURL,
         type: 'GET',
@@ -666,54 +424,6 @@ function updateTestDataOnServer(newTest, testData, callback) {
 
 
 }
-
-//creates a new directory on the server, in the users' managed space
-function createNewDirectoryOnServer(name, callback) {
-    //alert("not implemented: createNewDirectoryOnServer; Create on the server a folder with name " + name);
-
-    var theURL = "StudySetup?command=createNewDirectory&directoryName=" + name;
-
-    $.ajax({
-        url: theURL,
-        success: function(data, status) {
-            //handle success.             
-
-            whendone(true, "", data);
-        },
-        error: function(data, status) {
-            //handle error
-            alert("there was an error when creating the directory ___ STATUS: " + status);
-        }
-    });
-
-}
-
-//loads the files into the user's dir directory. The dir directory can be assumed to exist. 
-function addNewFilesOnServer(dir, files, callback) {
-    //we will be adding the files on the server.
-
-    var formData = new FormData();
-    for (var i = 0; i < files.length; i++)
-        formData.append("File", files[i]);
-
-
-    var theURL = "StudySetup?command=addNewFiles&directory=" + dir;
-
-    var xmlHttpRequest = getXMLHttpRequest();
-    xmlHttpRequest.onreadystatechange = function()
-    {
-        if (xmlHttpRequest.readyState === 4 && xmlHttpRequest.status === 200)
-        {
-            //use the callback
-            alert("Files have been successfully loaded");
-            callback(true, "");
-        }
-
-    };
-    xmlHttpRequest.open("POST", theURL, true);
-    xmlHttpRequest.send(formData);
-}
-
 
 //creates a task from an xml file; if a task with the same name exists, return error. 
 //the function should call the callback function once the server returns the result of the operation
@@ -766,12 +476,32 @@ function removeTaskInstanceFile(taskName, datasetName, viewerName, whendone){
         url: theURL,
         type: 'GET',
         dataType: 'json',
-        success: function(data, status) {
+        success: function(data, status) {           
             whendone(true);
         },
         error: function(data, status) {
             //handle error
             alert("there was when removing the taskInstance on the server"
+                    + " ___ STATUS: " + status);
+            
+            whendone(false);
+        }
+    });
+}
+
+function removeStudyFile(studyName, whendone){
+    var theURL = "StudySetup?command=removeStudyFile";
+    theURL += "&studyName=" + studyName;
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data, status) {
+            whendone(true);
+        },
+        error: function(data, status) {
+            //handle error
+            alert("there was when removing the study on the server"
                     + " ___ STATUS: " + status);
             
             whendone(false);
@@ -799,9 +529,66 @@ function removeViewerFile(viewerName, whendone){
     });
 }
 
+function removeDatasetFile(name, whendone){
+     var theURL = "StudySetup?command=removeDatasetFile";
+    theURL += "&datasetName=" + name;
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data, status) {
+            whendone(true);
+        },
+        error: function(data, status) {
+            alert("there was when removing the test file on the server"
+                    + " ___ STATUS: " + status);
+            
+            whendone(false);
+        }
+    });
+}
+
+function removeTaskprotoFile(name, whendone){
+     var theURL = "StudySetup?command=removeTaskprotoFile";
+    theURL += "&taskprotoName=" + name;
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data, status) {
+            whendone(true);
+        },
+        error: function(data, status) {
+            alert("there was when removing the intro file on the server"
+                    + " ___ STATUS: " + status);
+            
+            whendone(false);
+        }
+    });
+}
+
 function removeTestFile(testName, whendone){
      var theURL = "StudySetup?command=removeTestFile";
     theURL += "&testName=" + testName;
+    $.ajax({
+        url: theURL,
+        type: 'GET',
+        dataType: 'json',
+        success: function(data, status) {
+            whendone(true);
+        },
+        error: function(data, status) {
+            alert("there was when removing the test file on the server"
+                    + " ___ STATUS: " + status);
+            
+            whendone(false);
+        }
+    });
+}
+
+function removeIntroFile(name, whendone){
+     var theURL = "StudySetup?command=removeIntroFile";
+    theURL += "&introName=" + name;
     $.ajax({
         url: theURL,
         type: 'GET',

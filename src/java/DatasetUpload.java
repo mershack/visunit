@@ -55,9 +55,7 @@ public class DatasetUpload extends HttpServlet {
                         }
                     }
                     
-                     DatasetName = DatasetName.substring(0,DatasetName.indexOf("."));
-                    // System.out.println(DatasetName + "*****");
-                    
+                    DatasetName = DatasetName.substring(0,DatasetName.indexOf("."));                 
                     
                     String datasetFolderPath = getServletContext().getRealPath("datasets" + File.separator + DatasetName);
 
@@ -71,9 +69,9 @@ public class DatasetUpload extends HttpServlet {
                     for (FileItem item : multiparts) {
                         if (!item.isFormField()) {
                             String name = new File(item.getName()).getName();
-                            //write the file to disk
+                            
                             item.write(new File(datasetFolder + File.separator + name));
-                            //System.out.println("File name is :: " + name);  
+                             
                             out.print("Upload successeful");
                         }
                     }

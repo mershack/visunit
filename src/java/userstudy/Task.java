@@ -12,93 +12,62 @@ import java.util.ArrayList;
  * @author Mershack
  */
 public class Task {
-
+    
     private String name;
-    private Answer answer;
     private String question;
     private String description;
     private Input[] inputs;
-    private String count;
-    private String time;
-    private String training;       
-  
-    public Task(String name, Answer answer, String question, String description, Input[] inputs
-                , String count, String time, String trainingSize) {
+    private Answer answer;
+    
+ 
+    public Task(String name, String question, String description, Input[] inputs, Answer answer) {
+
         this.name = name;
-        this.answer = answer;
         this.question = question;
-        this.description = description;        
-        this.inputs = inputs;        
-        this.count = count;
-        this.time = time;
-        this.training = trainingSize;
+        this.description = description;
+        this.answer = answer;
+        this.inputs = inputs;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Answer getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(Answer answerType) {
-        this.answer = answerType;
+    public void setName(String taskname) {
+        this.name = taskname;
     }
 
     public String getQuestion() {
         return question;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
+    public void setQuestion(String taskQuestion) {
+        this.question = taskQuestion;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    
     public Input[] getInputs() {
         return inputs;
     }
 
-    public void setInputs(Input[] inputs) {
+    public void setInputTypes(Input[] inputs) {
         this.inputs = inputs;
     }
-
-    public String getCount() {
-        return count;
+    
+    public String getDescription() {
+        return description;
+    }
+    
+    public void setDescription(String taskDescription) {
+        this.description = taskDescription;
     }
 
-    public void setCount(String count) {
-        this.count = count;
+    //getting the answertype
+    public Answer getAnswer() {
+        return answer;
     }
 
-    public String getTime() {
-        return time;
+    //setting the answer type
+    public void setAnswer(Answer answer) {
+        this.answer = answer;
     }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getTrainingSize() {
-        return training;
-    }
-
-    public void setTrainingSize(String trainingSize) {
-        this.training = trainingSize;
-    }
-
-   
-
 }

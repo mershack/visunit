@@ -1,4 +1,5 @@
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,8 +30,10 @@ import userstudy.IntroductionFile;
 import userstudy.ListOfConditionsAndTheirCounters;
 import userstudy.QualitativeQuestion;
 import userstudy.StandardizedTest;
+import userstudy.Study;
 import userstudy.StudyParameters;
 import userstudy.TaskDetails;
+import userstudy.UserFile;
 import userstudy.ViewerManager;
 
 /**
@@ -41,6 +44,8 @@ import userstudy.ViewerManager;
 public class StudyManager extends HttpServlet {
 
     private final String DATA_DIR = "data";
+    private final String DEFAULT_USER = "mershack";
+    private final String CONFIG_DIR = "_config_files";
 
     private final String QUANT_QNS_FILENAME = "quantitativeQuestions.txt";
     private final String TASKS_NODES_FILENAME = "taskNodesIndexes.txt";//"tasksNodes.txt";
@@ -64,9 +69,7 @@ public class StudyManager extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        //  System.out.println("*** Size of evalquestions is ::: " + evalQuestions.size() + " && viewers are::: " + viewerConditionUrls.size());
 
-        System.out.println("Hey");
         try {
 
             HttpSession session = request.getSession();
@@ -74,13 +77,22 @@ public class StudyManager extends HttpServlet {
 
             printTheURL(request);
 
-            //get the environment from the session or create a new one if the session doesn't have the environment initialized
-            if (request.getParameter("studyname") != null) {
+            /**
+             * Steps: 1. First check if you can find the study's details from
+             * the session. 2. If you can find the session, then the study has
+             * already began otherwise this is the first time the study is
+             * starting 3. If this is the first time, load the details of the
+             * study from file, and show the introduction to the study. 4. For
+             * subsequent calls, you will know the question number and
+             * everything.
+             *
+             */
+            //get the environment from the session or create a new one if the 
+            //session doesn't have the environment initialized
+            if (request.getParameter("studyname") != null && request.getParameter("userid") != null) {
                 String studyname = request.getParameter("studyname");
                 String userid = request.getParameter("userid");
 
-                System.out.println("The user id is " + userid);
-                System.out.println("studyname is " + studyname);
                 session.setAttribute("studyname", studyname);
                 session.setAttribute("userid", userid);
 
@@ -88,12 +100,7 @@ public class StudyManager extends HttpServlet {
                 RequestDispatcher view = request.getRequestDispatcher("userstudy.html");
                 view.forward(request, response);
 
-                // }
             } else {
-                System.out.println("--- I'm here ----");
-                // printTheURL(request);
-
-                System.out.println("Best -- " + request.getParameter("studyname"));
 
                 String msg = "Finished";
                 String command = request.getParameter("command");
@@ -160,7 +167,7 @@ public class StudyManager extends HttpServlet {
                     for (int i = 0; i < upmts.preStudyQuestions.size(); i++) {
                         //  System.out.println("^^^^^^^^^"+ upmts.preStudyEvalQuestions.get(i).getQuestion() + ":::" + upmts.preStudyEvalQuestions.get(i).getAnswerTypeAndOutputType());
                         if (i == 0) {
-                            allqualQuestions = upmts.preStudyEvalQuestions.get(i).getQuestion() 
+                            allqualQuestions = upmts.preStudyEvalQuestions.get(i).getQuestion()
                                     + ":::" + upmts.preStudyEvalQuestions.get(i).getAnswerTypeAndOutputType();
                         } else {
                             allqualQuestions += "::::" + upmts.preStudyEvalQuestions.get(i).getQuestion() + ":::" + upmts.preStudyEvalQuestions.get(i).getAnswerTypeAndOutputType();
@@ -673,81 +680,90 @@ public class StudyManager extends HttpServlet {
 
         String datasetname = "";
         try {
-            //read the xml file that contains the details about the quantitative questions  
 
             //get the studydata url it will be in the user directory
             String studydataurl = "users" + File.separator + userid + File.separator
                     + "studies" + File.separator + upmts.studyname + File.separator + "data";
-            //+ "quanttasks" + File.separator + "quanttasklist.txt");
-            //  "studies" + File.separator + upmts.studyname + File.separator + "data";
 
-            String filename = getServletContext().getRealPath(studydataurl + File.separator + "quantitativeTasks.xml");
-            File fXmlFile = new File(filename);
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(fXmlFile);
+            String filePath = "users" + File.separator + userid + File.separator
+                    + "_config_files" + File.separator
+                    + "studies" + File.separator + upmts.studyname
+                    + File.separator + "data" + File.separator
+                    + "quantitativeTasks.json";
 
+            System.out.println("__**____");
+
+
+            /* String filename = getServletContext().getRealPath(studydataurl + File.separator + "quantitativeTasks.xml");
+             File fXmlFile = new File(filename); */
+            File f = new File(getServletContext().getRealPath(filePath));
+
+            FileReader reader = new FileReader(f);
+            Gson gson = new Gson();
+
+            BufferedReader br = new BufferedReader(reader);
+            Study studyObj = gson.fromJson(br, Study.class);
+
+            br.close();
+
+        //   DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            // DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            // Document doc = dBuilder.parse(fXmlFile);
             //optional, but recommended
             //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-            doc.getDocumentElement().normalize();
-
+            //  doc.getDocumentElement().normalize();
             //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-            NodeList taskNode = doc.getElementsByTagName("task");
-
-            NodeList preStudyTaskNode = doc.getElementsByTagName("preStudyTask");
-            NodeList postStudyTaskNode = doc.getElementsByTagName("postStudyTask");
-
-            NodeList introductionTaskNode = doc.getElementsByTagName("introFile");
-            NodeList standardizedTestsNode = doc.getElementsByTagName("standardTest");
-
+            // NodeList taskNode = doc.getElementsByTagName("task");
+          //  NodeList preStudyTaskNode = doc.getElementsByTagName("preStudyTask");
+            //  NodeList postStudyTaskNode = doc.getElementsByTagName("postStudyTask");
+           // NodeList introductionTaskNode = doc.getElementsByTagName("introFile");
+            // NodeList standardizedTestsNode = doc.getElementsByTagName("standardTest");
             // NodeList datasetNode = doc.getElementsByTagName("dataset");
             //NodeList datasetTypeNode = doc.getElementsByTagName("datasetType");
-            NodeList experimentTypeNode_vis = doc.getElementsByTagName("experimenttype_vis");
-            NodeList conditionNode = doc.getElementsByTagName("condition");
-            NodeList studynameNode = doc.getElementsByTagName("studyname");
-            NodeList qualtaskNode = doc.getElementsByTagName("qualtask");
-            NodeList viewerwidthNode = doc.getElementsByTagName("viewerwidth");
-            NodeList viewerheightNode = doc.getElementsByTagName("viewerheight");
-            NodeList trainingSizeNode = doc.getElementsByTagName("trainingsize");
-
-            NodeList datasetConditionsNode = doc.getElementsByTagName("datasetCondition");
-
+            //  NodeList experimentTypeNode_vis = doc.getElementsByTagName("experimenttype_vis");
+            // NodeList conditionNode = doc.getElementsByTagName("condition");
+            // NodeList studynameNode = doc.getElementsByTagName("studyname");
+            //  NodeList qualtaskNode = doc.getElementsByTagName("qualtask");
+            //  NodeList viewerwidthNode = doc.getElementsByTagName("viewerwidth");
+            //  NodeList viewerheightNode = doc.getElementsByTagName("viewerheight");
+            //  NodeList trainingSizeNode = doc.getElementsByTagName("trainingsize");
+         //   NodeList datasetConditionsNode = doc.getElementsByTagName("datasetCondition");
             //if there are datasets do the following:
-            if (datasetConditionsNode != null) {
-                ArrayList<String> dcn = new ArrayList<String>();
-                ArrayList<String> dt = new ArrayList<String>();
-                ArrayList<String> durl = new ArrayList<String>();
+       /*     if (datasetConditionsNode != null) {
+             ArrayList<String> dcn = new ArrayList<String>();
+             ArrayList<String> dt = new ArrayList<String>();
+             ArrayList<String> durl = new ArrayList<String>();
 
-                for (int i = 0; i < datasetConditionsNode.getLength(); i++) {
+             for (int i = 0; i < datasetConditionsNode.getLength(); i++) {
 
-                    Node nNode = datasetConditionsNode.item(i);
+             Node nNode = datasetConditionsNode.item(i);
 
-                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                        Element eElement = (Element) nNode;
+             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+             Element eElement = (Element) nNode;
 
-                        String datasetName = eElement.getElementsByTagName("dataset").item(0).getTextContent();
-                        String datasetFormat = eElement.getElementsByTagName("datasetFormat").item(0).getTextContent();
-                        String datasetType = eElement.getElementsByTagName("datasetType").item(0).getTextContent();
+             String datasetName = eElement.getElementsByTagName("dataset").item(0).getTextContent();
+             String datasetFormat = eElement.getElementsByTagName("datasetFormat").item(0).getTextContent();
+             String datasetType = eElement.getElementsByTagName("datasetType").item(0).getTextContent();
 
-                        System.out.println("Dataset name is :: " + datasetName);
+             System.out.println("Dataset name is :: " + datasetName);
 
-                        dcn.add(datasetName);
-                        dt.add(datasetType);
+             dcn.add(datasetName);
+             dt.add(datasetType);
 
-                        //the url will depend on the type of dataset
-                        if (datasetType.trim().equalsIgnoreCase("System_Datasets")) {
-                            durl.add(getServerUrl(request) + ("/datasets/" + datasetName + "/" + datasetName + datasetFormat));
-                        } else {
-                            durl.add(getServerUrl(request) + ("/users/" + userid + "/datasets/" + datasetName + "/" + datasetName + datasetFormat));
-                        }
+             //the url will depend on the type of dataset
+             if (datasetType.trim().equalsIgnoreCase("System_Datasets")) {
+             durl.add(getServerUrl(request) + ("/datasets/" + datasetName + "/" + datasetName + datasetFormat));
+             } else {
+             durl.add(getServerUrl(request) + ("/users/" + userid + "/datasets/" + datasetName + "/" + datasetName + datasetFormat));
+             }
 
-                    }
-                }
-                upmts.setDatasetConditionNames(dcn);
-                upmts.setDatasetTypes(dt);
-                upmts.setDatasetConditionUrls(durl);
-            }
-
+             }
+             }
+             upmts.setDatasetConditionNames(dcn);
+             upmts.setDatasetTypes(dt);
+             upmts.setDatasetConditionUrls(durl);
+             }
+             */
             //System.out.println("The size of the datasets is " + datasetNode.getLength());
             //get the dataseturl
             //  datasetname = ((Element) datasetNode.item(0)).getTextContent();
@@ -756,55 +772,37 @@ public class StudyManager extends HttpServlet {
             //  upmts.datasetname = datasetname;
             // upmts.nodePositions = "datasets" + File.separator + datasetname + File.separator + "positions.txt";
             //get the studyname
-            upmts.studyname = ((Element) studynameNode.item(0)).getTextContent();
+            //upmts.studyname = ((Element) studynameNode.item(0)).getTextContent();
 
-            //get the experiment type
-            upmts.expType_vis = ((Element) experimentTypeNode_vis.item(0)).getTextContent();
-            //get the training size
-            if (trainingSizeNode != null && trainingSizeNode.item(0) != null) {
-                upmts.trainingSize = Integer.parseInt(((Element) trainingSizeNode.item(0)).getTextContent());
-            }
+            /*       //get the experiment type
+             upmts.expType_vis = ((Element) experimentTypeNode_vis.item(0)).getTextContent();
+             //get the training size
+             if (trainingSizeNode != null && trainingSizeNode.item(0) != null) {
+             upmts.trainingSize = Integer.parseInt(((Element) trainingSizeNode.item(0)).getTextContent());
+             }
 
-            //NB: We do not want training size to be less than 2.
-            if (upmts.trainingSize < 2) {
-                upmts.trainingSize = 2;
-            }
-
+             //NB: We do not want training size to be less than 2.
+             if (upmts.trainingSize < 2) {
+             upmts.trainingSize = 2;
+             }  */
             //get the condition urls and shortnames
-            for (int i = 0; i < conditionNode.getLength(); i++) {
-                Node nNode = conditionNode.item(i);
+            for (int i = 0; i < studyObj.getViewers().length; i++) {
+            //    Node nNode = conditionNode.item(i);
 
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
+                upmts.viewerConditionShortnames.add(studyObj.getViewers()[i].getName());
 
-                    String conditionurl = eElement.getElementsByTagName("conditionurl").item(0).getTextContent();
-                    String conditionshortname = eElement.getElementsByTagName("conditionshortname").item(0).getTextContent();
+                UserFile viewerObj = loadAViewer(studyObj.getViewers()[i].getName(), userid, request);
 
-                    upmts.viewerConditionShortnames.add(conditionshortname);
+                    //String url = "users/" + userid + "/viewers/" + conditionurl;
+                upmts.viewerConditionUrls.add(viewerObj.getUrl());
 
-                    String url = "users/" + userid + "/viewers/" + conditionurl;
-
-                    upmts.viewerConditionUrls.add(url);
-                    System.out.println("The url is" + url);
-
-                }
             }
 
             //get the task name, question, size, and time
             upmts.totalNumOfQuestions = 0;
             for (int temp = 0; temp < taskNode.getLength(); temp++) {
-                Node nNode = taskNode.item(temp);
-
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-
-                    String questionCode = eElement.getElementsByTagName("name").item(0).getTextContent();
-
-                    //read the task details from file and do something with it.
-                    String question = eElement.getElementsByTagName("question").item(0).getTextContent();
-                    String questionSize = eElement.getElementsByTagName("size").item(0).getTextContent();
-                    String questionTime = eElement.getElementsByTagName("time").item(0).getTextContent();
-                    //taskTypes.add(questionCode);
+                
+                     //taskTypes.add(questionCode);
                     upmts.questionCodes.add(questionCode);
                     upmts.questions.add(question);
                     upmts.questionSizes.add(Integer.parseInt(questionSize));
@@ -823,7 +821,7 @@ public class StudyManager extends HttpServlet {
 
                     upmts.taskDetails.add(td);
 
-                }
+                
             }
 
             if (upmts.expType_vis.equalsIgnoreCase("within")) {
@@ -1072,6 +1070,41 @@ public class StudyManager extends HttpServlet {
         upmts.utils = new MyUtils(upmts.viewerConditionShortnames);
     }
 
+    public UserFile loadAViewer(String filename, String userid, HttpServletRequest request) {
+        String viewerJSON = "";
+        UserFile viewerObj = null;
+
+        try {
+            String filePath = "users" + File.separator + userid
+                    + File.separator + CONFIG_DIR + File.separator + "viewers"
+                    + File.separator + filename;
+
+            File f = new File(getServletContext().getRealPath(filePath));
+
+            FileReader reader = new FileReader(f);
+
+            Gson gson = new Gson();
+
+            BufferedReader br = new BufferedReader(new FileReader(f));
+
+            viewerObj = gson.fromJson(br, UserFile.class);
+            br.close();
+
+            //compose the url of the viewerObject.
+            String url = getServerUrl(request) + "/users/" + userid + "/" + viewerObj.getSourceDirectory()
+                    + "/" + viewerObj.getSourceFile();
+            viewerObj.setUrl(url);
+
+            viewerJSON = gson.toJson(viewerObj);
+
+            //close the bufferedreader 
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return viewerObj;
+    }
+
     /**
      * This method will be used to adjust the conditions when there are more
      * than one dataset practically, each condition will be paired with all the
@@ -1219,8 +1252,8 @@ public class StudyManager extends HttpServlet {
                 //we will read the file from the main quanttask directory.
                 System.out.println("user task shortname is empty");
                 taskFileName = getServletContext().getRealPath("quanttasks" + File.separator + sys_taskShortname + ".xml");
-                
-                System.out.println("__"+taskFileName);
+
+                System.out.println("__" + taskFileName);
             }
 
             //read the quanttasks file and return the answer type for the current task.
@@ -1229,15 +1262,14 @@ public class StudyManager extends HttpServlet {
             File fXmlFile = new File(taskFileName);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            
-            if(fXmlFile.exists()){
+
+            if (fXmlFile.exists()) {
                 System.out.println("__File exists. ");
-            }
-            else{
+            } else {
                 System.out.println("__File does not exist.");
             }
-            
-            System.out.println("fXmlFile___"+fXmlFile);
+
+            System.out.println("fXmlFile___" + fXmlFile);
             System.out.println("___________________________________");
             Document doc = dBuilder.parse(fXmlFile);
             System.out.println("*************************");
@@ -1466,10 +1498,9 @@ public class StudyManager extends HttpServlet {
                     upmts.tutorialViewerShortnames.add(upmts.viewerConditionShortnames.get(i));
                     upmts.tutorialViewerUrls.add(upmts.viewerConditionUrls.get(i));
                 }
-            }
-            else{
-                   upmts.tutorialViewerShortnames.add(upmts.viewerConditionShortnames.get(0));
-                    upmts.tutorialViewerUrls.add(upmts.viewerConditionUrls.get(0));
+            } else {
+                upmts.tutorialViewerShortnames.add(upmts.viewerConditionShortnames.get(0));
+                upmts.tutorialViewerUrls.add(upmts.viewerConditionUrls.get(0));
             }
             System.out.println("&& tutorial viewer-size-" + upmts.tutorialViewerUrls.size());
 
@@ -1481,21 +1512,18 @@ public class StudyManager extends HttpServlet {
                 }
 
                 for (int i = 0; i < upmts.questionCodes.size(); i++) {
-                    
-                    
-                    
+
                     String taskXmlName = upmts.questionCodes.get(i) + ".xml";
 
-                    System.out.println("__CODE="+taskXmlName);
-                    
+                    System.out.println("__CODE=" + taskXmlName);
+
                     taskFilenameUrl = getServletContext().getRealPath("users" + File.separator + userid + File.separator
                             + "taskInstances" + File.separator
                             + viewerNames.get(j) + File.separator + taskXmlName);
 
-                    
-                    System.out.println("i____"+upmts.taskDetails.size());
+                    System.out.println("i____" + upmts.taskDetails.size());
                     TaskDetails td = upmts.taskDetails.get(i);
-                    
+
                     upmts.inputTypeList.add(td.getInputTypes());
 
                     int questionsize = upmts.questionSizes.get(i);               //questionSize
@@ -1548,22 +1576,21 @@ public class StudyManager extends HttpServlet {
 
                                 //add the question to either the tutorial list or the test list
                                 //System.out.println("&&tutorial count is " + tutorialCount);
-
-                                if ((tutorialCount < upmts.trainingSize  
+                                if ((tutorialCount < upmts.trainingSize
                                         && upmts.tutorialQuestions.size() < (upmts.trainingSize * (j + 1) * upmts.questionCodes.size())) //we will only use the first dataset for training.
                                         && !upmts.questionCodes.get(i)
                                         .trim().equalsIgnoreCase("howManyClustersAreThere") //this is a hack
                                         && !upmts.questionCodes.get(i).trim().equalsIgnoreCase("areTwoNamedNodesConnected")
                                         && !upmts.questionCodes.get(i).trim().equalsIgnoreCase("rememberNodesUsedInCommonNeighbor")) {
-                                    
-                                    System.out.println("_EVAL--Total Size is "+ upmts.trainingSize * (j + 1)   + "___ "+evalQn.getQuestion());
-                                    
+
+                                    System.out.println("_EVAL--Total Size is " + upmts.trainingSize * (j + 1) + "___ " + evalQn.getQuestion());
+
                                     upmts.tutorialQuestions.add(evalQn);
                                     tutorialCount++;
                                 } else {
                                     // tutorialPopulated = true;
                                     upmts.evalQuestions.add(evalQn);
-                                     System.out.println("------> "+tutorialCount + "___ "+evalQn.getQuestion());
+                                    System.out.println("------> " + tutorialCount + "___ " + evalQn.getQuestion());
                                     questionCount++;
                                 }
                                 if (questionCount == questionsize) {
@@ -1668,21 +1695,19 @@ public class StudyManager extends HttpServlet {
                     if (upmts.getDatasetTypes().get(j).trim().equalsIgnoreCase("System_Datasets")) {
                         taskFilenameUrl = getServletContext().getRealPath("taskInstances" + File.separator
                                 + upmts.getDatasetConditionNames().get(j) + File.separator + taskXmlName);
-                   
-                        System.out.println("System_dataset_"+taskFilenameUrl);
-                    
-                    
+
+                        System.out.println("System_dataset_" + taskFilenameUrl);
+
                     } else {
                         taskFilenameUrl = getServletContext().getRealPath("users" + File.separator
                                 + userid + File.separator + "taskInstances" + File.separator
                                 + upmts.getDatasetConditionNames().get(j) + File.separator + taskXmlName);
-                        
+
                         System.out.println("user_dataset");
                     }
 
-                    
-                    System.out.println("taskXmlname__"+taskFilenameUrl);
-                    
+                    System.out.println("taskXmlname__" + taskFilenameUrl);
+
                     TaskDetails td = upmts.taskDetails.get(i);
                     upmts.inputTypeList.add(td.getInputTypes());
 

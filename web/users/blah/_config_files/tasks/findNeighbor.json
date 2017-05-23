@@ -1,0 +1,1 @@
+{"name":"findNeighbor","question":"Find and select a common neighbor of the two selected nodes (if there is one).","description":"Find a common neighbor of two selected nodes.","inputs":[{"typeName":"SelectedNodes","description":"The two nodes.","specifyInVis":"yes","showInVis":"yes"}],"answer":{"type":"Interface/Custom","correctness":"yes","customTypeName":"SelectedPath"}}

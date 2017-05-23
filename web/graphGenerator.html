@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+.link {stroke: black;}
+.node {stroke: white; stroke-width: 3px;}
+</style>
+
+<body>
+
+    <input type="button" onclick="printgraph()" value="print">
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<script>
+
+var nodes;
+var links;
+var svgnodes;
+var svglinks;
+
+function printgraph(){
+    var json = "{\"nodes\":[";
+    for (var i=0; i<nodes.length; i++){
+        var node = d3.select("#node"+i);
+        json += "{\"id\":\"" + i + "\",\"x\":\"" + node.attr("cx") + "\",\"y\":\"" + node.attr("cy") + "\"}";
+        if (i != nodes.length-1)
+            json += ",";
+    }
+    json += "],\"links\":[";
+    for (var i=0; i<links.length; i++){
+        var link = d3.select("#link"+i);
+        json += "{\"id\":\"" + i + "\",\"x1\":\"" + link.attr("x1") + "\",\"y1\":\"" + link.attr("y1") + 
+                "\",\"x2\":\"" + link.attr("x2") + "\",\"y2\":\"" + link.attr("y2") + "\"," + 
+                "\"source\":\"" + links[i].source + "\",\"target\":\"" + links[i].target + "\"}";
+        if (i != links.length-1)
+            json += ",";
+    }
+    json += "]}";
+    console.log(json);
+
+}
+var width = 700, height = 500, colors = d3.scale.category10();
+
+var n = 50, // number of nodes
+    m = 180, // number of links
+    charge = -1000;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .on("mousedown", create);
+
+create();
+
+function create () {
+  svg.selectAll(".link, .node").remove();
+  randomGraph(n, m, charge);
+}
+
+function randomGraph (n, m, charge) { //creates a random graph on n nodes and m links
+  nodes = d3.range(n).map(Object),
+      list  = randomChoose(unorderedPairs(d3.range(n)), m),
+      links = list.map(function (a) { return {source: a[0], target: a[1]} });
+
+  var force = d3.layout.force()
+      .size([width, height])
+      .nodes(nodes)
+      .links(links)
+      .charge(charge)
+      .on("tick", tick)
+      .start();
+
+  svgLinks = svg.selectAll(".link").data(links)
+    .enter().append("line")
+      .attr("class", "link")
+      .attr("id", function(d,i){return "link"+i});
+
+  svgNodes = svg.selectAll(".node").data(nodes)
+    .enter().append("circle")
+      .attr("class", "node")
+      .attr("id", function(d,i){return "node"+i;})
+      .attr("r", 3)
+      .style("fill", "white");
+
+  svgNodes.transition().duration(800)
+      .attr("r", function (d) { return 3 + 3 * d.weight })
+      .style("fill", function (d) { return colors(d.weight) });
+
+  svgLinks.transition().duration(800)
+      .style("stroke-width", 3);
+
+  function tick () {
+    svgNodes
+        .attr("cx", function(d) { return d.x })
+        .attr("cy", function(d) { return d.y });
+
+    svgLinks
+        .attr("x1", function(d) { return d.source.x })
+        .attr("y1", function(d) { return d.source.y })
+        .attr("x2", function(d) { return d.target.x })
+        .attr("y2", function(d) { return d.target.y });
+  }
+}
+
+function randomChoose (s, k) { // returns a random k element subset of s
+  var a = [], i = -1, j;
+  while (++i < k) {
+    j = Math.floor(Math.random() * s.length);
+    a.push(s.splice(j, 1)[0]);
+  };
+  return a;
+}
+
+function unorderedPairs (s) { // returns the list of all unordered pairs from s
+  var i = -1, a = [], j;
+  while (++i < s.length) {
+    j = i;
+    while (++j < s.length) a.push([s[i],s[j]])
+  };
+  return a;
+}
+
+</script>

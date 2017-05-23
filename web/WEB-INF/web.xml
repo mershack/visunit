@@ -52,6 +52,10 @@
         <servlet-name>ManageStudies</servlet-name>
         <servlet-class>userstudy.ManageStudies</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FileManagement</servlet-name>
+        <servlet-class>userstudy.FileManagement</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>NewServlet</servlet-name>
         <url-pattern>/NewServlet</url-pattern>
@@ -103,6 +107,10 @@
     <servlet-mapping>
         <servlet-name>ManageStudies</servlet-name>
         <url-pattern>/ManageStudies</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FileManagement</servlet-name>
+        <url-pattern>/FileManagement</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

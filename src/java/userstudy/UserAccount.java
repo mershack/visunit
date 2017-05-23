@@ -56,64 +56,57 @@ public class UserAccount extends HttpServlet {
             if (command.equalsIgnoreCase("createNewAccount")) {
                 //get the username
                 //get the password
-                //get the first name
-                //get the last name
-                //save this to an xml file   
+                //save this to an xml file               
 
                 String username = request.getParameter("username");
-                String firstname = request.getParameter("firstname");
-                String lastname = request.getParameter("lastname");
+                String firstname = "default";
+                String lastname = "default";
                 String password = request.getParameter("password");
 
+      
+                
                 if (checkUserNameAvailability(username)) {
-                    out.print("false");
+                    System.out.println("Account exists: " + username + ", " + password);
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    //out.print("false");
                 } else {
-                    File userAccountfile = new File(getServletContext().getRealPath("user-accounts" + File.separator + username + ".xml"));
+                    System.out.println("Creating account: " + username + ", " + password);
+                     
+                    ///set everything up everything else
+                    
+                    session.setAttribute("username", username);                
+                
+                    File userDir = new File(getServletContext()
+                            .getRealPath("users" + File.separator + username));
+                    userDir.mkdir();
+                    
+                    File configDir = new File(getServletContext()
+                            .getRealPath("users" + File.separator + username + File.separator + "_config_files"));
+                    configDir.mkdir();
 
-                    BufferedWriter bw1 = new BufferedWriter(new FileWriter(userAccountfile));
+                    String[] dirs = {"datasets", "intros", "studies", "viewers", "tests", "tasks", "taskInstances", "taskInstanceFiles"};
+                    for (int i=0; i<dirs.length; i++){
+                        File dir = new File(getServletContext()
+                                .getRealPath("users" + File.separator + username + File.separator + "_config_files" + File.separator + dirs[i]));
+                        dir.mkdir();
+                    }
+                    
+                    
+                    //save the password
+                    File passFile = new File(getServletContext()
+                            .getRealPath("users" + File.separator + username + 
+                            File.separator + "_config_files" + File.separator + username + ".password"));
+
+                    BufferedWriter bw1 = new BufferedWriter(new FileWriter(passFile));
 
                     PrintWriter pw1 = new PrintWriter(bw1);
-
-                    pw1.println("<?xml version=\"1.0\"?>");   //first line of the xml
-                    pw1.println("\t<user_account>");
-
-                    pw1.println("\t\t<username>" + username + "</username>");
-                    pw1.println("\t\t<password>" + password + "</password>");
-                    pw1.println("\t\t<firstname>" + firstname + "</firstname>");
-                    pw1.println("\t\t<lastname>" + lastname + "</lastname>");
-
-                    pw1.println("\t</user_account>");
-
+                    pw1.println(password);
                     pw1.close();
                     bw1.close();
 
                     out.print("true");
                 }
-                session.setAttribute("username", username);
                 
-                //prepare user directories
-               File userDir = new File(getServletContext()
-                       .getRealPath("users" + File.separator + username));
-               userDir.mkdir();
-               
-               //make the other dirs
-               File dsDir = new File(getServletContext()
-                       .getRealPath("users" + File.separator + username  +File.separator+ "datasets"));
-               dsDir.mkdir();
-               File vDir = new File(getServletContext()
-                       .getRealPath("users" + File.separator + username  +File.separator+ "viewers"));
-               vDir.mkdir();
-               
-                File sDir = new File(getServletContext()
-                       .getRealPath("users" + File.separator + username  +File.separator+ "studies"));
-               sDir.mkdir();
-               
-                File qtDir = new File(getServletContext()
-                       .getRealPath("users" + File.separator + username  +File.separator+ "quanttasks"));
-               qtDir.mkdir();
-               File inDir = new File(getServletContext()
-                       .getRealPath("users" + File.separator + username  +File.separator+ "taskInstances"));
-               inDir.mkdir();
             
             } else if (command.equalsIgnoreCase("getUserId")) {
                 String username = "";
@@ -129,57 +122,33 @@ public class UserAccount extends HttpServlet {
             } else if (command.equalsIgnoreCase("login")) {
 
                 //check the login detils
-                String username = request.getParameter("username");
+                String username = request.getParameter("username").toLowerCase();
                 String password = request.getParameter("password");
+                
+                System.out.println("Attempting log in: " + username + "," + password);
 
-               // System.out.println("givenUsername: " + username);
+                String filename = getServletContext()
+                        .getRealPath("users" + File.separator + username + 
+                                File.separator + "_config_files" + File.separator + username + ".password");
+                
+                try{
+                BufferedReader br = new BufferedReader(new FileReader(filename));
 
-                String filename = getServletContext().getRealPath("user-accounts" + File.separator + username + ".xml");
-                File fXmlFile = new File(filename);
-
-                String accountExists = "false";
-
-                if (fXmlFile.exists()) {
-
-                    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                    Document doc = dBuilder.parse(fXmlFile);
-
-                    //optional, but recommended
-                    //read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-                    doc.getDocumentElement().normalize();
-
-                    //System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-                    NodeList userNameNode = doc.getElementsByTagName("username");
-
-                    NodeList passwordNode = doc.getElementsByTagName("password");
-
-                    String userNameInFile = userNameNode.item(0).getTextContent();
-                    String passwordInFile = passwordNode.item(0).getTextContent();
-
-                    //System.out.println("username ON file: "+userNameInFile);
-                    //System.out.println("password on file: "+ passwordInFile);
-                    //compare the two now.
-                    username = username.trim();
-                    password = password.trim();
-                    userNameInFile = userNameInFile.trim();
-                    passwordInFile = passwordInFile.trim();
-                    
-                    System.out.println("usernamein file: "+userNameInFile);
-                    System.out.println("passwordinfile: "+ passwordInFile);
-
-                    if (username.equalsIgnoreCase(userNameInFile)
-                            && password.equalsIgnoreCase(passwordInFile)) {
-
-                        accountExists = "true";
-                        session.setAttribute("username", username);
-                    }
-                    
-                  
-
+                String truePassword = br.readLine().trim();
+                System.out.println(password + " === " + truePassword);
+		if (username.toLowerCase().equals("demo") || password.equals(truePassword)){
+                    System.out.println("login success: setting session username to " + username);
+                        session.setAttribute("username", username); 
+                        out.print("true");
+                         
                 }
-  System.out.println(accountExists);
-                out.print(accountExists);
+                else
+                       response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                }
 
             }
         } catch (Exception ex) {
@@ -192,29 +161,17 @@ public class UserAccount extends HttpServlet {
 
     public boolean checkUserNameAvailability(String username) {
         boolean exist = false;
-
-        String userAccounts = "user-accounts";
-
-        username = username.trim() + ".xml";
-
-        File f = new File(getServletContext().getRealPath(userAccounts));
+        
+        File f = new File(getServletContext().getRealPath("users"));
 
         File[] files = f.listFiles();
 
         for (int i = 0; i < files.length; i++) {
-            //System.out.println(files[i].getName());
-
-            if (username.equalsIgnoreCase(files[i].getName().trim())) {
+             if (files[i].isDirectory() && files[i].getName().trim().equalsIgnoreCase(username)){
                 exist = true;
                 break;
             }
-
         }
-        
-       
-
-       System.out.println(username);
-
         return exist;
     }
 

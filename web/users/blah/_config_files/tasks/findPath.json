@@ -1,0 +1,1 @@
+{"name":"findPath","question":"Find a path between the two selected nodes and select it.","description":"Find a path between two selected nodes.","inputs":[{"typeName":"SelectedNodes","description":"The two nodes.","specifyInVis":"yes","showInVis":"yes"}],"answer":{"type":"Interface/Custom","correctness":"yes","customTypeName":"SelectedPath"}}

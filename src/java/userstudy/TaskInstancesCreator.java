@@ -57,12 +57,14 @@ public class TaskInstancesCreator extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         HttpSession session = request.getSession();
+        
+        String userid =  session.getAttribute("username").toString();
 
         try {
 
             String command = request.getParameter("command");
 
-            String userid;
+            
             if (command.equalsIgnoreCase("updateTaskInstanceData")) {
                 /*We will get the json object of the study from the request, and save it 
                  on the server.
@@ -72,7 +74,7 @@ public class TaskInstancesCreator extends HttpServlet {
                 String taskName = request.getParameter("taskName");
                 String datasetName = request.getParameter("datasetName");
                 String viewerName = request.getParameter("viewerName");
-                userid = DEFAULT_USER;
+                
                 TaskInstances taskInstances = getTaskInstanceData(taskName, viewerName, datasetName, userid);
 
                 Gson gson = new Gson();
@@ -94,6 +96,9 @@ public class TaskInstancesCreator extends HttpServlet {
                 String filePath = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator
                         + "taskInstanceFiles" + File.separator + taskInstanceName + ".json";
+                
+                System.out.println(jsonStr);
+                System.out.println(filePath);
 
                 FileWriter writer = new FileWriter(getServletContext().getRealPath(filePath));
                 writer.write(jsonStr);
@@ -210,8 +215,6 @@ public class TaskInstancesCreator extends HttpServlet {
                 taskInstanceName += (datasetName.trim().isEmpty() 
                         || datasetName.trim().equalsIgnoreCase("nodata")) ? "_" + viewerName : "_" + datasetName;
 
-                userid = DEFAULT_USER;
-
                 String taskInstanceFilePath = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator
                         + "taskInstanceFiles" + File.separator + taskInstanceName + ".json";
@@ -221,14 +224,19 @@ public class TaskInstancesCreator extends HttpServlet {
                         + "taskInstances" + File.separator + taskInstanceName + ".json";
 
                 File taskInstanceFile = new File(getServletContext().getRealPath(taskInstanceFilePath));
-
                 
                 File taskInstanceDetail = new File(getServletContext().getRealPath((taskInstanceDetailPath)));
+                
+                System.out.println("deleting: " + taskInstanceFile.getAbsolutePath() + "\n" + taskInstanceDetail.getAbsolutePath());
+                
                 //delete the files
-                if(taskInstanceFile.exists())                {
+                if(taskInstanceFile.exists()) 
+                {
+                    System.out.println("deleted first");
                     taskInstanceFile.delete();
                 }
                 if(taskInstanceDetail.exists()){
+                    System.out.println("deleted second");
                     taskInstanceDetail.delete();
                 }
                 

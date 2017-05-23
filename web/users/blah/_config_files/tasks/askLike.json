@@ -1,0 +1,1 @@
+{"name":"askLike","question":"Which of the two representations did you like better?","description":"Asking which of the viewers they liked.","inputs":[],"answer":{"type":"Options(fixed)","options":["Node link diagrams","Adjacency matrices"],"correctness":"no"}}

@@ -1,9 +1,1 @@
-{
-	"name": "DepthOfNode",
-	"answer": {"type": "Number", "options": [],  "correctness": "yes", "customTypeName": "", "correctnessCheckingInterface": ""},	
-	"question": "How many levels deep is the highlighted node?",
-	"description": "The user will determine how deep a highlighted node is",
-	"inputs": [
-				{"typeName": "node", "description": "The node to be highlighted", "specifyInVis": "no",  "showInVis": "yes"}
-			  ]	
-}
+{"name":"DepthOfNode","answer":{"type":"Number","correctness":"no"},"question":"How many levels deep is the highlighted node?","description":"The user will determine how deep a highlighted node is","inputs":[{"typeName":"node","description":"The node to be highlighted","specifyInVis":"no","showInVis":"yes"}]}

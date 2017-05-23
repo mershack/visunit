@@ -1,0 +1,60 @@
+ 	1	2	3	4	5	6	7	8
+1	H	C	G	D	F	A	E	B
+2	D	A	F	E	H	B	C	G
+3	C	B	H	G	E	F	A	D
+4	G	H	C	A	D	E	B	F
+5	A	F	B	C	G	H	D	E
+6	F	D	E	B	C	G	H	A
+7	E	G	A	H	B	D	F	C
+8	B	E	D	F	A	C	G	H
+
+ 	1	2	3	4	5	6	7	8
+1	A	F	E	C	B	G	H	D
+2	D	A	B	E	C	H	G	F
+3	C	H	A	F	E	D	B	G
+4	E	D	H	B	G	F	A	C
+5	G	B	F	A	H	C	D	E
+6	B	G	C	D	A	E	F	H
+7	H	C	D	G	F	A	E	B
+8	F	E	G	H	D	B	C	A
+
+	1	2	3	4	5	6	7	8
+1	D	H	C	B	F	G	A	E
+2	G	F	D	C	E	H	B	A
+3	A	C	H	D	B	E	G	F
+4	E	B	G	H	A	C	F	D
+5	B	A	F	E	C	D	H	G
+6	F	E	B	G	H	A	D	C
+7	C	G	A	F	D	B	E	H
+8	H	D	E	A	G	F	C	B
+
+	1	2	3	4	5	6	7	8
+1	C	E	G	F	H	D	B	A
+2	E	H	D	C	A	B	G	F
+3	A	F	E	G	C	H	D	B
+4	F	B	A	E	G	C	H	D
+5	H	C	B	D	E	A	F	G
+6	D	G	C	B	F	E	A	H
+7	G	D	H	A	B	F	C	E
+8	B	A	F	H	D	G	E	C
+
+ 	1	2	3	4	5	6	7	8
+1	F	H	D	E	A	B	C	G
+2	D	G	H	F	E	C	A	B
+3	E	F	B	C	H	G	D	A
+4	B	C	G	A	D	H	F	E
+5	H	D	E	B	C	A	G	F
+6	A	E	C	G	B	F	H	D
+7	G	B	A	H	F	D	E	C
+8	C	A	F	D	G	E	B	H
+
+ 	1	2	3	4	5	6	7	8
+1	E	A	C	H	F	D	G	B
+2	B	F	H	E	A	C	D	G
+3	F	C	G	D	B	A	E	H
+4	G	D	F	A	H	B	C	E
+5	C	G	B	F	D	E	H	A
+6	A	E	D	B	G	H	F	C
+7	H	B	E	G	C	F	A	D
+8	D	H	A	C	E	G	B	F
+

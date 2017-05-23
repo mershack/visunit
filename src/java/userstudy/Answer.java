@@ -48,6 +48,12 @@ public class Answer {
     public void setCorrectness(String correctness) {
         this.correctness = correctness;
     }
+    
+    public boolean isCorrect(){
+        if (this.correctness.toLowerCase().equals("yes"))
+            return true;
+        return false;
+    }
 
     public String getCustomTypeName() {
         return customTypeName;

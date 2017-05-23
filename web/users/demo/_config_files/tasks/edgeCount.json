@@ -1,0 +1,1 @@
+{"name":"edgeCount","question":"Estimate how many edges there are in this network.","description":"Estimate the number of edges in a network.","inputs":[],"answer":{"type":"Number","correctness":"yes"}}

@@ -1,0 +1,1 @@
+{"name":"graphExpertise","question":"Do you have any expertise with network or graph visualizations?","description":"Do you have any expertise with network or graph visualizations?","inputs":[],"answer":{"type":"Options(fixed)","options":["No","Yes, with both.","Yes, with adjacency matrices","Yes, with node link diagrams"],"correctness":"no"}}

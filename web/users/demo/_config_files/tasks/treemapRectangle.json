@@ -1,0 +1,1 @@
+{"name":"treemapRectangle","question":"What is the ratio of the areas of rectangles A and B?","description":"","inputs":[{"typeName":"Image","description":"Which of the images to show","specifyInVis":"yes","showInVis":"yes"}],"answer":{"type":"Options(fixed)","options":["0.33","0.5","0.66","1","1.5","2","3"],"correctness":"yes"}}

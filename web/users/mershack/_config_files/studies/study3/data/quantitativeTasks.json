@@ -1,15 +1,1 @@
-{ 
-	"name":"study3",
-	"description":"study's description goes here.", 
-	"viewerDesign":"Between subjects", 
-	"dataDesign":"Between subjects", 
-	"width":"860", 
-	"height":"800", 
-	"viewers": [ {"name": "node-link"}, {"name": "matrix"}], 
-	"datasets": [ {"name": "miserables"}], 
-	"intros": [ {"name": "intro1", "match": "all", "description": "A sample introduction description2"}], 
-	"tests": [], 
-	"tasks": [ {"name": "neighborCount", "count": "20", "time": "10", "trainingSize": "2"}], 
-	"entryTasks": [], 
-	"exitTasks": []
-}
+{"name":"study3","viewerDesign":"Between subjects","width":"860","height":"800","viewers":[{"name":"node-link"},{"name":"matrix"}],"datasets":[{"name":"miserables"}],"intros":[{"match":"All","name":"Select"}],"tests":[],"tasks":[{"name":"neighborCount","count":"20","time":"10","training":""}],"entryTasks":[],"exitTasks":[],"resultsCount":0}

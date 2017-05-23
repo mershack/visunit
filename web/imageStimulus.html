@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .thumb{
+                margin:10px 10px 10px 10px;
+            }
+        </style>
+        <script src="jquery.min.js"></script>
+        <script>
+            var currentImage = 0;
+            var currentClick = {x:-1, y:-1};
+            
+            
+            $(document).ready(function() {
+                setDataset("imageUrls.txt", function(){});
+            });
+            
+            function setDataset(theURL, callback){
+               $.ajax({
+                    url: theURL,
+                    success: function(data, status) {
+                        var imageUrls = data.split("\n");
+                        for (var i=0; i<imageUrls.length; i++){
+                            (new Image()).src = imageUrls[i];
+                            $("#images").append("<img class='image' id='image_" + i + "' src='" + imageUrls[i] +"' </img>");
+                             $("#gallery").append("<img class='thumb' id='thumb_" + i + "' src='" + imageUrls[i] + "' </img>");
+                        }
+                        $(".image").attr("width",800).attr("height",550);
+                        $(".thumb").attr("width",70).attr("height",50);
+                       
+                       $(".thumb").click(function(){
+                           var id = $(this).attr("id").split("_")[1];
+                           $(".image").hide();
+                            $("#image_" + id).show();
+                       });
+                       $(".thumb").hover(function(){
+                          $(this).css('background-color',"rgb(220,240,255)") 
+                       }, function(){
+                          $(this).css('background-color',"white") 
+                       });
+                       
+                       $("#images").click(function(e){
+                          currentClick = {x:e.pageX -$(this).offset().left, y: e.pageY -$(this).offset().top};
+                          $("#clickMarker").css("top",e.pageY - 15); 
+                          $("#clickMarker").css("left",e.pageX - 15);
+                          alert(getPixel());
+                          alert(getAccuracyPixel("318,268", getPixel()));
+                       });
+                       $("#clickMarker").click(function(e){
+                          currentClick = {x:e.pageX -$(this).offset().left, y: e.pageY -$(this).offset().top};
+                          $("#clickMarker").css("top",e.pageY - 15); 
+                          $("#clickMarker").css("left",e.pageX - 15);
+                       });                       
+                        
+                        $(".image").hide();
+                        $("#image_"+0).show();
+                        currentImage = 0; 
+                        callback();
+                    },
+                    error: function(data, status) {
+                        alert("there was an error loading " + theURL);
+                    }
+                }); 
+            }
+            
+            function getImage(){
+                return "" + currentImage;
+            }
+            function setImage(im){
+                $(".image").hide();
+                $("#image_"+im).show();
+            }
+            
+            function getPixel(){
+                return currentClick.x + "," + currentClick.y;
+            }
+            
+            function getAccuracyPixel(p1, p2){
+                var split1 = p1.split(","); 
+                var x1=parseInt(split1[0]); 
+                var y1 = parseInt(split1[1]);
+                var split2 = p2.split(","); 
+                var x2=parseInt(split2[0]); 
+                var y2 = parseInt(split2[1]);
+                
+                var d = Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
+                if (d < 25) return 1;
+                else{
+                    var ac = 1-d/150;
+                    if (ac < 0) ac = 0;
+                    return ac;
+                }
+            }
+        </script>    
+    </head>
+    <body>
+        <div id="gallery"></div>
+        <div id="images" style="position:relative"></div>
+        <div id="clickMarker" style="position:absolute; left:50px; top:30px"><img src="plus-icon.png" width="30px" height="30px"></img></div>
+        
+    </body>
+</html>

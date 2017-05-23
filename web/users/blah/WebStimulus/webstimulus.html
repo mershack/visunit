@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <script src="jquery.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                        
+            });
+            
+            function setDataset(theURL, callback){
+               $.ajax({
+                    url: theURL,
+                    success: function(data, status) {
+                        $("body").append("<iframe id='webstim_iframe' frameBorder='0' src=" + data + "></iframe>");
+			setInterval(function(){
+				var pw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+				var ph = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+				var iframe = $("iframe");
+				var cw = iframe.css("width");
+				var ch = iframe.css("height");
+				if (cw != pw-20 || ch != ph-35)
+					$("iframe").css("width", pw-20).css("height",ph-35);
+			},1000);
+                        callback();
+                    },
+                    error: function(data, status) {
+                        alert("there was an error loading " + theURL);
+                    }
+                }); 
+            }
+
+	    function back(){
+		alert("h");
+		alert($("#webstim_iframe")[0]);
+		
+	    }
+	    function forward(){
+		alert("f");
+		//$("iframe")[0].contentWindow.history.forward();
+	    }            
+        </script>    
+    </head>
+    <body>
+	<div style="margin-top:-10px"><input type="button" value="<" onclick="back()">
+	<input type="button" value=">" onclick="forward()"></div>
+    </body>
+</html>

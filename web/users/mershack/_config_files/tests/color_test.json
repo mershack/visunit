@@ -1,8 +1,1 @@
-{
-	"name": "color_test",
-	"description": "Testing for color blindness",
-	"sourceDirectory": "ColorBlindnessViewer",
-	"sourceFile": "color-blind-test.html",
-	"responseInterface": "getBlindTestAnswers", 
-	"responseValidationInterface": "validateUserResponse"
-}
+{"name":"color_test","description":"Testing for color blindness"}

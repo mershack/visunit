@@ -1,0 +1,1 @@
+{"name":"findLink","question":"Is there a link between the two selected nodes?","description":"Determine if there is a link between two nodes.","inputs":[{"typeName":"SelectedNodes","description":"The two nodes.","specifyInVis":"yes","showInVis":"yes"}],"answer":{"type":"Options(fixed)","options":["yes","no"],"correctness":"yes"}}

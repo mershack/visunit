@@ -1,0 +1,1 @@
+{"name":"mostConnected","question":"Find and select the most connected node in the network.","description":"Find the most connected node in a network.","inputs":[],"answer":{"type":"Interface/Custom","correctness":"yes","customTypeName":"SelectedNodes"}}

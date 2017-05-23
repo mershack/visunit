@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <script src="jquery.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                alert("here");
+                $("body").append("<iframe src='http://www.fiu.edu/'></iframe>");
+            });
+            
+            function setDataset(theURL, callback){
+               $.ajax({
+                    url: theURL,
+                    success: function(data, status) {
+                        
+                        $("#body").append("<iframe src=" + data + "></iframe>")
+                        callback();
+                    },
+                    error: function(data, status) {
+                        alert("there was an error loading " + theURL);
+                    }
+                }); 
+            }
+            function blah(){
+                alert("h");
+                alert($("iframe")[0].src);
+            }
+        </script>    
+    </head>
+    <body>
+        <input type="button" value="<" onclick="blah()">
+    </body>
+</html>

@@ -1,0 +1,1 @@
+{"name":"nodeCount","question":"Estimate how many nodes there are in total in this network?","description":"Estimate the number of nodes in a graph.","inputs":[],"answer":{"type":"Number","correctness":"yes"}}

@@ -1,0 +1,1 @@
+{"name":"askAge","question":"What is your age group?","description":"","inputs":[],"answer":{"type":"Options(fixed)","options":["over 35","20-35","under 20"],"correctness":"no"}}

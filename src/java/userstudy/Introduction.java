@@ -13,8 +13,8 @@ package userstudy;
 public class Introduction extends UserFile{
     
     private String match;
-    public Introduction(String name, String description, String sourceDirectory, String sourceFile, String match, String url){
-        super(name, description, sourceDirectory, sourceFile, url);
+    public Introduction(String name, String description, String source, String match, String url){
+        super(name, description, source, url);
         this.match = match;
     }
 

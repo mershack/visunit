@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<style>	
+.highlighted{
+	stroke : orange;
+	fill : none;
+}
+.selected{
+	stroke : red;
+	stroke-width : 2px;
+	fill : none;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="d3.min.js"></script>
+<script>
+var svg;
+var points;
+$(document).ready(function(){
+	d3.select("body")
+    .on("keydown", function() {
+    	if (d3.event.keyCode == 17){
+		
+    		creatingTasks = true;
+    	}
+    })
+    .on("keyup", function() {
+    		creatingTasks = false;
+    });
+	//setDataset("data.txt");
+});
+
+function setDataset(url, callback){
+	d3.tsv(url, function(error, data) {
+		
+		// Coerce the data to numbers.
+		data.forEach(function(d) {  d.x = +d.x; d.y = +d.y;});
+		points = data;
+		
+		  svg = d3.select("body").append("svg")
+		    .attr("width", 600)
+		    .attr("height", 600);
+		  
+		  svg.selectAll("circle")
+	      .data(data)
+	    .enter().append("circle")
+	      .attr("r", function(d) { return d.value})
+	      . style("fill", "blue")
+	      .attr("cx", function(d) { return d.x; })
+	      .attr("cy", function(d) { return d.y; })
+	      .on("click", function(d, i){
+	    	  if (creatingTasks){
+	    		  sethighlightedPoint(i);
+	    	  }
+	    	  else
+	    		  setselectedPoint(i);
+	      });
+		  
+		callback();
+	});
+}
+
+var highlighted = [];
+function sethighlightedPoint(point){
+	if (point < 0)
+		highlighted = [];
+	else{
+		var index = highlighted.indexOf(points[+point]); 
+		if (index >= 0){
+			highlighted.splice(index,1);}
+		else
+			highlighted.push(points[+point]);
+	}
+	
+	var hs = svg.selectAll(".highlighted")
+	.data(highlighted);
+
+	var f = function(s){
+		s.attr("class", "highlighted")
+		.attr("x", function(d) { return d.x - d.value-2;})
+		.attr("y", function(d) { return d.y - d.value-2;})
+		.attr("width", function(d) { return 2*d.value+4;})
+		.attr("height", function(d) { return 2*d.value+4;});
+	}
+	
+	f(hs);
+	f(hs.enter().append("rect"));
+	hs.exit().remove();
+}
+
+function gethighlightedPoint(){
+	if (highlighted.length == 0)
+		return "";
+	else
+		return points.indexOf(highlighted[highlighted.length-1]);
+}
+
+function helphighlightedPoint(){
+	return "press control and click on circles";
+}
+
+
+
+var creatingTasks = false;
+function setUserStudyMode(){
+	creatingTasks = false;
+}
+function setTaskCreationMode(){
+	creatingTasks = true;
+}
+
+var selected = [];
+function setselectedPoint(point){
+	if (point < 0)
+		selected = [];
+	else
+		selected = [points[+point]];
+	var ss = svg.selectAll(".selected")
+	.data(selected);
+	ss.attr("x", function(d) { return d.x - d.value-2;})
+	.attr("y", function(d) { return d.y - d.value-2;})
+	.attr("width", function(d) { return 2*d.value+4;})
+	.attr("height", function(d) { return 2*d.value+4;})
+	.enter().append("rect")
+	.attr("class", "selected")
+	.attr("x", function(d) { return d.x - d.value-2;})
+	.attr("y", function(d) { return d.y - d.value-2;})
+	.attr("width", function(d) { return 2*d.value+4;})
+	.attr("height", function(d) { return 2*d.value+4;});
+
+	ss.exit().remove();
+}
+
+function getselectedPoint(){
+	if (selected.length == 0)
+		return "";
+	else
+		return points.indexOf(selected[0]);
+}
+
+
+function helpselectedPoint(){
+	return "click on points";
+}
+
+function getAccuracyselectedPoint(p1, p2){
+	if (p1 === p2) return 1;
+	return 0;
+}
+
+function resetVisualization(){
+	setselectedPoint(-1);
+	sethighlightedPoint(-1);
+}
+</script>
+</head>
+<body>
+
+</body>

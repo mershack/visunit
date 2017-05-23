@@ -15,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +59,15 @@ public class StudySetup extends HttpServlet {
 
     String questionTemplateName = "graphQuestionForm.xml";
     MyUtils utils = new MyUtils();
+    
+    private void sendError(String message, HttpServletResponse response){
+        try{
+            response.getWriter().print("{success:false, message:message}");
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -64,11 +75,12 @@ public class StudySetup extends HttpServlet {
         PrintWriter out = response.getWriter();
         try {
 
-            HttpSession session = request.getSession();
+           HttpSession session = request.getSession();
 
+            String userid = null;
             if (session.getAttribute("username") != null) {
-                String username = session.getAttribute("username").toString();
-                // System.out.println("username is: " + username);
+                userid = session.getAttribute("username").toString();
+                System.out.println("Studysetup: " + userid);
             }
 
             //printTheURL(request);
@@ -82,10 +94,10 @@ public class StudySetup extends HttpServlet {
             }
 
             String command = request.getParameter("command");
-            String userid = request.getParameter("userid");
+           
 
             //System.out.println("user id is :: " + userid);
-            // System.out.println("command is :: " + command);
+             System.out.println("command is :: " + command);
             // printTheURL(request);
             if (command.equalsIgnoreCase("loadDetailsOfAllStudies")) {
                 /**
@@ -105,16 +117,18 @@ public class StudySetup extends HttpServlet {
                 //use a default Login for now. 
                 //TODO: userid's should be taken from session ids.
                 // System.out.println("I'm here");
-                userid = DEFAULT_USER;
-
+                
                 //load all the study names.
                 String studiesURL = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator + "studies";
+                
+                System.out.println("loading studies from " + studiesURL);
 
                 File f = new File(getServletContext().getRealPath(studiesURL));
 
                 File[] files = f.listFiles();
-
+                sortFilesByCreationDate(files);
+    
                 String jsonOfAllStudies = "[";  //beginning of the json array.
 
                 if (files != null) {
@@ -137,58 +151,6 @@ public class StudySetup extends HttpServlet {
                 //save the sesssion id 
                 session.setAttribute("userid", userid);
 
-            } else if (command.equalsIgnoreCase("loadDirectories")) {
-                /*We will load all the directories of the user, and return a JSON
-                 file that contains all the existing directories.
-                    
-                 the format of the json is as follows:
-                
-                 [ {"name": "name1", files: [{"name": "file1"}, {"name":"file2"}, ...]
-                
-                
-                 */
-
-                userid = DEFAULT_USER;
-                //load all the directories the user has created.
-                String userDirsURL = "users" + File.separator + userid;
-
-                File f = new File(getServletContext().getRealPath(userDirsURL));
-
-                File[] files = f.listFiles();
-
-                int dirCount = 0;
-
-                String jsonOfAllDirectories = "[";  //beginning of the json array.
-
-                if (files != null) {
-                    for (int i = 0; i < files.length; i++) {
-                        String jsonOfADir = "";
-                        //check if it is a directory and not the _config_files directory.
-                        if (files[i].isDirectory() && !files[i].getName().equalsIgnoreCase("_config_files")) {
-                            //System.out.println(loadDirectories(files[i].getName(), userid));
-
-                            //    System.out.println("*** "+ loadDirectories(files[i].getName(), userid));
-                            if (dirCount == 0) { //if this is the first directory we've found
-                                jsonOfAllDirectories += "\n\t" + loadDirectories(files[i].getName(), userid);
-
-                            } else {
-                                jsonOfAllDirectories += ",\n\t" + loadDirectories(files[i].getName(), userid);
-                            }
-
-                            dirCount++;
-                        }
-
-                    }
-                }
-
-                jsonOfAllDirectories += "\n]";  //end of the json array.
-
-                // System.out.println(jsonOfAllDirectories);
-                response.setContentType("application/json;charset=UTF-8");
-                PrintWriter out2 = response.getWriter();
-
-                out2.print(jsonOfAllDirectories);
-
             } else if (command.equalsIgnoreCase("loadViewers")) {
                 /*
                  We will load all the viewers of the user
@@ -200,7 +162,7 @@ public class StudySetup extends HttpServlet {
                  */
 
                 //System.out.println("Loading Viewers");
-                userid = DEFAULT_USER;
+                
                 //load all the viewers that the user has created.
                 String userDirsURL = "users" + File.separator + userid
                         + File.separator + CONFIG_DIR + File.separator + "viewers";
@@ -209,7 +171,10 @@ public class StudySetup extends HttpServlet {
                 File f = new File(getServletContext().getRealPath(userDirsURL));
 
                 File[] files = f.listFiles();
-
+                
+                sortFilesByCreationDate(files);
+                                
+              
                 //compose the object for all the viewers
                 String jsonAllViewers = "[";
 
@@ -244,7 +209,7 @@ public class StudySetup extends HttpServlet {
                  [ {"name": "name1", "description": "descrip1", "sourceDirectory": "srcDir1", "sourceFile": "sourceFile1"}, ...]
                  */
 
-                userid = DEFAULT_USER;
+                
                 //load all the datasets that the user has created.
                 String userDirsURL = "users" + File.separator + userid
                         + File.separator + CONFIG_DIR + File.separator + "datasets";
@@ -252,6 +217,7 @@ public class StudySetup extends HttpServlet {
                 File f = new File(getServletContext().getRealPath(userDirsURL));
 
                 File[] files = f.listFiles();
+                 sortFilesByCreationDate(files);
 
                 //compose the object for all the datasets
                 String jsonAllDatasets = "[";
@@ -276,7 +242,7 @@ public class StudySetup extends HttpServlet {
             } else if (command.equalsIgnoreCase("loadTasks")) {
                 //we will be loading the tasks.
 
-                userid = DEFAULT_USER;
+                
                 //load all the datasets that the user has created.
                 String userDirsURL = "users" + File.separator + userid
                         + File.separator + CONFIG_DIR + File.separator + "tasks";
@@ -284,6 +250,7 @@ public class StudySetup extends HttpServlet {
                 File f = new File(getServletContext().getRealPath(userDirsURL));
 
                 File[] files = f.listFiles();
+                 sortFilesByCreationDate(files);
 
                 //compose the object for all the datasets
                 String jsonAllTasks = "[";
@@ -309,7 +276,7 @@ public class StudySetup extends HttpServlet {
             } else if (command.equalsIgnoreCase("loadTaskInstances")) {
                 //we will be loading the tasks Instances
 
-                userid = DEFAULT_USER;
+                
                 //load all the datasets that the user has created.
                 String userDirsURL = "users" + File.separator + userid
                         + File.separator + CONFIG_DIR + File.separator + "taskInstances";
@@ -317,6 +284,7 @@ public class StudySetup extends HttpServlet {
                 File f = new File(getServletContext().getRealPath(userDirsURL));
 
                 File[] files = f.listFiles();
+                 sortFilesByCreationDate(files);
 
                 //compose the object for all 
                 String jsonAllTaskIntances = "[";
@@ -337,14 +305,15 @@ public class StudySetup extends HttpServlet {
                 out2.print(jsonAllTaskIntances);
             } else if (command.equalsIgnoreCase("loadIntros")) {
 
-                userid = DEFAULT_USER;
-                //load all the datasets that the user has created.
+                
+                //load all the intros that the user has created.
                 String userDirsURL = "users" + File.separator + userid
                         + File.separator + CONFIG_DIR + File.separator + "intros";
 
                 File f = new File(getServletContext().getRealPath(userDirsURL));
 
                 File[] files = f.listFiles();
+                sortFilesByCreationDate(files);
 
                 //compose the object for all 
                 String jsonAllIntros = "[";
@@ -366,7 +335,7 @@ public class StudySetup extends HttpServlet {
                 out2.print(jsonAllIntros);
 
             } else if (command.equalsIgnoreCase("loadTests")) {
-                userid = DEFAULT_USER;
+                
                 //load all the datasets that the user has created.
                 String userDirsURL = "users" + File.separator + userid
                         + File.separator + CONFIG_DIR + File.separator + "tests";
@@ -374,39 +343,37 @@ public class StudySetup extends HttpServlet {
                 File f = new File(getServletContext().getRealPath(userDirsURL));
 
                 File[] files = f.listFiles();
+                 sortFilesByCreationDate(files);
 
                 //compose the object for all 
                 String jsonAllTests = "[";
 
-                for (int i = 0; i < files.length; i++) {
-                    //System.out.println(files[i].getName());
-                    if (i == 0) {
+                for (int i = 0; i < files.length; i++)
+                    if (i == 0)
                         jsonAllTests += "\n\t" + loadTest(files[i].getName(), userid);
-                    } else {
+                    else
                         jsonAllTests += ",\n\t" + loadTest(files[i].getName(), userid);
-                    }
-                }
                 jsonAllTests += "\n]";
-//
-                //System.out.println(jsonAllTests);
-                //now we will be sending the json object to the client
+
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
                 out2.print(jsonAllTests);
-            } else if (command.equalsIgnoreCase("getViewerDatasetTask")) {
-                //load the viewer and dataset
-
-                userid = DEFAULT_USER;
-
+            } else if (command.equalsIgnoreCase("getViewerDatasetTask")){
+                
                 String viewerName = request.getParameter("viewerName");
                 String datasetName = request.getParameter("datasetName");
                 String taskName = request.getParameter("taskName");
 
-                String viewerJson, dsJson, taskJson;
+                String viewerJson, dsJson, taskJson;  
+                                
+                if (viewerName != null && !viewerName.equalsIgnoreCase("no viewer")) {
+                    viewerJson = loadAViewer(viewerName + ".json", userid, request);
+                } else { //no data
+                    viewerJson = "{\"name\" : \"no viewer\"}";
+                }
+                                
 
-                viewerJson = loadAViewer(viewerName + ".json", userid, request);
-
-                if (!datasetName.equalsIgnoreCase("no data")) {
+                if (datasetName != null && !datasetName.equalsIgnoreCase("no data")) {
                     dsJson = loadADataset(datasetName + ".json", userid, request);
                 } else { //no data
                     dsJson = "{\"name\" : \"no data\"}";
@@ -419,15 +386,15 @@ public class StudySetup extends HttpServlet {
                 allJsons += ",\"dataset\": " + dsJson;
                 allJsons += ",\"task\": " + taskJson;
                 allJsons += "}";
+                
+                System.out.println(allJsons);
 
-                // System.out.println("allJson is :\n" + allJsons);
-//
-                //System.out.println(jsonAllTests);
                 //now we will be sending the json object to the client
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
-                out2.print(allJsons);
-            } else if (command.equalsIgnoreCase("updateStudyData")) {
+                out2.print(allJsons); 
+            }
+            else if (command.equalsIgnoreCase("updateStudyData")) {
                 /*We will get the json object of the study from the request, and save it 
                  on the server.
                  */
@@ -435,26 +402,67 @@ public class StudySetup extends HttpServlet {
 
                 //now create the Gson object 
                 Gson gson = new Gson();
+                
+                System.out.println("aa: " + studyData.toString());
 
-                Study study = (Study) gson.fromJson(studyData.toString(), Study.class);
+                Study study = null;
+                try{
+                    study = (Study) gson.fromJson(studyData.toString(), Study.class);
+                }catch(Exception e){e.printStackTrace();};
                 //now we will write the study object to file
-
+                               
                 String studyJson = gson.toJson(study);
+                
 
-                userid = DEFAULT_USER;
-
-                //load all the study names.
                 String studiesURL = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator + "studies";
+                
+                File dir = null;
+                
+                //if this is an update a directory already exists
+                boolean newStudy = Boolean.parseBoolean(request.getParameter("new"));
+                if (!newStudy){
+                    String oldname = request.getParameter("oldname");
+                    String path = studiesURL + File.separator + oldname;
+                    dir = new File(getServletContext().getRealPath(path));
+                    
+                    //the study was renamed -> we need to rename the folder
+                    if (!oldname.equals(study.getName())){
+                        String newPath = studiesURL + File.separator + study.getName();
+                        File newDir = new File(getServletContext().getRealPath(newPath)); 
+                        boolean succ = dir.renameTo(newDir);
+                        if (!succ){
+                            System.out.println("Couldn't rename study directory!");
+                            sendError("couldn't rename study directory", response);
+                            return;
+                        }
+                        else
+                            dir = newDir;
+                    }  
+                }
+                else{ //new study
+                    String newPath = studiesURL + File.separator + study.getName();
+                    dir = new File(getServletContext().getRealPath(newPath)); 
+                    try{
+                    if (!dir.mkdir()){
+                            System.out.println("Couldn't create study directory!");
+                            sendError("couldn't create study directory", response);
+                            return;                        
+                    }}
+                    catch(Exception e){
+                        e.printStackTrace();
+                        System.out.println("Couldn't create study directory!");
+                        sendError("couldn't create study directory", response);
+                    }
+                }                
 
                 String jsonFilename = studiesURL + File.separator + study.getName()
-                        + File.separator + "data" + File.separator + "quantitativeTasks.json";
-
-                System.out.println("The filename is : " + jsonFilename);
-
+                        + File.separator + "study.json";               
+                
                 FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
                 writer.write(studyJson);
                 writer.close();
+               
 
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
@@ -464,46 +472,81 @@ public class StudySetup extends HttpServlet {
                 //we will get the viewerData json object and save it.
 
                 String studyData = request.getParameter("viewerData");
-
+                
+               
                 //now create the Gson object 
                 Gson gson = new Gson();
 
-                UserFile viewer = gson.fromJson(studyData.toString(), UserFile.class);
+                Viewer viewer = gson.fromJson(studyData.toString(), Viewer.class);
+                
                 //now we will write the study object to file
                 String viewerJson = gson.toJson(viewer);
 
-                userid = DEFAULT_USER;
+                
 
                 String viewersURL = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator + "viewers";
 
                 String jsonFilename = viewersURL + File.separator + viewer.getName()
                         + ".json";
+                
+                //delete old file
+                boolean newViewer = Boolean.parseBoolean(request.getParameter("new"));
+                String oldname = request.getParameter("oldname");
+                if (!newViewer){
+                    String oldpath = getServletContext().getRealPath(viewersURL + File.separator + oldname + ".json");
+                    System.out.println("trying to delete " + oldpath);
+                    try{
+                    (new File(oldpath)).delete();
+                    }
+                    catch(Exception e){
+                        System.out.println("could't delete old reconfigured viewer because: ");
+                        e.printStackTrace();
+                    }
+                }
 
                 FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
                 writer.write(viewerJson);
                 writer.close();
-
+ 
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
-                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+                System.out.println("Sending the empty object");
+                out2.print("{}");//return an empty object. 
+                                 //NB: this is because the ajax expects to receive a json object (i.e. dataType).
+            
             } else if (command.equalsIgnoreCase("updateDatasetData")) {
                 String studyData = request.getParameter("datasetData");
 
                 //now create the Gson object 
                 Gson gson = new Gson();
 
-                UserFile dataset = gson.fromJson(studyData.toString(), UserFile.class);
+                Dataset dataset = gson.fromJson(studyData.toString(), Dataset.class);
                 //now we will write the study object to file
                 String datasetJson = gson.toJson(dataset);
 
-                userid = DEFAULT_USER;
+                
 
                 String datasetsURL = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator + "datasets";
 
                 String jsonFilename = datasetsURL + File.separator + dataset.getName()
                         + ".json";
+                
+                                                //delete old file
+                boolean newDataset = Boolean.parseBoolean(request.getParameter("new"));
+                String oldname = request.getParameter("oldname");
+                if (!newDataset){
+                    String oldpath = getServletContext().getRealPath(datasetsURL + File.separator + oldname + ".json");
+                    System.out.println("trying to delete " + oldpath);
+                    try{
+                    (new File(oldpath)).delete();
+                    }
+                    catch(Exception e){
+                        System.out.println("could't delete old reconfigured viewer because: ");
+                        e.printStackTrace();
+                    }
+                }
 
                 FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
                 writer.write(datasetJson);
@@ -512,6 +555,7 @@ public class StudySetup extends HttpServlet {
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
                 out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+            
             } else if (command.equalsIgnoreCase("updateTaskData")) {
                 String studyData = request.getParameter("taskData");
 
@@ -520,15 +564,29 @@ public class StudySetup extends HttpServlet {
 
                 Task task = gson.fromJson(studyData.toString(), Task.class);
                 //now we will write the study object to file
-                String taskJson = gson.toJson(task);
+                String taskJson = gson.toJson(task);             
 
-                userid = DEFAULT_USER;
-
-                String datasetsURL = "users" + File.separator + userid + File.separator
+                String taskURL = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator + "tasks";
 
-                String jsonFilename = datasetsURL + File.separator + task.getName()
+                String jsonFilename = taskURL + File.separator + task.getName()
                         + ".json";
+                
+                
+                boolean newTask = Boolean.parseBoolean(request.getParameter("new"));
+                String oldname = request.getParameter("oldname");
+                if (!newTask){
+                    String oldpath = getServletContext().getRealPath(taskURL + File.separator + oldname + ".json");
+                    System.out.println("trying to delete " + oldpath);
+                    try{
+                    (new File(oldpath)).delete();
+                    }
+                    catch(Exception e){
+                        System.out.println("could't delete old reconfigured viewer because: ");
+                        e.printStackTrace();
+                    }
+                }
+                
 
                 FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
                 writer.write(taskJson);
@@ -547,17 +605,33 @@ public class StudySetup extends HttpServlet {
                 //now we will write the study object to file
                 String introJson = gson.toJson(intro);
 
-                userid = DEFAULT_USER;
+                
 
                 String introURL = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator + "intros";
 
                 String jsonFilename = introURL + File.separator + intro.getName()
                         + ".json";
-
+                
+                                //delete old file
+                boolean newIntro = Boolean.parseBoolean(request.getParameter("new"));
+                String oldname = request.getParameter("oldname");
+                if (!newIntro){
+                    String oldpath = getServletContext().getRealPath(introURL + File.separator + oldname + ".json");
+                    System.out.println("trying to delete " + oldpath);
+                    try{
+                    (new File(oldpath)).delete();
+                    }
+                    catch(Exception e){
+                        System.out.println("could't delete old reconfigured viewer because: ");
+                        e.printStackTrace();
+                    }
+                }
+                
                 FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
                 writer.write(introJson);
                 writer.close();
+
 
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
@@ -568,75 +642,42 @@ public class StudySetup extends HttpServlet {
                 //now create the Gson object 
                 Gson gson = new Gson();
 
-                StandardTestDetail test = gson.fromJson(testData.toString(), StandardTestDetail.class);
+                Test test = gson.fromJson(testData.toString(), Test.class);
                 //now we will write the test object to file
                 String testJson = gson.toJson(test);
 
-                userid = DEFAULT_USER;
+                
 
                 String testURL = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator + "tests";
 
                 String jsonFilename = testURL + File.separator + test.getName()
                         + ".json";
-
+                
+                                //delete old file
+                boolean newTest = Boolean.parseBoolean(request.getParameter("new"));
+                String oldname = request.getParameter("oldname");
+                if (!newTest){
+                    String oldpath = getServletContext().getRealPath(testURL + File.separator + oldname + ".json");
+                    System.out.println("trying to delete " + oldpath);
+                    try{
+                    (new File(oldpath)).delete();
+                    }
+                    catch(Exception e){
+                        System.out.println("could't delete old reconfigured viewer because: ");
+                        e.printStackTrace();
+                    }
+                }
+                
+                
                 FileWriter writer = new FileWriter(getServletContext().getRealPath(jsonFilename));
                 writer.write(testJson);
                 writer.close();
 
+
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
                 out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
-
-            } else if (command.equalsIgnoreCase("addNewFiles")) {
-                String dirName = request.getParameter("directory");
-
-                userid = DEFAULT_USER;
-
-                String dirURL = "users" + File.separator + userid + File.separator
-                        + dirName;
-
-                String dirPath = getServletContext()
-                        .getRealPath(dirURL);
-
-                // File viewerDir = new File(dirPath);
-                if (ServletFileUpload.isMultipartContent(request)) {
-                    try {
-                        List<FileItem> multiparts = new ServletFileUpload(
-                                new DiskFileItemFactory()).parseRequest(request);
-
-                        // System.out.println("Hey");
-                        for (FileItem item : multiparts) {
-                            if (!item.isFormField()) {
-
-                                String name = new File(item.getName()).getName();
-                                //System.out.println("Filename: "+name);
-                                //now write the fi in that directory
-                                item.write(new File(dirPath + File.separator + name));
-                            }
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                        request.setAttribute("message", "File Upload Failed due to " + ex);
-                    }
-                }
-            } else if (command.equalsIgnoreCase("createNewDirectory")) {
-                String dirName = request.getParameter("directoryName");
-
-                //we will create the directory if it does not exist
-                userid = DEFAULT_USER;
-
-                String dirURL = "users" + File.separator + userid + File.separator
-                        + dirName;
-
-                String dirPath = getServletContext()
-                        .getRealPath(dirURL);
-
-                File file = new File(dirPath);
-
-                if (!file.exists()) {
-                    file.mkdir();
-                }
 
             } else if (command.equalsIgnoreCase("getManagementCommand")) {
                 String mc = spmts.getManagementCommand();
@@ -675,44 +716,131 @@ public class StudySetup extends HttpServlet {
 
                 out.print(allNames);
 
+            }  else if (command.equalsIgnoreCase("removeStudyFile")) {
+                //we will remove the viewer
+
+                String name = request.getParameter("studyName");
+                
+
+                String filePath = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator
+                        + "studies" + File.separator + name;
+
+                File studyDir = new File(getServletContext().getRealPath(filePath));
+                
+                System.out.println("deleting study dir: " + getServletContext().getRealPath(filePath));
+                
+                //deleting study dir; first empty it
+                File[] files = studyDir.listFiles();
+                for (int i=0; i<files.length; i++)
+                    files[i].delete();
+                
+                studyDir.delete();
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+          
             } else if (command.equalsIgnoreCase("removeViewerFile")) {
                 //we will remove the viewer
 
                 String viewerName = request.getParameter("viewerName");
-
-                userid = DEFAULT_USER;
+                
 
                 String viewerFilePath = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator
                         + "viewers" + File.separator + viewerName + ".json";
 
                 File viewerFile = new File(getServletContext().getRealPath(viewerFilePath));
-                System.out.println(getServletContext().getRealPath(viewerFilePath));
+                
+                System.out.println("deleting viewer: " + getServletContext().getRealPath(viewerFilePath));
                 //delete the file if it exists
-                if (viewerFile.exists()) {
-                    viewerFile.delete();
+                if (viewerFile.exists()) {                   
+                     viewerFile.delete();
                     System.out.println("viewer deleted");
-                    BufferedReader br = new BufferedReader(new FileReader(viewerFile));
-
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        System.out.println("__" + line);
-                    }
-                    br.close();
                 }
 
                 response.setContentType("application/json;charset=UTF-8");
                 PrintWriter out2 = response.getWriter();
                 out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
-            } else if (command.equalsIgnoreCase("removeTestFile")) {
+          
+            } else if (command.equalsIgnoreCase("removeDatasetFile")) {
+                //we will remove the viewer
 
-                String testName = request.getParameter("testName");
+                String name = request.getParameter("datasetName");
+                
 
-                userid = DEFAULT_USER;
+                String filePath = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator
+                        + "datasets" + File.separator + name + ".json";
+
+                File viewerFile = new File(getServletContext().getRealPath(filePath));
+                
+                System.out.println("deleting: " + getServletContext().getRealPath(filePath));
+                //delete the file if it exists
+                if (viewerFile.exists()) {                   
+                     viewerFile.delete();
+                    System.out.println("deleted");
+                }
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+          
+            }  else if (command.equalsIgnoreCase("removeTaskprotoFile")) {
+                //we will remove the viewer
+
+                String name = request.getParameter("taskprotoName");
+                
+
+                String filePath = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator
+                        + "tasks" + File.separator + name + ".json";
+
+                File viewerFile = new File(getServletContext().getRealPath(filePath));
+                
+                System.out.println("deleting: " + getServletContext().getRealPath(filePath));
+                //delete the file if it exists
+                if (viewerFile.exists()) {                   
+                     viewerFile.delete();
+                    System.out.println("deleted");
+                }
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+          
+            }  else if (command.equalsIgnoreCase("removeTestFile")) {
+                //we will remove the viewer
+
+                String name = request.getParameter("testName");
+                
+
+                String filePath = "users" + File.separator + userid + File.separator
+                        + "_config_files" + File.separator
+                        + "tests" + File.separator + name + ".json";
+
+                File testFile = new File(getServletContext().getRealPath(filePath));
+                
+                System.out.println("deleting: " + getServletContext().getRealPath(filePath));
+                //delete the file if it exists
+                if (testFile.exists()) {                   
+                     testFile.delete();
+                    System.out.println("deleted");
+                }
+
+                response.setContentType("application/json;charset=UTF-8");
+                PrintWriter out2 = response.getWriter();
+                out2.print("{}");//return an empty object. NB: this is because the ajax expects to receive a json object (i.e. dataType).
+          
+            } else if (command.equalsIgnoreCase("removeIntroFile")) {
+
+                String testName = request.getParameter("introName");
+
 
                 String testFilePath = "users" + File.separator + userid + File.separator
                         + "_config_files" + File.separator
-                        + "tests" + File.separator + testName + ".json";
+                        + "intros" + File.separator + testName + ".json";
 
                 File testFile = new File(getServletContext().getRealPath(testFilePath));
                 System.out.println(getServletContext().getRealPath(testFilePath));
@@ -1066,8 +1194,7 @@ public class StudySetup extends HttpServlet {
             String filePath = "users" + File.separator + userid + File.separator
                     + "_config_files" + File.separator
                     + "studies" + File.separator + studyname
-                    + File.separator + "data" + File.separator
-                    + "quantitativeTasks.json";
+                    + File.separator + "study.json";
 
             File f = new File(getServletContext().getRealPath(filePath));
 
@@ -1086,28 +1213,12 @@ public class StudySetup extends HttpServlet {
             //now let's read the result temporarily
             filePath = "users" + File.separator + userid + File.separator
                     + "_config_files" + File.separator
-                    + "studies" + File.separator + studyname
-                    + File.separator + "data" + File.separator
-                    + "basicResultsData.json";
-
-            f = new File(getServletContext().getRealPath(filePath));
-
-            if (f.exists()) {
-                reader = new FileReader(f);
-
-                gson = new Gson();
-
-                br = new BufferedReader(reader);
-                ResultsData resultsObj = gson.fromJson(br, ResultsData.class);
-
-                System.out.println("the length of the results is "+ resultsObj.getResults().length);
-                
-                
-                if (resultsObj.getResults().length > 0) {
-                    resultsCount = resultsObj.getResults()[0].getBasicData().length;
-                }
-                br.close();
-            }
+                    + "studies" + File.separator + studyname;
+            
+            File[] files = new File(getServletContext().getRealPath(filePath)).listFiles();
+            for (int i=0; i<files.length; i++)
+                if (!files[i].isDirectory() && files[i].getName().startsWith("final"))
+                    resultsCount++;
             
             studyObj.setResultsCount(resultsCount);
             jsonStr = gson.toJson(studyObj);
@@ -1177,10 +1288,10 @@ public class StudySetup extends HttpServlet {
 
             UserFile viewerObj = gson.fromJson(br, UserFile.class);
             br.close();
+            reader.close();
 
             //compose the url of the viewerObject.
-            String url = getServerUrl(request) + "/users/" + userid + "/" + viewerObj.getSourceDirectory()
-                    + "/" + viewerObj.getSourceFile();
+            String url = getServerUrl(request) + "/users/" + userid + "/" + viewerObj.getSource();
             viewerObj.setUrl(url);
 
             viewerJSON = gson.toJson(viewerObj);
@@ -1296,7 +1407,7 @@ public class StudySetup extends HttpServlet {
             Gson gson = new Gson();
 
             BufferedReader br = new BufferedReader(reader);
-            StandardTestDetail testObj = gson.fromJson(br, StandardTestDetail.class);
+            Test testObj = gson.fromJson(br, Test.class);
             testJSON = gson.toJson(testObj);
 
             br.close();
@@ -1325,8 +1436,7 @@ public class StudySetup extends HttpServlet {
             //compose the url of the viewerObject.            
             UserFile dsObj = gson.fromJson(br, UserFile.class);
 
-            String url = getServerUrl(request) + "/users/" + userid + "/" + dsObj.getSourceDirectory()
-                    + "/" + dsObj.getSourceFile();
+            String url = getServerUrl(request) + "/users/" + userid + "/" + dsObj.getSource();
 
             dsObj.setUrl(url);
 
@@ -1672,6 +1782,32 @@ public class StudySetup extends HttpServlet {
         int lastbackslash = uri.lastIndexOf("/");
         return uri.substring(0, lastbackslash);
     }
+    
+    public void sortFilesByCreationDate(File[] files){
+        try{
+                        //order files by creation date
+                FileTime[] creationDates = new FileTime[files.length];
+                for (int i=0; i<files.length; i++)
+                    creationDates[i] = Files.readAttributes(Paths.get(files[i].getAbsolutePath()),
+                            BasicFileAttributes.class).creationTime();
+                
+                while (true){
+                    boolean sw = false;
+                    for (int i=0; i<files.length-1; i++)
+                        if (creationDates[i].compareTo(creationDates[i+1]) > 0){
+                            FileTime auxft = creationDates[i]; File auxf = files[i];
+                            creationDates[i] = creationDates[i+1]; files[i] = files[i+1];
+                            creationDates[i+1] = auxft; files[i+1] = auxf;
+                            sw = true;
+                        }
+                    if (!sw) break;
+                }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * prepare and call a method to create the mturk HIT
@@ -1744,5 +1880,4 @@ public class StudySetup extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

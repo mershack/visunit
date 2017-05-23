@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    rect{
+        fill:#FFFFFF;
+        stroke:#000000;
+    }
+</style>
+<body>
+    <script src="d3.min.js"></script>
+    <script>
+            
+        function setDataset(dataset,whenDoneCallback) {	
+            
+            //nothing needs to happen here
+            
+             whenDoneCallback();
+        }        
+		
+        function setRect1(spec) {
+             setRect(1,spec);
+        }
+        function setRect2(spec) {
+            setRect(2,spec);
+        }        
+        
+        function setRect(which, spec){  //spec = "aspect_ratio/area"
+            var split = spec.split(",");
+            var ar = parseInt(split[0].split("/")[0])/(1.*parseInt(split[0].split("/")[1]));
+            var area = 1. * parseInt(split[1]);
+            var h = Math.sqrt(area/ar);
+            var w = area/h;  
+            d3.selectAll("#rect"+which)
+                    .attr("width", w)
+                    .attr("height", h)
+                    .attr("x", -w/2)
+                    .attr("y", -h/2);
+        }	
+	
+    </script>
+    
+    <svg width="400px" height="400px">
+    <g transform="translate(100,200)"><rect width=100 height=100 x=-50 y=-50 id="rect1"></rect><text>A</text></g>
+    <g transform="translate(300,200)"><rect width=100 height=100 x=-50 y=-50 id="rect2"></rect><text>B</text></g>
+    </svg>
+    
+</body>

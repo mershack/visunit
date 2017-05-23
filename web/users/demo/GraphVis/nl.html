@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<!--
+    An interactive  node link diagram viewer
+-->
+<meta charset="utf-8">
+<style>
+
+    .node {
+        stroke: gray;
+        stroke-width: 1.5px;
+        fill: lightgray;
+    }
+
+    .link {
+        stroke: lightgray;
+        stroke-opacity: .6;
+    }
+    
+    text{
+        font-size:10px;
+        color:gray;
+    }
+
+</style>
+<body>
+    <script src="d3.min.js"></script>
+    <script>
+	var selectedNodes=[];   //nodes can be selected by clicking on them; they turn red
+        var selectedPath=[];    //nodes can be selected as a path by ctrl-clicking on them
+                                //they turn blue
+        var pathMode = false;   
+        
+        var width = 600,
+        height = 500;
+  
+        var links;
+        var nodes;
+          
+        //VISUNIT FUNCTION: dataset is a url to a dataset to be loaded,
+        //callback is a VISUNIT function that needs to be called after the data
+        //is loaded and viewer set
+        function setDataset(dataset,callback) {
+            
+            d3.json(dataset, function(error, graph) {
+                
+                links = graph.links;
+                nodes = graph.nodes;
+              
+                var svg = d3.select("body").append("svg")
+                    .attr("width", width)
+                    .attr("height", height);
+                
+                var link = svg.selectAll(".link")
+                        .data(graph.links)
+                        .enter().append("line")
+                        .attr("id", function(d,i){return "link" + i;})
+                        .attr("x1", function(d){return d.x1;})
+                        .attr("y1", function(d){return d.y1;})
+                        .attr("x2", function(d){return d.x2;})
+                        .attr("y2", function(d){return d.y2;})
+                        .attr("class", "link");
+
+                var nodeg = svg.selectAll(".gnode")
+                        .data(graph.nodes)
+                        .enter().append("g")
+                        .attr("transform", function(d, i) {
+                            return "translate(" + d.x + "," + d.y + ")";
+                        });
+                        
+                var node = nodeg.append("circle")
+                        .attr("id", function(d,i){return "node" + i;})
+                        .attr("class", "node")
+                        .attr("cx", 0)
+                        .attr("cy", 0)
+                        .attr("r", 5)
+                        .style("fill", function(d) {
+                            return "gray";
+                        })
+			.on("click", function(d,i){click(d,i,d3.select(this));})
+                        .on("mouseover", function(d,i){mouseover(d,i,d3.select(this));})
+                        .on("mouseout", function(d,i){mouseout(d,i,d3.select(this));});
+                var labels = nodeg.append("text")
+                        .attr("x", 5)
+                        .attr("y", -5)
+                        .text(function(d, i) {
+                                return "node"+ nodes[i].id;
+                            });
+
+                node.append("title")
+                        .text(function(d) {
+                            return d.name;
+                        });
+		
+                //DONT FORGET TO CALL THIS VISUNIT FUNCTION!!!!!!!
+                callback();
+				
+            });
+            
+        }
+        
+	function click(d,i,node){						
+            if (d3.event != null && d3.event.ctrlKey)
+                selectPath(i,node);
+            else
+                selectNode(i,node);                         
+	}
+        
+        function selectNode(i,node){
+            var index = selectedNodes.indexOf(i);
+            if (index >= 0){
+                var prevSel = selectedNodes[index];
+                selectedNodes.splice(index,1);
+                mouseover("", prevSel, d3.select("#node"+prevSel)); 
+                return;
+            }
+                    
+            selectedNodes.push(i);
+            node.style("fill","red");
+            for (var j=0; j<links.length; j++)
+                if (links[j].source === ""+i || links[j].target === ""+i)
+                   d3.select("#link"+j).style("stroke","red");      
+        }
+                
+        function selectPath(i,node){
+            var index = selectedPath.indexOf(i);
+            if (index >= 0){
+                var prevSel = selectedPath[index];
+                selectedPath.splice(index,1);
+                mouseover(null, prevSel, d3.select("#node"+prevSel)); 
+               return;
+            }
+                    
+            selectedPath.push(i);
+            node.style("fill","blue");
+            for (var j=0; j<links.length; j++)
+                if (links[j].source === ""+i || links[j].target === ""+i)
+                    d3.select("#link"+j).style("stroke","blue");      
+        }                
+                
+        function mouseover(d, i,node){
+            if (selectedNodes.indexOf(i) >= 0 || selectedPath.indexOf(i) >= 0) return;
+            node.style("fill","green");
+            for (var j=0; j<links.length; j++)
+                if (links[j].source === ""+i || links[j].target === ""+i)
+                    d3.select("#link"+j).style("stroke","green");
+            }
+        function mouseout(d, i,node){
+            if (selectedNodes.indexOf(i) >= 0 || selectedPath.indexOf(i) >= 0) return;
+            node.style("fill","gray");
+            for (var j=0; j<links.length; j++)
+                if (links[j].source === ""+i || links[j].target === ""+i)
+                    d3.select("#link"+j).style("stroke","gray");
+        }         
+	
+        //VISUNIT FUNCTIONS: implements the SelectedNodes type (multiple selected nodes)
+        function setSelectedNodes(node) {
+            var ns = node.split(",");
+            for (var i=0; i<ns.length; i++)
+                click(null, parseInt(ns[i]), d3.select("#node"+ns[i]));  
+        }
+		
+        function getSelectedNodes(){
+            var s = "";
+            for (var i=0; i<selectedNodes.length; i++)
+                if (i != selectedNodes.length-1)
+                    s = s + selectedNodes[i] + ",";
+                else
+                    s = s + selectedNodes[i];
+            return s;
+        }
+        
+        //checks if two selections (two sets of nodes) are the same
+        function getAccuracySelectedNodes(s1, s2){
+            var split1 = s1.split(",");
+            var split2 = s2.split(",");
+            if (split1.length != split2.length) return 0;
+            for (var i=0; i<split1.length; i++){
+                var find = false;
+                for (var j=0; j<split2.length; j++)
+                    if (split1[i] === split2[j]) find = true;
+                if (!find) return 0;
+            }
+            return 1;
+        }
+        
+        //VISUNIT FUNCTIONS: implements the SelectedPath type
+        function getSelectedPath(){
+           var s = "";
+            for (var i=0; i<selectedPath.length; i++)
+                if (i != selectedPath.length-1)
+                    s = s + selectedPath[i] + ",";
+                else
+                    s = s + selectedPath[i];
+            return s;
+        }
+        function setSelectedPath(s){
+            var ns = s.split(",");
+            pathMode = true;
+            for (var i=0; i<ns.length; i++)
+                click(null, parseInt(ns[i]), $("#node"+ns[i]));  
+        }
+        
+        //checks if the givenAnswer is a path between two endpoints provided
+        //as the correctAnser
+        function getAccuracySelectedPath(givenAnswer,correctAnswer){
+             var split1 = givenAnswer.split(",");
+             var split2 = correctAnswer.split(",");
+             //is split1 a path between split2[0] and split2[1], or the other way around?
+             if (isPath(split1, split2[0], split2[1]) ||
+                     isPath(split1, split2[1], split2[0]))
+                 return 1;
+             return 0;
+        }
+        //is p a path between s and e?
+        function isPath(p, s, e){
+            var p2 = [s];
+            for (var i=0; i<p.length; i++) p2.push(p[i]);
+            p2.push(e);
+            for (var i=0; i<p2.length-1; i++)
+                if (!isEdge(p2[i], p2[i+1]))
+                    return false;
+            return true;
+
+        }
+        function isEdge(n1, n2){
+            for (var i=0; i<links.length; i++)
+                if ((links[i].source === n1 && links[i].target === n2) ||
+                    (links[i].source === n2 && links[i].target === n1))
+                return true;
+            return false;
+        }
+        
+        //VISUNIT FUNCTION that gets called between tasks to clear all selections and such
+        function resetVisualization(){
+            selectedNodes = [];
+            selectedPath = [];
+            d3.select(".node").fill("fill", lightgray);
+            d3.selecte(".link").style("stroke", lightgray);
+        }
+		
+	
+    </script>

@@ -1,8 +1,1 @@
-{
-  "name": "circularDendrogram",
-  "description": "A circular dendrogram",
-  "sourceDirectory": "circularDendrogram",
-  "sourceFile": "circular.html"  
-}
-
-
+{"name":"circularDendrogram","description":"A circular dendrogram"}

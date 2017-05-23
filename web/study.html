@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+         <style>
+            .commandOption{
+                font-size : 12px;
+                width: 230px;
+            }
+            #changeViewer{
+                background-color:rgba(200,100,100,0.05);
+            } 
+            #training{
+                background-color:rgba(100,100,100,0.07);
+            }
+            #task{
+                background-color:rgba(0,100,250,0.07);
+            } 
+            #intro{
+                background-color:rgba(100,100,250,0.05);
+            } 
+            #test{
+                background-color:rgba(150,250,150,0.05);
+            } 
+            #entryExit{
+                background-color:rgba(150,150,250,0.05);
+            } 
+            
+            .commandHeader{
+                font-size: 18px;
+                background-color:rgba(0,0,0,0.1);
+                margin-bottom: 10px;
+                padding: 5px 5px 5px 5px;
+                width: 220px
+            }
+            
+            .continueDiv{
+                padding:15px 0px 5px 0px;
+                text-align : center;
+            }
+            
+            .innerCommandDiv{
+                margin-left:10px;
+            }
+            
+            .answer{
+                margin-top:6px;
+                margin-left:10px;
+            }
+        </style>
+        
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <script src="jquery.min.js"></script>
+        <script src="study.js"></script>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <td>
+                    <div class="viewers" id="timeoutViewer" style="width:600px; height:600px; color:gray;
+                         background-color: lightgray; font-size: 28px; text-align: center; vertical-align: middle">
+                        <table style="height:100%; width:100%"><tr><td valign='middle'><b>Time expired<b></td></tr></table>
+                    </div>
+                    
+                    <div class="viewers" id="noViewer" style="width:600px; height:600px; color:gray;
+                         background-color: lightgray; font-size: 28px; text-align: center; vertical-align: middle">
+                        <table style="height:100%; width:100%"><tr><td valign='middle'><b>Nothing here, look to the right...<b></td></tr></table>
+                    </div>
+                    
+                    <div id="thankyoudefault_frame" class="viewers" style="width:600px; height:600px; color:gray;
+                         background-color: lightgray; font-size: 28px; text-align: center; vertical-align: middle">
+                        <table style="height:100%; width:100%"><tr><td valign='middle'><b>This concludes the study. <br>Thank you for participating!<b></td></tr></table>
+                    </div>
+                    
+                    <iframe class="viewers" id="thankyou_frame" width="600" height="600" frameborder="0"></iframe>
+                    
+                    <iframe class="viewers" id="changeViewer_frame" width="600" height="600" frameborder="0"></iframe>          
+
+                    <iframe class="viewers" id="test_frame" width="600" height="600" frameborder="0"></iframe>                        
+                    
+                    <iframe class="viewers" id="intro_frame" width="600" height="600" frameborder="0"></iframe> 
+ 
+                    <iframe class="viewers" id="viewer" width="600" height="600" frameborder="0"></iframe>  
+                    
+                </td>
+                <td valign="top" width='250px'>
+                    <div id="commands">
+
+                        <div id="error" class="commandOption">
+                            <div class="commandHeader"> <b>There is a problem..</b></div>
+                            <div class="innerCommandDiv">
+                                <div id="errorMessage"></div>
+                                <div class="continueDiv">
+                                    <input id="error_next" type="button" onclick="doStep()" value="Continue">
+                                </div>
+                            </div>
+                        </div>                         
+                        
+                        <div id="intro" class="commandOption">
+                            <div class="commandHeader"> <b>Before we start..</b></div>
+                            <div class="innerCommandDiv">
+                               Please take a minute to read this introduction before continuing to the study.                          
+                                <div class="continueDiv">
+                                    <input id="intro_next" type="button" onclick="doStep()" value="Continue">
+                                </div>
+                            </div>
+                        </div> 
+                        
+                        <div id="test" class="commandOption">
+                            <div class="commandHeader"> <b>Before we start..</b></div>
+                            <div class="innerCommandDiv">
+                               Please take a minute to do this test before continuing to the main part of the study.                          
+                                <div class="continueDiv">
+                                    <input id="test_next" type="button" onclick="afterTest()" value="Continue">
+                                </div>
+                            </div>
+                        </div> 
+                        
+                        <div id="changeViewer" class="commandOption">
+                            <div class="commandHeader"> <b>!Changing visuals!</b></div>
+                            <div class="innerCommandDiv">
+                                 We are changing the visuals before proceeding to the next section.
+                                <span id="changeViewer_introduction"> Please check the introduction provided on the right.</span>
+                                <span id="changeViewer_training"> A few practice tasks will follow before proceeding to the actual tasks.</span>                          
+                                <div class="continueDiv">
+                                    <input id="test_next" type="button" onclick="doStep()" value="Continue">
+                                </div>
+                            </div>
+                        </div>  
+
+                        <div id="training" class="commandOption">
+                            <div class="commandHeader"> <b>Training:</b> practice this type of task </div>
+                            <div class="innerCommandDiv">
+                                <div id="training_question"></div>
+                                <div id="training_answer" class='answer'>
+                                    <div><input id="training_answerNumber" type="number" class="answerWidget"></div>
+                                    <div><input id="training_answerText" type="text" class="answerWidget"></div>
+                                    <div><select id="training_answerOption" class="answerWidget"></select></div>
+                                    <div id="training_answerInterface" class="answerWidget" style="margin-top:-6px; font-style:italic"></div>
+                                </div>
+                                <div style='margin-top: 10px'>
+                                    <input id="training_checkAnswer" type="button" onclick="checkTrainingAnswer()" value="check">
+                                    <span id="training_noCorrectAnswer"><i> There is no right or wrong in this task! </i> </span>
+                                </div>
+                                <div class="continueDiv">
+                                    <input id="training_next" type="button" onclick="afterTraining()" value="Continue">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="task" class="commandOption">
+                            <div class="commandHeader"> <b>Task:</b> solve it in the given time! </div>
+                            <div class="innerCommandDiv">
+                                <div id="task_question"></div>
+                                <div id="task_answer" class="answer">
+                                    <div><input id="task_answerNumber" type="number" class="answerWidget"></div>
+                                    <div><input id="task_answerText" type="text" class="answerWidget"></div>
+                                    <div><select id="task_answerOption" class="answerWidget"></select></div>
+                                    <div id="task_answerInterface" class="answerWidget" style="margin-top:-6px; font-style:italic"></div>
+                                </div>
+                                <div style="margin-top:10px">
+                                    Time: <span id="task_time" style="font-weight: bold"></span>
+                                    <div style="margin:-2px 10px 0px 10px; font-style:italic">the view dissappears after that</div>
+                                </div>
+                                <div class="continueDiv">
+                                    <input id="task_next" type="button" onclick="afterTask()" value="Continue" class="continueButton">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="entryExit" class="commandOption">
+                            <div class="commandHeader" id="entryHeader"> <b>Before we begin...</b></div>
+                            <div class="commandHeader" id="exitHeader"> <b>Before we conclude...</b></div>
+                            <div class="innerCommandDiv">
+                                <div id="entryExit_question"></div>
+                                <div id="entryExit_answer" class="answer">
+                                    <div><input id="entryExit_answerNumber" type="number" class="answerWidget"></div>
+                                    <div><input id="entryExit_answerText" type="text" class="answerWidget"></div>
+                                    <div><select id="entryExit_answerOption" class="answerWidget"></select></div>
+                                </div>
+                                <div class="continueDiv">
+                                    <input id="entryExit_next" type="button" onclick="afterEntryExit()" value="Continue" class="continueButton">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

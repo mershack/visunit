@@ -13,20 +13,19 @@ package userstudy;
 public class UserFile {
     private String name;
     private String description;
-    private String sourceDirectory;
-    private String sourceFile;
+    private String source;
     private String url;
     
     public UserFile(){
         
     }
     
-    public UserFile(String name, String description, String sourceDirectory, String sourceFile,
+    public UserFile(String name, String description, String source,
             String url){
         this.name = name;
         this.description = description;
-        this.sourceDirectory = sourceDirectory;
-        this.sourceFile = sourceFile;
+        this.source= source;
+        
     }
 
     public String getName() {
@@ -45,21 +44,15 @@ public class UserFile {
         this.description = description;
     }
 
-    public String getSourceDirectory() {
-        return sourceDirectory;
+    public String getSource() {
+        return source;
     }
 
-    public void setSourceDirectory(String sourceDirectory) {
-        this.sourceDirectory = sourceDirectory;
+    public void setSource(String source) {
+        this.source = source;
     }
 
-    public String getSourceFile() {
-        return sourceFile;
-    }
-
-    public void setSourceFile(String sourceFile) {
-        this.sourceFile = sourceFile;
-    }    
+   
 
     public String getUrl() {
         return url;
